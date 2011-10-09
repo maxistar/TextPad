@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, EditorActivity!</string>
+    <string name="app_name">Simple Text Editor For Android Phone</string>
+    <string name="open_file">Open File</string>
+    <string name="save_file">Save File</string>
+    <string name="location">Location</string>
+    <string name="cant_read_folder">folder can\'t be read!</string>
+    <string name="nnew">New</string>
+    <string name="select">Select</string>
+    <string name="file_name">File name:</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Save</string>
+    <string name="no_data">No Data</string>
+	<color name="gray">#ffff0000</color>    
+</resources>
