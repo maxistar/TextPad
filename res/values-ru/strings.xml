@@ -2,8 +2,8 @@
 <resources>
     <string name="hello">Hello World, EditorActivity!</string>
     <string name="app_name">Simple Text Editor For Android Phone</string>
-    <string name="open_file">Open File</string>
-    <string name="save_file">Save File</string>
+    <string name="open_file">Открыть файл</string>
+    <string name="save_file">Сохранить файл</string>
     <string name="location">Путь</string>
     <string name="cant_read_folder">нельзя открыть директорию!</string>
     <string name="nnew">Новый</string>
@@ -13,4 +13,8 @@
     <string name="create">Сохранить</string>
     <string name="no_data">Нет данных</string>
 	<color name="gray">#ffff0000</color>
+	<string name="file_not_saved">Файл не сохранён</string>
+	<string name="save_current_file">Сохрать текущий файл?</string>
+	<string name="yes">Да</string>
+	<string name="no">Нет</string>	
 </resources>

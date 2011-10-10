@@ -12,5 +12,9 @@
     <string name="cancel">Cancel</string>
     <string name="create">Save</string>
     <string name="no_data">No Data</string>
-	<color name="gray">#ffff0000</color>    
+	<color name="gray">#ffff0000</color>
+	<string name="file_not_saved">File not saved:</string>
+	<string name="save_current_file">Save current file?</string>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
 </resources>

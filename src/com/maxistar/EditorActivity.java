@@ -1,19 +1,24 @@
 package com.maxistar;
 
-import java.io.FileOutputStream;
+import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.DataInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.File;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.content.Intent;
-import android.content.Context;
 
 public class EditorActivity extends Activity {
 	private static final int OPEN_FILE = 1;
@@ -25,7 +30,9 @@ public class EditorActivity extends Activity {
 	private EditText mText;
 	
 	private String filename = "";
-	private Boolean changed = false; 
+	private Boolean changed = false;
+	
+	private Boolean open_when_saved = false; //to figure out better way
 	
     /** Called when the activity is first created. */
     @Override
@@ -36,6 +43,22 @@ public class EditorActivity extends Activity {
         
         mText = (EditText) this.findViewById(R.id.editText1);
         mText.setText("");
+        mText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            	changed = true;
+            }
+        });
         //R.layout.main.
     }
     
@@ -66,14 +89,37 @@ public class EditorActivity extends Activity {
     protected void openFile(){    	
     	//this.showToast(Environment.getExternalStorageDirectory().getName());    	
     	if (changed){
-    		this.saveFile();
+            new AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle(R.string.file_not_saved)
+            .setMessage(R.string.save_current_file)
+            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //Stop the activity
+                	open_when_saved = true;
+                    EditorActivity.this.saveFile();
+                }
+
+            })
+            .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    openNewFile();    
+                }
+            })
+            .show();
     	}
-    	if (!changed){ //open file
-    		Intent intent = new Intent(this.getBaseContext(), FileDialog.class);
-    		intent.putExtra(FileDialog.START_PATH, "/sdcard");
-    		intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_OPEN);
-    		this.startActivityForResult(intent, REQUEST_OPEN);
+    	else {
+    		openNewFile();
     	}
+    }
+    
+    protected void openNewFile(){
+    	Intent intent = new Intent(this.getBaseContext(), FileDialog.class);
+		intent.putExtra(FileDialog.START_PATH, "/sdcard");
+		intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_OPEN);
+		this.startActivityForResult(intent, REQUEST_OPEN);
     }
     
     protected void saveFile(){
@@ -81,7 +127,7 @@ public class EditorActivity extends Activity {
     		Intent intent = new Intent(this.getBaseContext(),
                 FileDialog.class);
     		intent.putExtra(FileDialog.START_PATH, "/sdcard");
-    		this.startActivityForResult(intent, REQUEST_OPEN);
+    		this.startActivityForResult(intent, REQUEST_SAVE);
     	}
     	else {
     		saveNamedFile();
@@ -92,6 +138,11 @@ public class EditorActivity extends Activity {
     	//String string = this.mText.toString();
     	try {
     		File f = new File(filename);
+    		
+    		if (!f.exists()){
+    			f.createNewFile();
+    		}
+    		
     		FileOutputStream fos = new FileOutputStream(f);
     		//fos.write(string.getBytes());
     		//fos.close();    		
@@ -100,6 +151,12 @@ public class EditorActivity extends Activity {
   	      	fos.write(s.getBytes("UTF-8"));
   	      	fos.close();
   	      	showToast("File written");
+  	      	changed = false;
+  	      	
+  	      	if (open_when_saved){ //because of multithread nature figure out better way to do it
+  	      		open_when_saved = false;
+  	      		openNewFile();
+  	      	}
     	}
     	catch(FileNotFoundException e){
     		this.showToast("File not found");
@@ -126,6 +183,7 @@ public class EditorActivity extends Activity {
     		
     		this.mText.setText(ttt);
     		showToast("File opened");
+    		changed = false;
     	}
     	catch(FileNotFoundException e){
     		this.showToast("File not found");
