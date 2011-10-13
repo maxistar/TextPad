@@ -59,6 +59,7 @@ public class EditorActivity extends Activity {
             	changed = true;
             }
         });
+        changed = false;
         //R.layout.main.
     }
     
