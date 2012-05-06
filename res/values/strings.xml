@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, EditorActivity!</string>
-    <string name="app_name">Simple Text Editor For Android Phone</string>
+    <string name="app_name">Simple Text Editor</string>
     <string name="open_file">Open File</string>
     <string name="save_file">Save File</string>
     <string name="location">Location</string>

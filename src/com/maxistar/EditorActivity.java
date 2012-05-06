@@ -38,11 +38,23 @@ public class EditorActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+                
+        
         setContentView(R.layout.main);
         
         
         mText = (EditText) this.findViewById(R.id.editText1);
         mText.setText("");
+        
+        Intent i = this.getIntent();
+        if ("android.intent.action.VIEW".equals(i.getAction())){
+        	//showToast(i.getDataString());
+        	android.net.Uri u = i.getData();
+        	//showToast(u.getPath());
+        	filename = u.getPath();
+        	openNamedFile();
+        }
+        
         mText.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -145,9 +157,6 @@ public class EditorActivity extends Activity {
     		}
     		
     		FileOutputStream fos = new FileOutputStream(f);
-    		//fos.write(string.getBytes());
-    		//fos.close();    		
-    		//DataOutputStream dos = new DataOutputStream(fos);
   	      	String s = this.mText.getText().toString();
   	      	fos.write(s.getBytes("UTF-8"));
   	      	fos.close();
@@ -183,7 +192,7 @@ public class EditorActivity extends Activity {
             String ttt = new String(b, 0, length,"UTF-8"); 
     		
     		this.mText.setText(ttt);
-    		showToast("File opened");
+    		showToast("File opened " + filename);
     		changed = false;
     	}
     	catch(FileNotFoundException e){
