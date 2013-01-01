@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="preferences" >
+   <PreferenceCategory 
+        android:title="Main Settings">
+        <CheckBoxPreference  
+			android:key="open_last_file"  
+			android:title="Open Last"  
+			android:summary="To open last edited file" 
+			android:defaultValue="false" />
+         <!--<ListPreference 
+            android:key="count_of_files_to_remember"
+            android:summary="Count of files to remember"
+            android:title="History Length"
+            android:defaultValue="5" 
+            android:entries="@array/history_lengths_titles"
+        	android:entryValues="@array/history_lengths_titles"
+            />  
+        <CheckBoxPreference
+            android:key="auto_save_current_file"
+            android:summary="Autosave file when application stopped"
+            android:title="Autosave"
+            android:defaultValue="false" />
+            -->  
+    </PreferenceCategory> 
+    <PreferenceCategory 
+        android:title="Appearance">
+		<com.maxistar.textpad.FontTypePreference
+			android:key="font"  
+			android:title="Font"  
+			android:summary="Choose a font type"  
+			android:dialogTitle="Choose a font type" 
+			android:defaultValue="Monospace" />
+		<com.maxistar.textpad.FontSizePreference
+			android:key="fontsize"  
+			android:title="Font Size"
+			android:summary="Choose a font size"  
+			android:defaultValue="Medium"
+			android:dialogTitle="Choose a font size" />                
+		<com.maxistar.textpad.ColorPreference
+			android:key="fontcolor"  
+			android:title="Font Color"
+			android:summary="Choose a font color"  
+			android:defaultValue="0xFF000000"
+			android:dialogTitle="Choose a font color" />
+		<com.maxistar.textpad.ColorPreference
+			android:key="bgcolor"
+			android:title="Background Color"
+			android:summary="Choose a background color"  
+			android:defaultValue="0xFFCCCCCC"
+			android:dialogTitle="Choose a background color" />        
+    </PreferenceCategory>
+    <PreferenceCategory 
+        android:title="@string/About">
+        <Preference 
+            android:key="version_name"
+            android:summary=""
+            android:title="Version" />
+        <com.maxistar.textpad.AboutBox
+			android:title="About Editor"  
+			android:summary="Just a little FYI"
+			android:dialogTitle="Warranty Information" /> 
+        </PreferenceCategory>
+</PreferenceScreen>

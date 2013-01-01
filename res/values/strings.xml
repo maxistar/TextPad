@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, EditorActivity!</string>
     <string name="app_name">Simple Text Editor</string>
-    <string name="open_file">Open File</string>
-    <string name="save_file">Save File</string>
-    <string name="location">Location</string>
+    <string name="Open">Open</string>
+    <string name="New">New</string>
+    <string name="Save">Save</string>
+    <string name="Save_As">Save As</string>
+    <string name="Location">Location</string>
     <string name="cant_read_folder">folder can\'t be read!</string>
-    <string name="nnew">New</string>
-    <string name="select">Select</string>
-    <string name="file_name">File name:</string>
-    <string name="cancel">Cancel</string>
-    <string name="create">Save</string>
-    <string name="no_data">No Data</string>
-	<color name="gray">#ffff0000</color>
-	<string name="file_not_saved">File not saved:</string>
-	<string name="save_current_file">Save current file?</string>
-	<string name="yes">Yes</string>
-	<string name="no">No</string>
+    <string name="Select">Select</string>
+    <string name="File_Name">File Name:</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Create">Save</string>
+    <string name="No_Data">No Data</string>
+	<string name="File_not_saved">File not saved:</string>
+	<string name="Save_current_file">Save current file?</string>
+	<string name="Yes">Yes</string>
+	<string name="No">No</string>
+	<string name="OK">OK</string>
+	<string name="File_Written">File Written</string>
+	<string name="Can_not_write_file">Can not write file</string>
+	<string name="File_opened_">File opened </string>
+	<string name="File_not_found">File not found</string>
+	<string name="Can_not_read_file">Can not read file</string>
+	<string name="Operation_Canceled">Operation Canceled</string>
+	<string name="Settings">Settings</string>
+	<string name="About">About</string>
+	<string name="Continue">Continue</string>
+	<string name="about_message">This is Simple Text Editor for Android. To get more information visit http://en.maxistar.ru/projects/textpad.</string>
 </resources>

@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, EditorActivity!</string>
     <string name="app_name">Simple Text Editor For Android Phone</string>
-    <string name="open_file">Открыть файл</string>
-    <string name="save_file">Сохранить файл</string>
-    <string name="location">Путь</string>
+    <string name="Open">Открыть</string>
+    <string name="New">Новый</string>
+    <string name="Save">Сохранить</string>
+    <string name="Save_As">Сохранить Как</string>
+    <string name="Location">Путь</string>
     <string name="cant_read_folder">нельзя открыть директорию!</string>
-    <string name="nnew">Новый</string>
-    <string name="select">Выбрать</string>
-    <string name="file_name">Имя файла:</string>
-    <string name="cancel">Отмена</string>
-    <string name="create">Сохранить</string>
-    <string name="no_data">Нет данных</string>
-	<color name="gray">#ffff0000</color>
-	<string name="file_not_saved">Файл не сохранён</string>
-	<string name="save_current_file">Сохрать текущий файл?</string>
-	<string name="yes">Да</string>
-	<string name="no">Нет</string>	
+    <string name="Select">Выбрать</string>
+    <string name="File_Name">Имя файла:</string>
+    <string name="Cancel">Отмена</string>
+    <string name="Create">Сохранить</string>
+    <string name="No_Data">Нет данных</string>
+	<string name="File_not_saved">Файл не сохранён</string>
+	<string name="Save_current_file">Сохрать текущий файл?</string>
+	<string name="Yes">Да</string>
+	<string name="No">Нет</string>	
+	<string name="OK">OK</string> 
+	<string name="File_Written">Файл сохранён</string>
+	<string name="Can_not_write_file">Невозможно записать файл</string>
+	<string name="File_opened_">Файл открыт </string>
+	<string name="File_not_found">Файл не найдет</string>
+	<string name="Can_not_read_file">Не могу прочитать файл</string>
+	<string name="Operation_Canceled">Операция Отменена</string>
+	<string name="Settings">Настройки</string>
+	<string name="About">О Программе</string>
+	<string name="Continue">Продолжить</string>
+	<string name="about_message">Это Простой Текстовый Редактор под Android. Посетите http://maxistar.ru/projects/textpad/ для более подробной информации.</string>
 </resources>

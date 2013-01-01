@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="#ffffff"
     >
-    <EditText android:layout_width="match_parent" android:text="EditText" android:layout_height="match_parent" android:id="@+id/editText1" android:singleLine="false" android:gravity="top"></EditText>
-</LinearLayout>
+    <!--  <TextView
+        android:id="@+id/topPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text=""
+        android:background="#aaaaaa"
+         />  
+         android:layout_below="@id/topPanel"
+         -->
+    <EditText android:id="@+id/editText1" 
+        android:layout_width="match_parent" 
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:singleLine="false" 
+        android:gravity="top"
+        android:hint=""
+        android:background="#00000000"></EditText>
+</RelativeLayout>

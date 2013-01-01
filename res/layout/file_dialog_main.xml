@@ -7,7 +7,8 @@
 	<LinearLayout android:id="@+id/fdLinearLayoutList"
 		android:orientation="vertical" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_alignParentBottom="true">
-
+		
+	    <!--
 		<LinearLayout android:id="@+id/fdLinearLayoutSelect"
 			android:orientation="vertical" android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
@@ -24,13 +25,14 @@
 					android:text="@string/select"></Button>
 			</LinearLayout>
 		</LinearLayout>
+		-->
 
 		<LinearLayout android:id="@+id/fdLinearLayoutCreate"
 			android:orientation="vertical" android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:layout_alignParentBottom="true" android:paddingLeft="10dp"
 			android:paddingRight="10dp" android:paddingBottom="5dp">
-			<TextView android:id="@+id/textViewFilename" android:text="@string/file_name"
+			<TextView android:id="@+id/textViewFilename" android:text="@string/File_Name"
 				android:layout_width="fill_parent" android:layout_height="wrap_content" />
 			<EditText android:text="" android:id="@+id/fdEditTextFile"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"></EditText>
@@ -39,10 +41,10 @@
 				android:layout_width="fill_parent" android:layout_height="fill_parent">
 				<Button android:id="@+id/fdButtonCancel" android:layout_height="wrap_content"
 					android:layout_width="0dip" android:layout_weight=".3"
-					android:text="@string/cancel"></Button>
+					android:text="@string/Cancel"></Button>
 				<Button android:id="@+id/fdButtonCreate" android:layout_height="wrap_content"
 					android:layout_width="0dip" android:layout_weight=".7"
-					android:text="@string/create"></Button>
+					android:text="@string/Create"></Button>
 			</LinearLayout>
 		</LinearLayout>
 
@@ -57,7 +59,7 @@
 			android:layout_height="fill_parent" />
 		<TextView android:id="@android:id/empty"
 			android:layout_width="fill_parent" android:layout_height="fill_parent"
-			android:text="@string/no_data" />
+			android:text="@string/No_Data" />
 	</LinearLayout>
 
 

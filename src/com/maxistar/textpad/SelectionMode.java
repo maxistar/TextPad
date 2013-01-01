@@ -1,4 +1,4 @@
-package com.maxistar;
+package com.maxistar.textpad;
 
 public class SelectionMode {
 	public static final int MODE_CREATE = 0;
