@@ -30,7 +30,7 @@ public class EditorActivity extends Activity {
 	private static final int SETTINGS = 3;
 	private static final int NEW_FILE = 4;
 	private static final int SAVE_AS = 5;
-
+ 
 	private static final int REQUEST_OPEN = 1;
 	private static final int REQUEST_SAVE = 2;
 	private static final int REQUEST_SETTINGS = 3;
@@ -41,7 +41,9 @@ public class EditorActivity extends Activity {
 
 	private EditText mText;
 	private TextWatcher watcher;
-
+	String filename = TPStrings.EMPTY;
+	boolean changed = false;
+	
 	private int open_when_saved = DO_NOTHING; // to figure out better way
 
 	/** Called when the activity is first created. */
@@ -57,14 +59,16 @@ public class EditorActivity extends Activity {
 
 		if (savedInstanceState!=null){
         	restoreState(savedInstanceState);
+        	Log.w("w","restored state!");
         } 
         else {
         	Intent i = this.getIntent();
 			if (TPStrings.ACTION_VIEW.equals(i.getAction())) {
 				android.net.Uri u = i.getData();
 				openNamedFile(u.getPath());
+				Log.w("w","read file from intent");
 			} else { // it this is just created
-				if (TPApplication.filename.equals(TPStrings.EMPTY)) {
+				if (this.filename.equals(TPStrings.EMPTY)) {
 					if (TPApplication.settings.open_last_file) {
 						openLastFile();
 					}
@@ -96,24 +100,28 @@ public class EditorActivity extends Activity {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				if (!TPApplication.changed) {
-					TPApplication.changed = true;
+				if (!changed) {
+					changed = true;
 					updateTitle();
 				}
 			}
 		};
 		mText.addTextChangedListener(watcher);
-		TPApplication.changed = false;
+		changed = false;
 		updateTitle();
 	}
 
 	void restoreState(Bundle state){
         mText.setText(state.getString("text"));
+        filename = state.getString("filename");
+        changed = state.getBoolean("changed");
     }
     
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("state", mText.getText().toString());
+        outState.putString("filename",filename);
+        outState.putBoolean("changed", changed);
     }
 
 	protected void onStop() {
@@ -124,19 +132,20 @@ public class EditorActivity extends Activity {
 
 	void openLastFile() {
 		if (!TPApplication.settings.last_filename.equals(TPStrings.EMPTY)) {
-			Log.w("!", TPApplication.settings.last_filename);
+			
+			showToast("opened last edited file: "+TPApplication.settings.last_filename);
 			this.openNamedFile(TPApplication.settings.last_filename);
 		}
 	}
 
 	void updateTitle() {
 		String title;
-		if (TPApplication.filename.equals(TPStrings.EMPTY)) {
+		if (filename.equals(TPStrings.EMPTY)) {
 			title = TPStrings.NEW_FILE_TXT;
 		} else {
-			title = TPApplication.filename;
+			title = filename;
 		}
-		if (TPApplication.changed) {
+		if (changed) {
 			title = title + "*";
 		}
 		this.setTitle(title);
@@ -234,7 +243,7 @@ public class EditorActivity extends Activity {
 
 	protected void newFile() {
 		// this.showToast(Environment.getExternalStorageDirectory().getName());
-		if (TPApplication.changed) {
+		if (changed) {
 			new AlertDialog.Builder(this)
 					.setIcon(android.R.drawable.ic_dialog_alert)
 					.setTitle(R.string.File_not_saved)
@@ -265,8 +274,8 @@ public class EditorActivity extends Activity {
 
 	protected void clearFile() {
 		this.mText.setText(TPStrings.EMPTY);
-		TPApplication.filename = TPStrings.EMPTY;
-		TPApplication.changed = false;
+		filename = TPStrings.EMPTY;
+		changed = false;
 		this.updateTitle();
 	}
 
@@ -277,7 +286,7 @@ public class EditorActivity extends Activity {
 
 	protected void openFile() {
 		// this.showToast(Environment.getExternalStorageDirectory().getName());
-		if (TPApplication.changed) {
+		if (changed) {
 			new AlertDialog.Builder(this)
 					.setIcon(android.R.drawable.ic_dialog_alert)
 					.setTitle(R.string.File_not_saved)
@@ -315,7 +324,7 @@ public class EditorActivity extends Activity {
 	}
 
 	protected void saveFile() {
-		if (TPApplication.filename.equals(TPStrings.EMPTY)) {
+		if (filename.equals(TPStrings.EMPTY)) {
 			Intent intent = new Intent(this.getBaseContext(), FileDialog.class);
 			// intent.putExtra(TPStrings.START_PATH,
 			// TPApplication.settings.start_path);
@@ -328,7 +337,7 @@ public class EditorActivity extends Activity {
 	protected void saveNamedFile() {
 		// String string = this.mText.toString();
 		try {
-			File f = new File(TPApplication.filename);
+			File f = new File(filename);
 
 			if (!f.exists()) {
 				f.createNewFile();
@@ -339,7 +348,7 @@ public class EditorActivity extends Activity {
 			fos.write(s.getBytes(TPApplication.settings.file_encoding));
 			fos.close();
 			showToast(l(R.string.File_Written));
-			TPApplication.changed = false;
+			changed = false;
 			updateTitle();
 
 			if (open_when_saved == DO_OPEN) { // because of multithread nature
@@ -378,9 +387,9 @@ public class EditorActivity extends Activity {
 					TPApplication.settings.file_encoding);
 
 			this.mText.setText(ttt);
-			showToast(l(R.string.File_opened_) + TPApplication.filename);
-			TPApplication.changed = false;
-			TPApplication.filename = filename;
+			showToast(l(R.string.File_opened_) + filename);
+			changed = false;
+			this.filename = filename;
 			if (!TPApplication.settings.last_filename.equals(filename)) {
 				TPApplication.instance.saveLastFilename(filename);
 			}
@@ -402,7 +411,7 @@ public class EditorActivity extends Activity {
 
 		if (requestCode == REQUEST_SAVE) {
 			if (resultCode == Activity.RESULT_OK) {
-				TPApplication.filename = data
+				filename = data
 						.getStringExtra(TPStrings.RESULT_PATH);
 				this.saveNamedFile();
 			} else if (resultCode == Activity.RESULT_CANCELED) {

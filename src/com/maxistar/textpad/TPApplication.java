@@ -7,9 +7,6 @@ import android.preference.PreferenceManager;
 public class TPApplication extends Application {
 	static TPApplication instance;
 	
-	static String filename = TPStrings.EMPTY;
-	static boolean changed = false;
-	
 	//settings properties
 	static Settings settings;
 	
