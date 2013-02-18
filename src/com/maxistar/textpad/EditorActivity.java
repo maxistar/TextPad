@@ -17,6 +17,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -152,6 +153,14 @@ public class EditorActivity extends Activity {
 	}
 
 	void applyPreferences() {
+		//InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE
+		mText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | 
+						   InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
+						   InputType.TYPE_TEXT_VARIATION_NORMAL |
+						   InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD |
+						   InputType.TYPE_CLASS_TEXT);
+		//ScrollView mScrollView = (ScrollView) this.findViewById(R.id.scrollView);
+		
 		TPApplication.instance.updateSettings();
 		SharedPreferences sharedPref = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -189,6 +198,7 @@ public class EditorActivity extends Activity {
 		 * Colors
 		 */
 		int bgcolor = sharedPref.getInt("bgcolor", 0xFFCCCCCC);
+		//mScrollView.setBackgroundColor(bgcolor);
 		mText.setBackgroundColor(bgcolor);
 
 		int fontcolor = sharedPref.getInt("fontcolor", 0xFF000000);
