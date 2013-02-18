@@ -19,23 +19,27 @@
              >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-                <data android:mimeType="text/plain"/>
+                <category android:name="android.intent.category.LAUNCHER" />                
             </intent-filter>
+            
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
+                <category android:name="android.intent.category.BROWSABLE" />				
+                <data android:mimeType="text/plain"/>
+                <data android:host="*" />
+            </intent-filter>
+            
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />				
                 <data android:scheme="file" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.txt" />
                 <data android:host="*" />
             </intent-filter>
         </activity>
-<!-- android:theme="@android:style/Theme.Black.NoTitleBar" -->
         <activity
             android:name=".FileDialog"
             android:label="@string/app_name"
