@@ -21,23 +21,24 @@ public class ColorPreference extends DialogPreference
 	protected int color;
 	protected int defcolor;
 	protected String attribute;
+	protected String title;
 	
 	// This is the constructor called by the inflater
 	public ColorPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
 		attribute = attrs.getAttributeValue(1);
+		defcolor = attrs.getAttributeIntValue("http://schemas.android.com/apk/res/android", "defaultValue", 0xFFCCCCCC);
+		title = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "dialogTitle");
+		if ("".equals(title)){
+			title = "Choose a color";
+		}
 		
 		// set the layout so we can see the preview color
 		setWidgetLayoutResource(R.layout.colorpref);
 
 		// figure out what the current color is
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-		
-		if (attribute.equals("fontcolor"))
-			defcolor = 0xFFCCCCCC;
-		else
-			defcolor = 0xFF000000;
 		
 		color = sharedPref.getInt(attribute, defcolor);
 	}
@@ -56,7 +57,7 @@ public class ColorPreference extends DialogPreference
 	@Override
 	protected void onPrepareDialogBuilder(AlertDialog.Builder builder){
 	    // Data has changed, notify so UI can be refreshed!
-		builder.setTitle("Choose a color");
+		builder.setTitle(title);
 		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// save the color
