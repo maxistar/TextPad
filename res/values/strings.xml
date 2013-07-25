@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Simple Text Editor</string>
+    <string name="app_name_settings">Simple Text Editor - Settings</string>
     <string name="Open">Open</string>
     <string name="New">New</string>
     <string name="Save">Save</string>
@@ -27,4 +28,46 @@
 	<string name="About">About</string>
 	<string name="Continue">Continue</string>
 	<string name="about_message">This is Simple Text Editor for Android. To get more information visit http://en.maxistar.ru/projects/textpad.</string>
+    <string name="Choose_Language">Choose Language</string>
+    <string name="English">English</string>
+    <string name="Russian">Russian</string>
+    <string name="Language">Language</string>
+    <string name="Click_to_change_language">сlick to change language of interface</string>
+    <string name="searchLabel">Search</string> 
+	<string name="searchHint">Text</string>
+	<string name="s_not_found">"%s" not found</string>
+	<string name="opened_last_edited_file">opened last edited file %s</string>
+	<string name="Search">Search</string>
+	<string name="Choose_a_color">Choose a color</string>
+	<string name="Open_File">Open File</string>
+	<string name="Save_File">Save File</string>
+	<string name="Extra_Small">Extra Small</string>
+	<string name="Small">Small</string>
+	<string name="Medium">Medium</string>
+	<string name="Large">Large</string>
+	<string name="Huge">Huge</string>
+	
+	<string name="Click_to_change_encoding">Click to change encoding</string>
+	<string name="Encoding">Encoding</string>
+	<string name="Line_endings">Line endings</string>
+	<string name="Line_Delimiters">Line Delimiters</string>
+	<string name="Font_Size">Font Size</string>
+	<string name="Choose_a_font_size">Choose a font size</string>
+	<string name="Font_Color">Font Color</string>
+	<string name="Choose_a_font_color">Choose a font color</string>
+	<string name="Background_Color">Background Color</string>
+	<string name="Choose_a_background_color">Choose a background color</string>
+	<string name="Version">Version</string>
+	<string name="Just_a_little_FYI">Just a little FYI</string>
+	<string name="About_Editor">About Editor</string>
+	<string name="Warranty_Information">Warranty Information</string>
+	<string name="Font">Font</string>
+	<string name="Choose_a_font_type">Choose a font type</string>
+	<string name="Open_Last">Open Last</string>
+	<string name="To_open_last_edited_file">To open last edited file</string>
+	<string name="Main_Settings">Main Settings</string>
+	<string name="Appearance">Appearance</string>
+	<!-- <string name=""></string> 
+	<string name=""></string>-->
+	
 </resources>

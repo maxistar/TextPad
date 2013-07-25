@@ -32,9 +32,7 @@ public class FileDialog extends ListActivity {
 
 	// private Button selectButton;
 
-	// private LinearLayout layoutSelect;
 	private LinearLayout layoutCreate;
-	// private InputMethodManager inputManager;
 	private String parentPath;
 	private String currentPath = TPStrings.ROOT;
 	private String startPath = TPStrings.ROOT;
@@ -87,10 +85,10 @@ public class FileDialog extends ListActivity {
 		if (selectionMode == SelectionMode.MODE_OPEN) {
 			// newButton.setEnabled(false);
 			layoutCreate.setVisibility(View.GONE);
-			setTitle("Open File");
+			setTitle(R.string.Open_File);
 		} else {
 			layoutCreate.setVisibility(View.VISIBLE);
-			setTitle("Save File");
+			setTitle(R.string.Save_File);
 		}
 
 		final Button cancelButton = (Button) findViewById(R.id.fdButtonCancel);
@@ -123,9 +121,9 @@ public class FileDialog extends ListActivity {
 		// startPath = getIntent().getStringExtra(TPStrings.START_PATH);
 		// startPath = Environment.getExternalStorageDirectory().getPath();
 
-		settings = getSharedPreferences("FileDialog", 0);
+		settings = getSharedPreferences(TPStrings.FILE_DIALOG, 0);
 		editor = settings.edit();
-		startPath = settings.getString("startPath", Environment
+		startPath = settings.getString(TPStrings.START_PATH, Environment
 				.getExternalStorageDirectory().getPath());
 
 		if (startPath != null) {
@@ -237,7 +235,7 @@ public class FileDialog extends ListActivity {
 			if (file.canRead()) {
 				lastPositions.put(currentPath, position);
 				getDir(path.get(position));
-				editor.putString("startPath", currentPath);
+				editor.putString(TPStrings.START_PATH, currentPath);
 				editor.commit();
 			} else {
 				new AlertDialog.Builder(this)
@@ -259,7 +257,7 @@ public class FileDialog extends ListActivity {
 			}
 		} else {
 			selectedFile = file;
-			editor.putString("startPath", currentPath);
+			editor.putString(TPStrings.START_PATH, currentPath);
 			editor.commit();
 			v.setSelected(true);
 
@@ -275,13 +273,7 @@ public class FileDialog extends ListActivity {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
 			// selectButton.setEnabled(false);
 
-			// if (layoutCreate.getVisibility() == View.VISIBLE) {
-			// layoutCreate.setVisibility(View.GONE);
-			// layoutSelect.setVisibility(View.VISIBLE);
-			// } else {
-			// if(currentPath.contains("\""))
-			// if (!currentPath.equals(startPath)) {
-			if (currentPath.indexOf("/", 2) != -1) {
+			if (currentPath.indexOf(TPStrings.SLASH, 2) != -1) {
 				getDir(parentPath);
 			} else {
 				return super.onKeyDown(keyCode, event);

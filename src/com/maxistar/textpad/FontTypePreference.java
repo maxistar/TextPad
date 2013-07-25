@@ -31,11 +31,11 @@ public class FontTypePreference extends DialogPreference
 		
 		// figure out what is currently selected
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-		String font = sharedPref.getString("font", "Monospace");
+		String font = sharedPref.getString(TPStrings.FONT, TPStrings.MONOSPACE);
 		
-		if (font.equals("Serif"))
+		if (font.equals(TPStrings.SERIF))
 			selected = 1;
-		else if (font.equals("Sans Serif"))
+		else if (font.equals(TPStrings.SANS_SERIF))
 			selected = 2;
 		else  
        		selected = 0;	
@@ -43,32 +43,32 @@ public class FontTypePreference extends DialogPreference
 	
 	protected void onPrepareDialogBuilder(AlertDialog.Builder builder){
 	    // Data has changed, notify so UI can be refreshed!
-		builder.setTitle("Choose a font type");
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		builder.setTitle(R.string.Choose_a_font_type);
+		builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				
 				Editor editor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
 				
 				if (selected == 0)
-					editor.putString("font", "Monospace");
+					editor.putString(TPStrings.FONT, TPStrings.MONOSPACE);
 				else if (selected == 1)
-					editor.putString("font", "Serif");
+					editor.putString(TPStrings.FONT, TPStrings.SERIF);
 				else  
-					editor.putString("font", "Sans Serif");
+					editor.putString(TPStrings.FONT, TPStrings.SANS_SERIF);
 				
 				editor.commit();
 				
 				notifyChanged();
 			}
 		});
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// do nothing on a cancel 
 			}
 		});
 					
 		// load the font names
-		String[] arrayOfFonts = { "Monospace", "Serif", "Sans Serif" };
+		String[] arrayOfFonts = { TPStrings.MONOSPACE, TPStrings.SERIF, TPStrings.SANS_SERIF };
         fonts = Arrays.asList(arrayOfFonts);
 
 		FontTypeArrayAdapter adapter = new FontTypeArrayAdapter(getContext(), android.R.layout.simple_list_item_single_choice, fonts);
@@ -102,11 +102,11 @@ public class FontTypePreference extends DialogPreference
 			final TextView tv = (TextView) v;
 			
 			final String option = tv.getText().toString();			
-			if (option.equals("Serif"))
+			if (option.equals(TPStrings.SERIF))
 				tv.setTypeface(Typeface.SERIF);
-			else if (option.equals("Sans Serif"))
+			else if (option.equals(TPStrings.SANS_SERIF))
 				tv.setTypeface(Typeface.SANS_SERIF);
-			else if (option.equals("Monospace"))
+			else if (option.equals(TPStrings.MONOSPACE))
 				tv.setTypeface(Typeface.MONOSPACE);
 
 			// general options

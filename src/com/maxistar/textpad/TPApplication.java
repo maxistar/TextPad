@@ -1,7 +1,11 @@
 package com.maxistar.textpad;
 
+import java.util.Locale;
+
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 
 public class TPApplication extends Application {
@@ -15,16 +19,38 @@ public class TPApplication extends Application {
     public void onCreate() {
     	TPApplication.instance = this;
         settings = new Settings();
-        updateSettings(); 
+        readSettings(); 
+        readLocale();
+    }
+    
+    public void readLocale(){
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		Configuration config = this.getApplicationContext().getResources().getConfiguration();
+		Locale locale = null;
+
+		String lang = settings.getString(TPStrings.LANGUAGE, TPStrings.EMPTY);
+		if (!TPStrings.EMPTY.equals(lang)
+				&& !config.locale.getLanguage().equals(lang)) {
+			locale = new Locale(lang);
+			Locale.setDefault(locale);
+			config.locale = locale;
+			Context c = this.getBaseContext();
+			c.getResources().updateConfiguration(config, null);
+
+		}    	
     }
     
     
-    
-    public void updateSettings(){
+    public void readSettings(){
     	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        settings.autosave = sharedPref.getBoolean("auto_save_current_file", false);
-        settings.open_last_file = sharedPref.getBoolean("open_last_file", false);
-        settings.last_filename = sharedPref.getString("last_filename", "");
+        settings.autosave = sharedPref.getBoolean(TPStrings.AUTO_SAVE_CURRENT_FILE, false);
+        settings.open_last_file = sharedPref.getBoolean(TPStrings.OPEN_LAST_FILE, false);
+        settings.last_filename = sharedPref.getString(TPStrings.LAST_FILENAME, TPStrings.EMPTY);
+        settings.file_encoding = sharedPref.getString(TPStrings.ENCODING, TPStrings.UTF_8);
+        settings.delimiters = sharedPref.getString(TPStrings.DELIMITERS, TPStrings.DEFAULT);
+        
+        
+        
     }
     
     void setSettingValue(String name, String value) {
@@ -35,7 +61,7 @@ public class TPApplication extends Application {
 	}
     
     public void saveLastFilename(String value){
-    	this.setSettingValue("last_filename", value);
+    	this.setSettingValue(TPStrings.LAST_FILENAME, value);
     	TPApplication.settings.last_filename = value;
     }
     

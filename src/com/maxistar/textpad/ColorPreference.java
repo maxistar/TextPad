@@ -28,10 +28,10 @@ public class ColorPreference extends DialogPreference
 		super(context, attrs);
 		
 		attribute = attrs.getAttributeValue(1);
-		defcolor = attrs.getAttributeIntValue("http://schemas.android.com/apk/res/android", "defaultValue", 0xFFCCCCCC);
-		title = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "dialogTitle");
-		if ("".equals(title)){
-			title = "Choose a color";
+		defcolor = attrs.getAttributeIntValue(TPStrings.ANDROID_NS, TPStrings.DEFAULT_VALUE, 0xFFCCCCCC);
+		title = attrs.getAttributeValue(TPStrings.ANDROID_NS, TPStrings.DIALOG_TITLE);
+		if (TPStrings.EMPTY.equals(title)){
+			title = context.getResources().getString(R.string.Choose_a_color);
 		}
 		
 		// set the layout so we can see the preview color
@@ -58,7 +58,7 @@ public class ColorPreference extends DialogPreference
 	protected void onPrepareDialogBuilder(AlertDialog.Builder builder){
 	    // Data has changed, notify so UI can be refreshed!
 		builder.setTitle(title);
-		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// save the color
 				Editor editor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();						
@@ -68,7 +68,7 @@ public class ColorPreference extends DialogPreference
 				notifyChanged();
 			}
 		});
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// set it back to original
 				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());

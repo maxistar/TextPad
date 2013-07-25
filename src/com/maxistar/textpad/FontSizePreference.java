@@ -28,50 +28,50 @@ public class FontSizePreference extends DialogPreference
 				
 		// figure out the current size. 
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-		String font = sharedPref.getString("fontsize", "Medium");
+		String font = sharedPref.getString(TPStrings.FONTSIZE, TPStrings.MEDIUM);
 		
-		if (font.equals("Extra Small"))
+		if (font.equals(TPStrings.EXTRA_SMALL))
 			selected = 0;
-		else if (font.equals("Small"))
+		else if (font.equals(TPStrings.SMALL))
 			selected = 1;
-		else if (font.equals("Medium"))
+		else if (font.equals(TPStrings.MEDIUM))
 			selected = 2;
-		else if (font.equals("Large"))
+		else if (font.equals(TPStrings.LARGE))
 			selected = 3;
-		else if (font.equals("Huge"))
+		else if (font.equals(TPStrings.HUGE))
 			selected = 4;
 	}
 	
 	@Override
 	protected void onPrepareDialogBuilder(AlertDialog.Builder builder){
 	    // Data has changed, notify so UI can be refreshed!
-		builder.setTitle("Choose a font type");
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		builder.setTitle(R.string.Choose_a_font_type);
+		builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				
 				// save the choice in the preferences
 				Editor editor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();		
 				
 				if (selected == 0)
-					editor.putString("fontsize", "Extra Small");
+					editor.putString(TPStrings.FONTSIZE, TPStrings.EXTRA_SMALL);
 				else if (selected == 1)
-					editor.putString("fontsize", "Small");
+					editor.putString(TPStrings.FONTSIZE, TPStrings.SMALL);
 				else if (selected == 2)
-					editor.putString("fontsize", "Medium");
+					editor.putString(TPStrings.FONTSIZE, TPStrings.MEDIUM);
 				else if (selected == 3)
-					editor.putString("fontsize", "Large");
+					editor.putString(TPStrings.FONTSIZE, TPStrings.LARGE);
 				else if (selected == 4)
-					editor.putString("fontsize", "Huge");
+					editor.putString(TPStrings.FONTSIZE, TPStrings.HUGE);
 				
 				editor.commit();
 				
 				notifyChanged();
 			}
 		});
-		builder.setNegativeButton("Cancel", null);
+		builder.setNegativeButton(R.string.Cancel, null);
 	
 		// load the font names and create the adapter
-		String[] arrayOfFonts = {"Extra Small", "Small", "Medium", "Large", "Huge"};
+		String[] arrayOfFonts = {TPStrings.EXTRA_SMALL, TPStrings.SMALL, TPStrings.MEDIUM, TPStrings.LARGE, TPStrings.HUGE};
         fonts = Arrays.asList(arrayOfFonts);
 
 		FontTypeArrayAdapter adapter = new FontTypeArrayAdapter(getContext(), android.R.layout.simple_list_item_single_choice, fonts);
@@ -106,15 +106,15 @@ public class FontSizePreference extends DialogPreference
 		
 				
 			final String option = tv.getText().toString();			
-			if (option.equals("Extra Small"))
+			if (option.equals(TPStrings.EXTRA_SMALL))
 				tv.setTextSize(12.0f);
-			else if (option.equals("Small"))
+			else if (option.equals(TPStrings.SMALL))
 				tv.setTextSize(16.0f);
-			else if (option.equals("Medium"))
+			else if (option.equals(TPStrings.MEDIUM))
 				tv.setTextSize(20.0f);
-			else if (option.equals("Large"))
+			else if (option.equals(TPStrings.LARGE))
 				tv.setTextSize(24.0f);
-			else if (option.equals("Huge"))
+			else if (option.equals(TPStrings.HUGE))
 				tv.setTextSize(28.0f);
 		
 			// general options

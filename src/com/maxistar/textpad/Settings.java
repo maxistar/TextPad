@@ -11,6 +11,7 @@ public class Settings {
 	
 	
 	//String start_path = "/sdcard";
-	String file_encoding = "UTF-8";
+	String file_encoding = "";
 	String last_filename = "";
+	String delimiters;
 }
