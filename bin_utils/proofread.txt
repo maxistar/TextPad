@@ -1,0 +1,135 @@
+all language constants:
+==============================Russian==============================
+app_name: Simple Text Editor
+app_name_settings: Simple Text Editor - Settings
+Open: Open
+New: New
+Save: Save
+Save_As: Save As
+Location: Location
+cant_read_folder: folder can\'t be read!
+Select: Select
+File_Name: File Name:
+Cancel: Cancel
+Create: Save
+No_Data: No Data
+File_not_saved: File not saved:
+Save_current_file: Save current file?
+Yes: Yes
+No: No
+OK: OK
+File_Written: File Written
+Can_not_write_file: Can not write file
+File_opened_: File opened 
+File_not_found: File not found
+Can_not_read_file: Can not read file
+Operation_Canceled: Operation Canceled
+Settings: Settings
+About: About
+Continue: Continue
+about_message: This is Simple Text Editor for Android. To get more information visit http://en.maxistar.ru/projects/textpad.
+Choose_Language: Choose Language
+English: English
+Russian: Russian
+Language: Language
+Click_to_change_language: сlick to change language of interface
+searchLabel: Search
+searchHint: Text
+s_not_found: "%s" not found
+opened_last_edited_file: opened last edited file %s
+Search: Search
+Choose_a_color: Choose a color
+Open_File: Open File
+Save_File: Save File
+Extra_Small: Extra Small
+Small: Small
+Medium: Medium
+Large: Large
+Huge: Huge
+Click_to_change_encoding: Click to change encoding
+Encoding: Encoding
+Line_endings: Line endings
+Line_Delimeters: Line Delimeters
+Font_Size: Font Size
+Choose_a_font_size: Choose a font size
+Font_Color: Font Color
+Choose_a_font_color: Choose a font color
+Background_Color: Background Color
+Choose_a_background_color: Choose a background color
+Version: Version
+Just_a_little_FYI: Just a little FYI
+About_Editor: About Editor
+Warranty_Information: Warranty Information
+Font: Font
+Choose_a_font_type: Choose a font type
+Open_Last: Open Last
+To_open_last_edited_file: To open last edited file
+Main_Settings: Main Settings
+Appearance: Appearance
+=============================English===============================
+app_name: Простой Текстовый Редактор
+app_name_settings: Простой Текстовый Редактор - Настройки
+Open: Открыть
+New: Новый
+Save: Сохранить
+Save_As: Сохранить Как
+Location: Путь
+cant_read_folder: нельзя открыть директорию!
+Select: Выбрать
+File_Name: Имя файла:
+Cancel: Отмена
+Create: Сохранить
+No_Data: Нет данных
+File_not_saved: Файл не сохранён
+Save_current_file: Сохрать текущий файл?
+Yes: Да
+No: Нет
+OK: OK
+File_Written: Файл сохранён
+Can_not_write_file: Невозможно записать файл
+File_opened_: Файл открыт 
+File_not_found: Файл не найдет
+Can_not_read_file: Не могу прочитать файл
+Operation_Canceled: Операция Отменена
+Settings: Настройки
+About: О Программе
+Continue: Продолжить
+about_message: Это Простой Текстовый Редактор под Android. Посетите http://maxistar.ru/projects/textpad/ для более подробной информации.
+Choose_Language: Выберите язык
+English: Английский
+Russian: Русский
+Language: Язык
+Click_to_change_language: нажмите чтобы сменить язык
+searchLabel: Поиск
+searchHint: Текст
+Choose_a_font_type: Выберите шрифт
+s_not_found: "%s" ненайден
+opened_last_edited_file: открыт последний файл %s
+Search: Поиск
+Choose_a_color: Выберите цвет
+Open_File: Открыть файл
+Save_File: Сохранить файл
+Extra_Small: Очень маленький
+Small: Маленький
+Medium: Средний
+Large: Большой
+Huge: Гиганский
+Click_to_change_encoding: Нажмите, чтобы сменить кодировку
+Encoding: Кодировка
+Line_endings: Окончания строк
+Line_Delimeters: Разделители строк
+Font_Size: Размер шрифта
+Choose_a_font_size: Выберите размер шрифта
+Font_Color: Цвет шрифта
+Choose_a_font_color: Выберите размер шрифта
+Background_Color: Цвет фона
+Choose_a_background_color: Выберите цвет фона
+Version: Версия
+Just_a_little_FYI: Немного о программе
+About_Editor: О Программе
+Warranty_Information: Гарантийная информация
+Font: Шрифт
+Open_Last: Открывать последний
+To_open_last_edited_file: Открывать последний редактируемый файл
+Main_Settings: Главные настройки
+Appearance: Внешний вид
