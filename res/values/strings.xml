@@ -67,7 +67,8 @@
 	<string name="To_open_last_edited_file">To open last edited file</string>
 	<string name="Main_Settings">Main Settings</string>
 	<string name="Appearance">Appearance</string>
-	<!-- <string name=""></string> 
-	<string name=""></string>-->
+	<string name="You_have_made_some_changes">You have made some changes.</string> 
+	<string name="Are_you_sure_to_quit">Are you sure you want to quit the application?</string>
+	<!-- <string name=""></string>-->
 	
 </resources>

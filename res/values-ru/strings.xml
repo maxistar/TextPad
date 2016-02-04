@@ -67,4 +67,6 @@
 	<string name="To_open_last_edited_file">Открывать последний редактируемый файл</string>
 	<string name="Main_Settings">Главные настройки</string>
 	<string name="Appearance">Внешний вид</string>
+	<string name="You_have_made_some_changes">Вы сделали изменения в тексте.</string>
+	<string name="Are_you_sure_to_quit">Вы уверены, что хотите выйти из приложения?</string>
 </resources>

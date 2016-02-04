@@ -50,6 +50,7 @@ public class EditorActivity extends Activity {
 	private TextWatcher watcher;
 	String filename = TPStrings.EMPTY;
 	boolean changed = false;
+	boolean exitDialogShown = false;
 	
 	private int open_when_saved = DO_NOTHING; // to figure out better way
 
@@ -184,6 +185,39 @@ public class EditorActivity extends Activity {
 				}
 			}, 1000);
 		}
+	}
+	
+	@Override
+	public void onBackPressed() {       
+	    if (this.changed && !exitDialogShown) {          
+	        new AlertDialog.Builder(this)
+	            .setTitle(R.string.You_have_made_some_changes)
+	            .setMessage(R.string.Are_you_sure_to_quit)
+	            .setNegativeButton(R.string.Yes, new DialogInterface.OnClickListener() {
+	                public void onClick(DialogInterface arg0, int arg1) {
+	                    EditorActivity.super.onBackPressed();
+	                    exitDialogShown = false;
+	                }
+	            })            
+	            .setPositiveButton(R.string.No, new DialogInterface.OnClickListener() {
+	                public void onClick(DialogInterface arg0, int arg1) {                    
+	                    //do nothing
+	                	exitDialogShown = false;
+	                }
+	            })
+	            .setOnCancelListener(new DialogInterface.OnCancelListener(){
+					@Override
+					public void onCancel(DialogInterface arg0) {
+						// TODO Auto-generated method stub
+						EditorActivity.super.onBackPressed();
+					}
+	            })
+	            .create().show();
+	        exitDialogShown = true;
+	    }
+	    else {
+	        super.onBackPressed();
+	    }
 	}
 
 	void doSearch(String query){
