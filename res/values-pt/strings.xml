@@ -66,8 +66,8 @@
   <string name="To_open_last_edited_file">Abrir último arquivo editado</string>
   <string name="Main_Settings">Configurações</string>
   <string name="Appearance">Aparência</string>
-  <string name="You_have_made_some_changes">Dokonano zmian w tekście.</string>
-  <string name="Are_you_sure_to_quit">Czy na pewno chcesz zamknąć program?</string>
+  <string name="You_have_made_some_changes">Você fez algumas mudanças.</string>
+  <string name="Are_you_sure_to_quit">Tem certeza de que deseja sair do aplicativo?</string>
   <!-- <string name=""></string> 
 	<string name=""></string>-->
 </resources>
