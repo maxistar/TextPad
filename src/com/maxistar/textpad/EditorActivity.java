@@ -137,7 +137,10 @@ public class EditorActivity extends Activity {
 	
 	protected void onResume(){
 		super.onResume();
-		mText.setSelection(selectionStart,selectionStart);
+		String t = mText.getText().toString().toLowerCase(Locale.getDefault());
+		if (selectionStart<t.length()) {
+			mText.setSelection(selectionStart,selectionStart);			
+		}
 	}
 
 	protected void onPause(){
