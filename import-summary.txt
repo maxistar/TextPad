@@ -1,0 +1,144 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .gitignore
+* bin_utils/
+* bin_utils/checklangs.php
+* bin_utils/proofread.php
+* bin_utils/proofread.txt
+* bin_utils/stringvalues.php
+* images/
+* images/accessoriestexteditor.svg
+* images/android_robot.svg
+* images/dialogapply.svg
+* images/documentnew.svg
+* images/documentopen.svg
+* images/documentopenrecent.svg
+* images/documentproperties.svg
+* images/documentsave.svg
+* images/documentsave_as.svg
+* images/documentsave_old.svg
+* images/editfind.svg
+* images/feature-image.png
+* images/feature-image.xcf
+* images/file.svg
+* images/folder.svg
+* images/foldernew.svg
+* images/gnomedevmediasdmmc.svg
+* images/gtkedit.svg
+* images/icon.svg
+* images/resized/
+* images/resized/hdpi_documentnew.png
+* images/resized/hdpi_documentnew.svg
+* images/resized/hdpi_documentopen.png
+* images/resized/hdpi_documentopen.svg
+* images/resized/hdpi_documentsave.png
+* images/resized/hdpi_documentsave.svg
+* images/resized/hdpi_documentsave_as.png
+* images/resized/hdpi_documentsave_as.svg
+* images/resized/hdpi_editfind.png
+* images/resized/hdpi_editfind.svg
+* images/resized/hdpi_file.png
+* images/resized/hdpi_file.svg
+* images/resized/hdpi_folder.png
+* images/resized/hdpi_folder.svg
+* images/resized/hdpi_icon.png
+* images/resized/hdpi_icon.svg
+* images/resized/hdpi_settings.png
+* images/resized/hdpi_settings.svg
+* images/resized/icon200.png
+* images/resized/icon200.svg
+* images/resized/icon512.png
+* images/resized/icon512.svg
+* images/resized/ldpi_documentnew.png
+* images/resized/ldpi_documentnew.svg
+* images/resized/ldpi_documentopen.png
+* images/resized/ldpi_documentopen.svg
+* images/resized/ldpi_documentsave.png
+* images/resized/ldpi_documentsave.svg
+* images/resized/ldpi_documentsave_as.png
+* images/resized/ldpi_documentsave_as.svg
+* images/resized/ldpi_editfind.png
+* images/resized/ldpi_editfind.svg
+* images/resized/ldpi_file.png
+* images/resized/ldpi_file.svg
+* images/resized/ldpi_folder.png
+* images/resized/ldpi_folder.svg
+* images/resized/ldpi_icon.png
+* images/resized/ldpi_icon.svg
+* images/resized/ldpi_settings.png
+* images/resized/ldpi_settings.svg
+* images/resized/mdpi_documentnew.png
+* images/resized/mdpi_documentnew.svg
+* images/resized/mdpi_documentopen.png
+* images/resized/mdpi_documentopen.svg
+* images/resized/mdpi_documentsave.png
+* images/resized/mdpi_documentsave.svg
+* images/resized/mdpi_documentsave_as.png
+* images/resized/mdpi_documentsave_as.svg
+* images/resized/mdpi_editfind.png
+* images/resized/mdpi_editfind.svg
+* images/resized/mdpi_file.png
+* images/resized/mdpi_file.svg
+* images/resized/mdpi_folder.png
+* images/resized/mdpi_folder.svg
+* images/resized/mdpi_icon.png
+* images/resized/mdpi_icon.svg
+* images/resized/mdpi_settings.png
+* images/resized/mdpi_settings.svg
+* images/resized/xhdpi_documentnew.png
+* images/resized/xhdpi_documentnew.svg
+* images/resized/xhdpi_documentopen.png
+* images/resized/xhdpi_documentopen.svg
+* images/resized/xhdpi_documentsave.png
+* images/resized/xhdpi_documentsave.svg
+* images/resized/xhdpi_documentsave_as.png
+* images/resized/xhdpi_documentsave_as.svg
+* images/resized/xhdpi_editfind.png
+* images/resized/xhdpi_editfind.svg
+* images/resized/xhdpi_file.png
+* images/resized/xhdpi_file.svg
+* images/resized/xhdpi_folder.png
+* images/resized/xhdpi_folder.svg
+* images/resized/xhdpi_icon.png
+* images/resized/xhdpi_icon.svg
+* images/resized/xhdpi_settings.png
+* images/resized/xhdpi_settings.svg
+* images/scalesvg.php
+* images/screenshot1.png
+* images/screenshot2.png
+* images/settings.svg
+* images/tv-baner.png
+* images/tv-baner.xcf
+* images/windowclose.svg
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app/src/main/AndroidManifest.xml
+* assets/ => app/src/main/assets
+* res/ => app/src/main/res/
+* src/ => app/src/main/java/
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
