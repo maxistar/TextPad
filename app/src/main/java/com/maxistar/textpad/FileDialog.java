@@ -271,14 +271,11 @@ public class FileDialog extends ListActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			// selectButton.setEnabled(false);
-
-			if (currentPath.indexOf(TPStrings.SLASH, 2) != -1) {
+			if (!currentPath.equals(TPStrings.SLASH)) {
 				getDir(parentPath);
 			} else {
 				return super.onKeyDown(keyCode, event);
 			}
-
 			return true;
 		} else {
 			return super.onKeyDown(keyCode, event);
