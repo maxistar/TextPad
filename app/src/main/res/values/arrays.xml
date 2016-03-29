@@ -1,6 +1,6 @@
 <resources>
 
-<string-array name="history_lengths_titles">
+<string-array name="history_lengths_titles" translatable="false">
     <item >1</item>
     <item >2</item>
     <item >3</item>
@@ -13,7 +13,7 @@
     <item >10</item>
 </string-array>    
     
-<integer-array name="history_lengths">
+<integer-array name="history_lengths" translatable="false">
     <item >1</item>
     <item >2</item>
     <item >3</item>
@@ -26,31 +26,31 @@
     <item >10</item>
 </integer-array>
 
-<string-array name="language_names">
+<string-array name="language_names" translatable="false">
     <item>English</item>
     <item>Russian</item>
 </string-array>
 
-<string-array name="language_values">
+<string-array name="language_values" translatable="false">
     <item>en</item>
     <item>ru</item>
 </string-array>
 
-<string-array name="line_delimiter_names">
+<string-array name="line_delimiter_names" translatable="false">
     <item>default</item>
     <item>Unix (LF, \\n, 0A)</item>
     <item>Windows (CRLF, \\r\\n, 0D0A)</item>
     <item>MacOS 9 (CR, \\r, 0D)</item>
 </string-array>
 
-<string-array name="line_delimiter_values">
+<string-array name="line_delimiter_values" translatable="false">
     <item>default</item>
     <item>unix</item>
     <item>windows</item>
     <item>macos</item>
 </string-array>
 
-<string-array name="font_size_names">
+<string-array name="font_size_names" translatable="false">
 	<item>Extra Small</item>
 	<item>Small</item>
 	<item>Medium</item>
@@ -58,7 +58,7 @@
 	<item>Huge</item>
 </string-array>
 
-<string-array name="font_sizes_values">
+<string-array name="font_sizes_values" translatable="false">
 	<item>@string/Extra_Small</item>
 	<item>@string/Small</item>
 	<item>@string/Medium</item>
