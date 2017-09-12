@@ -6,7 +6,6 @@ public class TPStrings{
   
 	public static final String ITEM_KEY = "key";
 	public static final String ITEM_IMAGE = "image";
-	public static final String ROOT = "/";
 
 	public static final String START_PATH = "START_PATH";
 	public static final String RESULT_PATH = "RESULT_PATH";

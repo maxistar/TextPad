@@ -166,9 +166,9 @@ public class EditorActivity extends Activity {
     }
 
 	protected void onStop() {
-		mText.removeTextChangedListener(watcher); // to prevent text
+		mText.removeTextChangedListener(watcher); 	// to prevent text
 													// modification once rotated
-		super.onStart();
+		super.onStop();
 	}
 	
 	public void onNewIntent(Intent intent)
@@ -418,8 +418,7 @@ public class EditorActivity extends Activity {
 	}
 
 	protected void openFile() {
-		
-		
+
 		// this.showToast(Environment.getExternalStorageDirectory().getName());
 		if (changed) {
 			new AlertDialog.Builder(this)

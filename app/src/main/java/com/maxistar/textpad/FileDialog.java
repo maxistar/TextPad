@@ -30,12 +30,11 @@ public class FileDialog extends ListActivity {
 	private EditText mFileName;
 	private ArrayList<HashMap<String, Object>> mList;
 
-	// private Button selectButton;
-
 	private LinearLayout layoutCreate;
 	private String parentPath;
-	private String currentPath = TPStrings.ROOT;
-	private String startPath = TPStrings.ROOT;
+	private String currentPath;
+	private String startPath;
+	private String rootPath;
 	private int selectionMode = SelectionMode.MODE_CREATE;
 
 	private File selectedFile;
@@ -53,19 +52,6 @@ public class FileDialog extends ListActivity {
 		myPath = (TextView) findViewById(R.id.path);
 		mFileName = (EditText) findViewById(R.id.fdEditTextFile);
 
-		// inputManager = (InputMethodManager)
-		// getSystemService(INPUT_METHOD_SERVICE);
-
-		/*
-		 * selectButton = (Button) findViewById(R.id.fdButtonSelect);
-		 * selectButton.setEnabled(false); selectButton.setOnClickListener(new
-		 * OnClickListener() {
-		 * 
-		 * @Override public void onClick(View v) { if (selectedFile != null) {
-		 * getIntent().putExtra(TPStrings.RESULT_PATH, selectedFile.getPath());
-		 * setResult(RESULT_OK, getIntent()); finish(); } } });
-		 */
-
 		/*
 		 * final Button newButton = (Button) findViewById(R.id.fdButtonNew);
 		 * newButton.setOnClickListener(new OnClickListener() {
@@ -78,12 +64,9 @@ public class FileDialog extends ListActivity {
 		selectionMode = getIntent().getIntExtra(TPStrings.SELECTION_MODE,
 				SelectionMode.MODE_CREATE);
 
-		// layoutSelect = (LinearLayout)
-		// findViewById(R.id.fdLinearLayoutSelect);
 		layoutCreate = (LinearLayout) findViewById(R.id.fdLinearLayoutCreate);
 
 		if (selectionMode == SelectionMode.MODE_OPEN) {
-			// newButton.setEnabled(false);
 			layoutCreate.setVisibility(View.GONE);
 			setTitle(R.string.Open_File);
 		} else {
@@ -96,7 +79,6 @@ public class FileDialog extends ListActivity {
 
 			@Override
 			public void onClick(View v) {
-				// setSelectVisible(v);
 				finish();
 			}
 
@@ -118,19 +100,17 @@ public class FileDialog extends ListActivity {
 			}
 		});
 
-		// startPath = getIntent().getStringExtra(TPStrings.START_PATH);
-		// startPath = Environment.getExternalStorageDirectory().getPath();
-
 		settings = getSharedPreferences(TPStrings.FILE_DIALOG, 0);
 		editor = settings.edit();
-		startPath = settings.getString(TPStrings.START_PATH, Environment
-				.getExternalStorageDirectory().getPath());
+		rootPath = Environment.getExternalStorageDirectory().getPath();
 
-		if (startPath != null) {
-			getDir(startPath);
-		} else {
-			getDir(TPStrings.ROOT);
+		startPath = settings.getString(TPStrings.START_PATH, rootPath);
+		if (startPath == null) {
+			startPath = rootPath;
 		}
+        currentPath = startPath;
+
+		getDir(startPath);
 	}
 
 	private void getDir(String dirPath) {
@@ -148,9 +128,7 @@ public class FileDialog extends ListActivity {
 	}
 
 	private void getDirImpl(final String dirPath) {
-
 		currentPath = dirPath;
-
 		final List<String> item = new ArrayList<String>();
 		path = new ArrayList<String>();
 		mList = new ArrayList<HashMap<String, Object>>();
@@ -158,24 +136,16 @@ public class FileDialog extends ListActivity {
 		File f = new File(currentPath);
 		File[] files = f.listFiles();
 		if (files == null) {
-			currentPath = TPStrings.ROOT;
+			currentPath = rootPath;
 			f = new File(currentPath);
 			files = f.listFiles();
 		}
+
 		myPath.setText(getText(R.string.Location) + TPStrings.COLON
 				+ TPStrings.SPACE + currentPath);
 
-		if (!currentPath.equals(TPStrings.ROOT)) {
-
-			// item.add(TPStrings.ROOT);
-			// addItem(TPStrings.ROOT, R.drawable.folder);
-			// path.add(TPStrings.ROOT);
-
-			// item.add(TPStrings.UP_SLASH);
-			// addItem(TPStrings.UP_SLASH, R.drawable.folder);
-			// path.add(f.getParent());
+		if (!currentPath.equals(rootPath)) {
 			parentPath = f.getParent();
-
 		}
 
 		TreeMap<String, String> dirsMap = new TreeMap<String, String>();
@@ -228,10 +198,7 @@ public class FileDialog extends ListActivity {
 
 		File file = new File(path.get(position));
 
-		// setSelectVisible(v);
-
 		if (file.isDirectory()) {
-			// selectButton.setEnabled(false);
 			if (file.canRead()) {
 				lastPositions.put(currentPath, position);
 				getDir(path.get(position));
@@ -264,14 +231,13 @@ public class FileDialog extends ListActivity {
 			getIntent().putExtra(TPStrings.RESULT_PATH, selectedFile.getPath());
 			setResult(RESULT_OK, getIntent());
 			finish();
-			// selectButton.setEnabled(true);
 		}
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			if (!currentPath.equals(TPStrings.SLASH)) {
+			if (!currentPath.equals(rootPath)) {
 				getDir(parentPath);
 			} else {
 				return super.onKeyDown(keyCode, event);
@@ -281,24 +247,6 @@ public class FileDialog extends ListActivity {
 			return super.onKeyDown(keyCode, event);
 		}
 	}
-
-	/*
-	 * private void setCreateVisible(View v) {
-	 * layoutCreate.setVisibility(View.VISIBLE);
-	 * //layoutSelect.setVisibility(View.GONE);
-	 * 
-	 * inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-	 * //selectButton.setEnabled(false); }
-	 */
-
-	/*
-	 * private void setSelectVisible(View v) {
-	 * layoutCreate.setVisibility(View.GONE);
-	 * //layoutSelect.setVisibility(View.VISIBLE);
-	 * 
-	 * inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-	 * //selectButton.setEnabled(false); }
-	 */
 
 	String l(int id) {
 		return getBaseContext().getResources().getString(id);
