@@ -271,14 +271,12 @@ public class EditorActivity extends Activity {
 	}
 
 	void applyPreferences() {
-		//InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE
-		mText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | 
+		mText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE |
 						   InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
 						   InputType.TYPE_TEXT_VARIATION_NORMAL |
 						   InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD |
 						   InputType.TYPE_CLASS_TEXT);
-		//ScrollView mScrollView = (ScrollView) this.findViewById(R.id.scrollView);
-		
+
 		TPApplication.instance.readSettings();
 		SharedPreferences sharedPref = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -467,7 +465,6 @@ public class EditorActivity extends Activity {
 	}
 
 	protected void saveNamedFile() {
-		// String string = this.mText.toString();
 		try {
 			File f = new File(filename);
 
@@ -569,6 +566,7 @@ public class EditorActivity extends Activity {
 	
 	/**
 	 * @param value
+	 *
 	 * @return
 	 */
 	String toUnixEndings(String value){
@@ -610,9 +608,8 @@ public class EditorActivity extends Activity {
 
 	protected void showToast(String toast_str) {
 		Context context = getApplicationContext();
-		CharSequence text = toast_str;
 		int duration = Toast.LENGTH_SHORT;
-		Toast toast = Toast.makeText(context, text, duration);
+		Toast toast = Toast.makeText(context, toast_str, duration);
 		toast.show();
 	}
 

@@ -22,7 +22,6 @@ import android.widget.TextView;
              //FontTypePreference
 public class FontTypePreference extends DialogPreference
 {
-	private List<String> fonts = null;
 	private int selected;
 	
 	// This is the constructor called by the inflater
@@ -69,7 +68,7 @@ public class FontTypePreference extends DialogPreference
 					
 		// load the font names
 		String[] arrayOfFonts = { TPStrings.MONOSPACE, TPStrings.SERIF, TPStrings.SANS_SERIF };
-        fonts = Arrays.asList(arrayOfFonts);
+		List<String> fonts = Arrays.asList(arrayOfFonts);
 
 		FontTypeArrayAdapter adapter = new FontTypeArrayAdapter(getContext(), android.R.layout.simple_list_item_single_choice, fonts);
 		builder.setSingleChoiceItems(adapter, selected, new DialogInterface.OnClickListener() {

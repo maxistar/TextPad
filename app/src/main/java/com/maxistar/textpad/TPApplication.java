@@ -17,6 +17,7 @@ public class TPApplication extends Application {
 	
     @Override
     public void onCreate() {
+		super.onCreate();
     	TPApplication.instance = this;
         settings = new Settings();
         readSettings(); 
@@ -26,7 +27,7 @@ public class TPApplication extends Application {
     public void readLocale(){
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		Configuration config = this.getApplicationContext().getResources().getConfiguration();
-		Locale locale = null;
+		Locale locale;
 
 		String lang = settings.getString(TPStrings.LANGUAGE, TPStrings.EMPTY);
 		if (!TPStrings.EMPTY.equals(lang)
@@ -36,7 +37,6 @@ public class TPApplication extends Application {
 			config.locale = locale;
 			Context c = this.getBaseContext();
 			c.getResources().updateConfiguration(config, null);
-
 		}    	
     }
     

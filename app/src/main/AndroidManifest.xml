@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.maxistar.textpad"
     android:versionCode="12"
-    android:versionName="1.7.2" >
+    android:versionName="1.8.0" >
 
     <uses-sdk android:minSdkVersion="8" />
 

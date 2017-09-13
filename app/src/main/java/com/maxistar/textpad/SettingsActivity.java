@@ -27,8 +27,6 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.settings);
-		//this.setP
 		addPreferencesFromResource(R.xml.preferences);
 		
 		//get default value for count of files

@@ -29,11 +29,13 @@
 <string-array name="language_names" translatable="false">
     <item>English</item>
     <item>Russian</item>
+    <item>Portugese</item>
 </string-array>
 
 <string-array name="language_values" translatable="false">
     <item>en</item>
     <item>ru</item>
+    <item>pt</item>
 </string-array>
 
 <string-array name="line_delimiter_names" translatable="false">

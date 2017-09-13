@@ -1,18 +1,9 @@
 package com.maxistar.textpad;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeMap;
-
-import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,24 +14,50 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
+
 public class FileDialog extends ListActivity {
 
+	/**
+	 *
+	 */
 	private List<String> path = null;
+
+	/**
+	 * Text view with the name
+	 */
 	private TextView myPath;
+
+	/**
+	 * Edit text with the file name
+	 */
 	private EditText mFileName;
+
+	/**
+	 *
+	 */
 	private ArrayList<HashMap<String, Object>> mList;
 
-	private LinearLayout layoutCreate;
+	/**
+	 *
+	 */
 	private String parentPath;
-	private String currentPath;
-	private String startPath;
-	private String rootPath;
-	private int selectionMode = SelectionMode.MODE_CREATE;
 
-	private File selectedFile;
-	private HashMap<String, Integer> lastPositions = new HashMap<String, Integer>();
-	private SharedPreferences settings;
-	private SharedPreferences.Editor editor;
+	/**
+	 *
+	 */
+	private String currentPath;
+
+	/**
+	 *
+	 */
+	private String rootPath;
+
+
 
 	/** Called when the activity is first created. */
 	@Override
@@ -61,10 +78,13 @@ public class FileDialog extends ListActivity {
 		 * mFileName.setText(TPStrings.EMPTY); mFileName.requestFocus(); } });
 		 */
 		mFileName.setText(TPStrings.NEW_FILE_TXT);
-		selectionMode = getIntent().getIntExtra(TPStrings.SELECTION_MODE,
+		int selectionMode = getIntent().getIntExtra(TPStrings.SELECTION_MODE,
 				SelectionMode.MODE_CREATE);
 
-		layoutCreate = (LinearLayout) findViewById(R.id.fdLinearLayoutCreate);
+        /**
+         *
+         */
+        LinearLayout layoutCreate = (LinearLayout) findViewById(R.id.fdLinearLayoutCreate);
 
 		if (selectionMode == SelectionMode.MODE_OPEN) {
 			layoutCreate.setVisibility(View.GONE);
@@ -100,58 +120,49 @@ public class FileDialog extends ListActivity {
 			}
 		});
 
-		settings = getSharedPreferences(TPStrings.FILE_DIALOG, 0);
-		editor = settings.edit();
-		rootPath = Environment.getExternalStorageDirectory().getPath();
 
-		startPath = settings.getString(TPStrings.START_PATH, rootPath);
-		if (startPath == null) {
-			startPath = rootPath;
-		}
+        SharedPreferences settings = getSharedPreferences(TPStrings.FILE_DIALOG, 0);
+        rootPath = Environment.getExternalStorageDirectory().getPath();
+        //rootPath = Environment.getRootDirectory().getPath();
+		String startPath = settings.getString(TPStrings.START_PATH, rootPath);
         currentPath = startPath;
 
-		getDir(startPath);
+		readDir(startPath);
 	}
 
-	private void getDir(String dirPath) {
-
-		boolean useAutoSelection = dirPath.length() < currentPath.length();
-
-		Integer position = lastPositions.get(parentPath);
-
-		getDirImpl(dirPath);
-
-		if (position != null && useAutoSelection) {
-			getListView().setSelection(position);
-		}
-
-	}
-
-	private void getDirImpl(final String dirPath) {
+	private void readDir(String dirPath) {
 		currentPath = dirPath;
-		final List<String> item = new ArrayList<String>();
+
 		path = new ArrayList<String>();
 		mList = new ArrayList<HashMap<String, Object>>();
 
 		File f = new File(currentPath);
 		File[] files = f.listFiles();
-		if (files == null) {
+		if (files == null) { //in case we can not show this
 			currentPath = rootPath;
 			f = new File(currentPath);
 			files = f.listFiles();
 		}
 
-		myPath.setText(getText(R.string.Location) + TPStrings.COLON
-				+ TPStrings.SPACE + currentPath);
+		myPath.setText(getString(R.string.Location, currentPath));
 
-		if (!currentPath.equals(rootPath)) {
-			parentPath = f.getParent();
-		}
+		parentPath = f.getParent();
+        File parentFolder = new File(parentPath);
+        if (!parentFolder.canRead()) {
+            parentPath = parentFolder.getParent();
+        }
 
 		TreeMap<String, String> dirsMap = new TreeMap<String, String>();
 		TreeMap<String, String> dirsPathMap = new TreeMap<String, String>();
+
 		TreeMap<String, String> filesMap = new TreeMap<String, String>();
 		TreeMap<String, String> filesPathMap = new TreeMap<String, String>();
+
+        if (parentPath != null) {
+            dirsMap.put(TPStrings.FOLDER_UP, TPStrings.FOLDER_UP);
+            dirsPathMap.put(TPStrings.FOLDER_UP, parentPath);
+        }
+
 		for (File file : files) {
 			if (file.isDirectory()) {
 				String dirName = file.getName();
@@ -162,15 +173,17 @@ public class FileDialog extends ListActivity {
 				filesPathMap.put(file.getName(), file.getPath());
 			}
 		}
-		item.addAll(dirsMap.tailMap(TPStrings.EMPTY).values());
-		item.addAll(filesMap.tailMap(TPStrings.EMPTY).values());
-		path.addAll(dirsPathMap.tailMap(TPStrings.EMPTY).values());
-		path.addAll(filesPathMap.tailMap(TPStrings.EMPTY).values());
+        path.addAll(dirsPathMap.values());
+        path.addAll(filesPathMap.values());
+
+
+//		path.addAll(dirsPathMap.tailMap(TPStrings.EMPTY).values());
+//		path.addAll(filesPathMap.tailMap(TPStrings.EMPTY).values());
 
 		SimpleAdapter fileList = new SimpleAdapter(this, mList,
 				R.layout.file_dialog_row, new String[] { TPStrings.ITEM_KEY,
-						TPStrings.ITEM_IMAGE }, new int[] { R.id.fdrowtext,
-						R.id.fdrowimage });
+				TPStrings.ITEM_IMAGE }, new int[] { R.id.fdrowtext,
+				R.id.fdrowimage });
 
 		for (String dir : dirsMap.tailMap(TPStrings.EMPTY).values()) {
 			addItem(dir, R.drawable.folder);
@@ -183,8 +196,8 @@ public class FileDialog extends ListActivity {
 		fileList.notifyDataSetChanged();
 
 		setListAdapter(fileList);
-
 	}
+
 
 	private void addItem(String fileName, int imageId) {
 		HashMap<String, Object> item = new HashMap<String, Object>();
@@ -193,17 +206,22 @@ public class FileDialog extends ListActivity {
 		mList.add(item);
 	}
 
+	private void saveStartPath(String currentPath) {
+        SharedPreferences settings = getSharedPreferences(TPStrings.FILE_DIALOG, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(TPStrings.START_PATH, currentPath);
+		editor.commit();
+	}
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-
-		File file = new File(path.get(position));
-
-		if (file.isDirectory()) {
-			if (file.canRead()) {
-				lastPositions.put(currentPath, position);
-				getDir(path.get(position));
-				editor.putString(TPStrings.START_PATH, currentPath);
-				editor.commit();
+        File file = new File(path.get(position));
+        if (file.isDirectory()) {
+            readDir(path.get(position));
+            saveStartPath(currentPath);
+            /*if (file.canRead()) {
+				readDir(path.get(position));
+				saveStartPath(currentPath);
 			} else {
 				new AlertDialog.Builder(this)
 						.setIcon(R.drawable.icon)
@@ -214,21 +232,18 @@ public class FileDialog extends ListActivity {
 										+ getText(R.string.cant_read_folder))
 						.setPositiveButton(l(R.string.OK),
 								new DialogInterface.OnClickListener() {
-
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
 
 									}
 								}).show();
-			}
+			}*/
 		} else {
-			selectedFile = file;
-			editor.putString(TPStrings.START_PATH, currentPath);
-			editor.commit();
+			saveStartPath(currentPath);
 			v.setSelected(true);
 
-			getIntent().putExtra(TPStrings.RESULT_PATH, selectedFile.getPath());
+			getIntent().putExtra(TPStrings.RESULT_PATH, file.getPath());
 			setResult(RESULT_OK, getIntent());
 			finish();
 		}
@@ -237,8 +252,8 @@ public class FileDialog extends ListActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			if (!currentPath.equals(rootPath)) {
-				getDir(parentPath);
+			if (parentPath != null && !currentPath.equals(rootPath)) {
+				readDir(parentPath);
 			} else {
 				return super.onKeyDown(keyCode, event);
 			}

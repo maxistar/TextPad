@@ -6,7 +6,7 @@
     <string name="New">New</string>
     <string name="Save">Save</string>
     <string name="Save_As">Save As</string>
-    <string name="Location">Location</string>
+    <string name="Location">Location: %s</string>
     <string name="cant_read_folder">folder can\'t be read!</string>
     <string name="Select">Select</string>
     <string name="File_Name">File Name:</string>
