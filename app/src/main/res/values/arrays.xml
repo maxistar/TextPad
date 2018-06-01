@@ -29,7 +29,7 @@
 <string-array name="language_names" translatable="false">
     <item>English</item>
     <item>Russian</item>
-    <item>Portugese</item>
+    <item>Portuguese</item>
 </string-array>
 
 <string-array name="language_values" translatable="false">
