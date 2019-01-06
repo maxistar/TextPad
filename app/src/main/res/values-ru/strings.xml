@@ -47,7 +47,6 @@
 	<string name="Medium">Средний</string>
 	<string name="Large">Большой</string>
 	<string name="Huge">Гиганский</string>
-	
 	<string name="Click_to_change_encoding">Нажмите, чтобы сменить кодировку</string>
 	<string name="Encoding">Кодировка</string>
 	<string name="Line_endings">Окончания строк</string>

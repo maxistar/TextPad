@@ -46,7 +46,6 @@
 	<string name="Medium">Medium</string>
 	<string name="Large">Large</string>
 	<string name="Huge">Huge</string>
-	
 	<string name="Click_to_change_encoding">Click to change encoding</string>
 	<string name="Encoding">Encoding</string>
 	<string name="Line_endings">Line endings</string>
@@ -69,6 +68,4 @@
 	<string name="Appearance">Appearance</string>
 	<string name="You_have_made_some_changes">You have made some changes.</string> 
 	<string name="Are_you_sure_to_quit">Are you sure you want to quit the application?</string>
-	<!-- <string name=""></string>-->
-	
 </resources>
