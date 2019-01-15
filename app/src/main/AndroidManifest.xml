@@ -4,7 +4,7 @@
     android:versionCode="13"
     android:versionName="1.9.0" >
 
-    <uses-sdk android:minSdkVersion="8" />
+    <!--<uses-sdk android:minSdkVersion="8" />-->
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
