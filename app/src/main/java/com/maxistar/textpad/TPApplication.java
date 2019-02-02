@@ -65,7 +65,9 @@ public class TPApplication extends Application {
     	TPApplication.settings.last_filename = value;
     }
     
-    
+    public static TPApplication getApplication() {
+    	return TPApplication.instance;
+	}
     
 
     String l(int id){

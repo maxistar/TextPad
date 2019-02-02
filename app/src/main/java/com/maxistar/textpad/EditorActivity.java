@@ -323,7 +323,7 @@ public class EditorActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, NEW_FILE, 0, R.string.New).setIcon(R.drawable.documentnew);
+		/*menu.add(0, NEW_FILE, 0, R.string.New).setIcon(R.drawable.documentnew);
 
 		menu.add(0, OPEN_FILE, 0, R.string.Open).setIcon(
 				R.drawable.documentopen);
@@ -340,30 +340,31 @@ public class EditorActivity extends Activity {
 		menu.add(0, SETTINGS, 0, R.string.Settings)
 				.setIcon(R.drawable.settings);
 
-		return super.onCreateOptionsMenu(menu);
+		return super.onCreateOptionsMenu(menu);*/
+
+		getMenuInflater().inflate(R.menu.main_menu, menu);
+		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case OPEN_FILE:
+		case R.id.menu_document_open:
 			openFile();
 			return true;
-		case NEW_FILE:
+		case R.id.menu_document_new:
 			newFile();
 			return true;
-		case SAVE_FILE:
+		case R.id.menu_document_save:
 			saveFile();
 			return true;
-		case SAVE_AS:
+		case R.id.menu_document_save_as:
 			saveAs();
 			return true;
-			
-		case MENU_SEARCH: // Trigger search
+		case R.id.menu_document_search: // Trigger search
 			this.onSearchRequested();
 			break;
-			
-		case SETTINGS:
+		case R.id.menu_document_settings:
 			Intent intent = new Intent(this.getBaseContext(),
 					SettingsActivity.class);
 			this.startActivityForResult(intent, REQUEST_SETTINGS);
