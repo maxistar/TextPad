@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -15,11 +16,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.SearchRecentSuggestions;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -28,16 +31,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.maxistar.textpad.EditTextSelectable.OnSelectionChangedListener;
-//import android.widget.ScrollView;
 
 public class EditorActivity extends Activity {
-	private static final int OPEN_FILE = 1;
-	private static final int SAVE_FILE = 2;
-	private static final int SETTINGS = 3;
-	private static final int NEW_FILE = 4;
-	private static final int SAVE_AS = 5;
-	private static final int MENU_SEARCH = 6; 
-	
 	private static final int REQUEST_OPEN = 1;
 	private static final int REQUEST_SAVE = 2;
 	private static final int REQUEST_SETTINGS = 3;
@@ -66,14 +61,14 @@ public class EditorActivity extends Activity {
 		setContentView(R.layout.main);
 
 		mText = (EditTextSelectable) this.findViewById(R.id.editText1);
-		//mScrollView = (ScrollView) this.findViewById(R.id.scroll);
-		
+
+        verifyPermissions(this);
+
 		applyPreferences();
 
-		if (savedInstanceState!=null){
+		if (savedInstanceState!=null) {
         	restoreState(savedInstanceState);
-        } 
-        else {
+        } else {
         	Intent i = this.getIntent();
 			if (TPStrings.ACTION_VIEW.equals(i.getAction())) {
 				android.net.Uri u = i.getData();
@@ -109,7 +104,6 @@ public class EditorActivity extends Activity {
 				}
 			}
 		};
-		//mText.invalidate(); //
 		handler.postDelayed(new Runnable(){
 			@Override
 			public void run() {
@@ -127,15 +121,40 @@ public class EditorActivity extends Activity {
 				
 			}
 		}, 1000);
-		//mText.setThreshold(1);	// just a little property
-		//changed = false;
+
 		updateTitle();
 		mText.requestFocus();
 		
 		TPApplication.instance.readLocale(); //additionally check locale
-	} 
-	
-	protected void onResume(){
+	}
+
+    /**
+     * Checks if the app has permission to write to device storage
+     *
+     * If the app does not has permission then the user will be prompted to grant permissions
+     *
+     * @param activity
+     */
+    public static void verifyPermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        String[] PERMISSIONS_STORAGE = {
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    1
+            );
+        }
+    }
+
+
+    protected void onResume(){
 		super.onResume();
 		String t = mText.getText().toString().toLowerCase(Locale.getDefault());
 		if (selectionStart<t.length()) {
@@ -161,8 +180,6 @@ public class EditorActivity extends Activity {
         outState.putString(TPStrings.FILENAME,filename);
         outState.putBoolean(TPStrings.CHANGED, changed);
         
-        
-        
     }
 
 	protected void onStop() {
@@ -174,7 +191,6 @@ public class EditorActivity extends Activity {
 	public void onNewIntent(Intent intent)
 	{
 		super.onNewIntent(intent);
-		//setIntent(intent);
 		// search action
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			final String query = intent.getStringExtra(SearchManager.QUERY);
@@ -224,23 +240,22 @@ public class EditorActivity extends Activity {
 	}
 
 	void doSearch(String query){
-			
 			String t = mText.getText().toString().toLowerCase(Locale.getDefault());
 			
-			if (selectionStart>=t.length()) {
+			if (selectionStart >= t.length()) {
 				selectionStart = -1;
 			}
+
 		    int start;			
 			start = t.indexOf(query.toLowerCase(Locale.getDefault()), selectionStart+1);
-			if (start == -1){	// loop search
+			if (start == -1) {	// loop search
 				start = t.indexOf(query.toLowerCase(Locale.getDefault()), 0);
 			}			
 				
-			if (start != -1){
+			if (start != -1) {
 				selectionStart = start;
 				mText.setSelection(start, start + query.length());
-			} 
-			else {
+			} else {
 				selectionStart = 0;
 				Toast.makeText(this, formatString(R.string.s_not_found, query), Toast.LENGTH_SHORT).show();
 			}
@@ -314,7 +329,6 @@ public class EditorActivity extends Activity {
 		 * Colors
 		 */
 		int bgcolor = sharedPref.getInt(TPStrings.BGCOLOR, 0xFFCCCCCC);
-		//mScrollView.setBackgroundColor(bgcolor);
 		mText.setBackgroundColor(bgcolor);
 
 		int fontcolor = sharedPref.getInt(TPStrings.FONTCOLOR, 0xFF000000);
@@ -323,25 +337,6 @@ public class EditorActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		/*menu.add(0, NEW_FILE, 0, R.string.New).setIcon(R.drawable.documentnew);
-
-		menu.add(0, OPEN_FILE, 0, R.string.Open).setIcon(
-				R.drawable.documentopen);
-
-		menu.add(0, SAVE_FILE, 0, R.string.Save).setIcon(
-				R.drawable.documentsave);
-
-		menu.add(0, SAVE_AS, 0, R.string.Save_As).setIcon(
-				R.drawable.documentsave_as);
-
-		menu.add(0, MENU_SEARCH, 0, R.string.Search).setIcon(
-				R.drawable.editfind);
-		
-		menu.add(0, SETTINGS, 0, R.string.Settings)
-				.setIcon(R.drawable.settings);
-
-		return super.onCreateOptionsMenu(menu);*/
-
 		getMenuInflater().inflate(R.menu.main_menu, menu);
 		return true;
 	}
@@ -374,7 +369,6 @@ public class EditorActivity extends Activity {
 	}
 
 	protected void newFile() {
-		// this.showToast(Environment.getExternalStorageDirectory().getName());
 		if (changed) {
 			new AlertDialog.Builder(this)
 					.setIcon(android.R.drawable.ic_dialog_alert)
@@ -417,8 +411,6 @@ public class EditorActivity extends Activity {
 	}
 
 	protected void openFile() {
-
-		// this.showToast(Environment.getExternalStorageDirectory().getName());
 		if (changed) {
 			new AlertDialog.Builder(this)
 					.setIcon(android.R.drawable.ic_dialog_alert)
@@ -461,14 +453,50 @@ public class EditorActivity extends Activity {
 			Intent intent = new Intent(this.getBaseContext(), FileDialog.class);
 			this.startActivityForResult(intent, REQUEST_SAVE);
 		} else {
-			saveNamedFile();
+		    saveNamedFile();
 		}
 	}
+
+	protected void saveFileWithConfirmation() {
+        if (this.fileAlreadyExists()) {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(R.string.File_already_exists)
+                    .setMessage(R.string.Existing_file_will_be_overwritten)
+                    .setPositiveButton(R.string.Yes,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    // Stop the activity
+                                    open_when_saved = DO_OPEN;
+                                    EditorActivity.this.saveFile();
+                                }
+
+                            }).setNegativeButton(R.string.No,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog,
+                                            int which) {
+                            //do nothing!!
+                        }
+                    }).show();
+        } else {
+            saveNamedFile();
+        }
+    }
+
+	protected boolean fileAlreadyExists() {
+        File f = new File(filename);
+        if (f.exists()) {
+            return true;
+        }
+        return false;
+    }
 
 	protected void saveNamedFile() {
 		try {
 			File f = new File(filename);
-
 			if (!f.exists()) {
 				f.createNewFile();
 			}
@@ -484,7 +512,7 @@ public class EditorActivity extends Activity {
 			changed = false;
 			updateTitle();
 
-			if (open_when_saved == DO_OPEN) { // because of multithread nature
+			if (open_when_saved == DO_OPEN) {   // because of multithread nature
 												// figure out better way to do
 												// it
 				open_when_saved = DO_NOTHING;
@@ -519,7 +547,6 @@ public class EditorActivity extends Activity {
 			String ttt = new String(b, 0, length,
 					TPApplication.settings.file_encoding);
 
-			//this.mText.set
 			ttt = toUnixEndings(ttt);
 			
 			this.mText.setText(ttt);
@@ -536,9 +563,7 @@ public class EditorActivity extends Activity {
 		} catch (IOException e) {
 			this.showToast(l(R.string.Can_not_read_file));
 		}
-		// fis.re
 	}
-	
 	
 	/**
 	 * @param value
@@ -592,7 +617,7 @@ public class EditorActivity extends Activity {
 			if (resultCode == Activity.RESULT_OK) {
 				filename = data
 						.getStringExtra(TPStrings.RESULT_PATH);
-				this.saveNamedFile();
+				this.saveFileWithConfirmation();
 			} else if (resultCode == Activity.RESULT_CANCELED) {
 				showToast(l(R.string.Operation_Canceled));
 			}

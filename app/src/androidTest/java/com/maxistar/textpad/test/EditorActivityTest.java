@@ -1,6 +1,7 @@
 package com.maxistar.textpad.test;
 
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,8 +16,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+//import java.nio.file.Files;
+//import java.nio.file.Paths;
+//import java.nio.file.StandardOpenOption;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Date;
 
 import androidx.test.espresso.FailureHandler;
@@ -46,11 +51,24 @@ public class EditorActivityTest {
 
     @Test
     public void listGoesOverTheFold() {
+        openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
+
+        onView(withText((TPApplication.getApplication().getString(R.string.New))))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
         onView(withText("newfile.txt")).check(matches(isDisplayed()));
     }
 
     @Test
     public void listSaveText() {
+        openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
+
+        onView(withText((TPApplication.getApplication().getString(R.string.New))))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+
         String textExample = "some new text";
 
         onView(withId(R.id.editText1))
@@ -75,11 +93,112 @@ public class EditorActivityTest {
                 .perform(click());
 
         String rootPath = Environment.getExternalStorageDirectory().getPath();
-        String filePath = rootPath + "/Download/" + filename;
+        String filePath = rootPath + "/" + filename;
         String content = getFile(filePath);
 
         Assert.assertEquals(content, textExample);
     }
+
+    @Test
+    public void rewriteConfirmationText() {
+        String textExample = "some new text";
+        String oldTextExample = "some old content";
+
+        long time = (new Date()).getTime();
+        String filename = "file" + String.valueOf(time) + ".txt";
+
+        putFile(Environment.getExternalStorageDirectory().getPath() + "/" + filename, oldTextExample);
+
+        openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
+
+        onView(withText((TPApplication.getApplication().getString(R.string.New))))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(withId(R.id.editText1))
+                .perform(setTextInTextView(textExample));
+
+        openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
+
+        onView(withText((TPApplication.getApplication().getString(R.string.Save))))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        gotToDocumentsFolder();
+
+        onView(withId(R.id.fdEditTextFile))
+                .perform(setTextInTextView(filename));
+
+        onView(withText((TPApplication.getApplication().getString(R.string.Save))))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(withText((TPApplication.getApplication().getString(R.string.No))))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+
+        String rootPath = Environment.getExternalStorageDirectory().getPath();
+        String filePath = rootPath + "/" + filename;
+        String content = getFile(filePath);
+
+        Assert.assertEquals(oldTextExample, content);
+    }
+
+
+    @Test
+    public void rewriteConfirmationYesText() {
+        String textExample = "some new text";
+        String oldTextExample = "some old content";
+
+        long time = (new Date()).getTime();
+        String filename = "file" + String.valueOf(time) + ".txt";
+
+        putFile(Environment.getExternalStorageDirectory().getPath() + "/" + filename, oldTextExample);
+
+        openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
+
+        onView(withText((TPApplication.getApplication().getString(R.string.New))))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(withId(R.id.editText1))
+                .perform(setTextInTextView(textExample));
+
+        openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
+
+        onView(withText((TPApplication.getApplication().getString(R.string.Save))))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        gotToDocumentsFolder();
+
+        onView(withId(R.id.fdEditTextFile))
+                .perform(setTextInTextView(filename));
+
+        onView(withText((TPApplication.getApplication().getString(R.string.Save))))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(withText((TPApplication.getApplication().getString(R.string.Yes))))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+
+        String rootPath = Environment.getExternalStorageDirectory().getPath();
+        String filePath = rootPath + "/" + filename;
+        String content = getFile(filePath);
+
+        Assert.assertEquals(textExample, content);
+    }
+
+    private void putFile(String filePath, String data) {
+        try {
+            Files.write( Paths.get(filePath), data.getBytes(), StandardOpenOption.CREATE);
+        } catch (IOException e) {
+        }
+    }
+
 
     private String getFile(String filePath) {
         try {
@@ -97,11 +216,6 @@ public class EditorActivityTest {
         onView(withText(("emulated")))
                 .check(matches(isDisplayed()))
                 .perform(click());
-
-        onView(withText(("Download")))
-                .check(matches(isDisplayed()))
-                .perform(click());
-
     }
 
     private boolean hasText(String s) {

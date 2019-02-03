@@ -176,10 +176,6 @@ public class FileDialog extends ListActivity {
         path.addAll(dirsPathMap.values());
         path.addAll(filesPathMap.values());
 
-
-//		path.addAll(dirsPathMap.tailMap(TPStrings.EMPTY).values());
-//		path.addAll(filesPathMap.tailMap(TPStrings.EMPTY).values());
-
 		SimpleAdapter fileList = new SimpleAdapter(this, mList,
 				R.layout.file_dialog_row, new String[] { TPStrings.ITEM_KEY,
 				TPStrings.ITEM_IMAGE }, new int[] { R.id.fdrowtext,
@@ -219,26 +215,6 @@ public class FileDialog extends ListActivity {
         if (file.isDirectory()) {
             readDir(path.get(position));
             saveStartPath(currentPath);
-            /*if (file.canRead()) {
-				readDir(path.get(position));
-				saveStartPath(currentPath);
-			} else {
-				new AlertDialog.Builder(this)
-						.setIcon(R.drawable.icon)
-						.setTitle(
-								TPStrings.RECT_OPEN + file.getName()
-										+ TPStrings.RECT_CLOSE
-										+ TPStrings.SPACE
-										+ getText(R.string.cant_read_folder))
-						.setPositiveButton(l(R.string.OK),
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-
-									}
-								}).show();
-			}*/
 		} else {
 			saveStartPath(currentPath);
 			v.setSelected(true);

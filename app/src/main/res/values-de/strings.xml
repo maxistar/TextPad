@@ -68,4 +68,6 @@
 	<string name="Appearance">Aussehen</string>
 	<string name="You_have_made_some_changes">Sie haben einige Änderungen vorgenommen</string>
 	<string name="Are_you_sure_to_quit">Möchten Sie die Anwendung wirklich beenden?</string>
+	<string name="File_already_exists">Die Datei existiert bereits</string>
+	<string name="Existing_file_will_be_overwritten">Bestehende Datei wird überschrieben. Möchten Sie fortfahren?</string>
 </resources>

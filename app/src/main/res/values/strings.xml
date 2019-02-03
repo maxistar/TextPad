@@ -68,4 +68,6 @@
 	<string name="Appearance">Appearance</string>
 	<string name="You_have_made_some_changes">You have made some changes.</string> 
 	<string name="Are_you_sure_to_quit">Are you sure you want to quit the application?</string>
+	<string name="File_already_exists">File already exists</string>
+	<string name="Existing_file_will_be_overwritten">Existing file will be overwritten, are you sure to proceed?</string>
 </resources>

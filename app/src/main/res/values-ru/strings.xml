@@ -68,4 +68,6 @@
 	<string name="Appearance">Внешний вид</string>
 	<string name="You_have_made_some_changes">Вы сделали изменения в тексте.</string>
 	<string name="Are_you_sure_to_quit">Вы уверены, что хотите выйти из приложения?</string>
+	<string name="File_already_exists">Файл уже существует</string>
+	<string name="Existing_file_will_be_overwritten">Существующий файл будет переписан, вы уверены, что хотите продолжать?</string>
 </resources>
