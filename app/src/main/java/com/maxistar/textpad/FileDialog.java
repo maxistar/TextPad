@@ -147,10 +147,15 @@ public class FileDialog extends ListActivity {
 		myPath.setText(getString(R.string.Location, currentPath));
 
 		parentPath = f.getParent();
-        File parentFolder = new File(parentPath);
-        if (!parentFolder.canRead()) {
-            parentPath = parentFolder.getParent();
-        }
+
+		try {
+			File parentFolder = new File(parentPath);
+			if (!parentFolder.canRead()) {
+				parentPath = parentFolder.getParent();
+			}
+		} catch (Exception e) {
+			//
+		}
 
 		TreeMap<String, String> dirsMap = new TreeMap<String, String>();
 		TreeMap<String, String> dirsPathMap = new TreeMap<String, String>();

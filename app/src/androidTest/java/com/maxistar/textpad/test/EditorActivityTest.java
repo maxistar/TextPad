@@ -1,6 +1,7 @@
 package com.maxistar.textpad.test;
 
 import android.os.Environment;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.TextView;
@@ -10,18 +11,17 @@ import com.maxistar.textpad.R;
 import com.maxistar.textpad.TPApplication;
 import com.maxistar.textpad.TPStrings;
 
+import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-//import java.nio.file.Files;
-//import java.nio.file.Paths;
-//import java.nio.file.StandardOpenOption;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Date;
 
 import androidx.test.espresso.FailureHandler;
@@ -37,6 +37,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.core.AllOf.allOf;
@@ -50,6 +51,9 @@ public class EditorActivityTest {
             new ActivityTestRule<>(EditorActivity.class);
 
     @Test
+    /**
+     * Check if the text is empty it to click on new menu item
+     */
     public void listGoesOverTheFold() {
         openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
 
@@ -61,6 +65,9 @@ public class EditorActivityTest {
     }
 
     @Test
+    /**
+     *
+     */
     public void listSaveText() {
         openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
 
@@ -192,26 +199,81 @@ public class EditorActivityTest {
         Assert.assertEquals(textExample, content);
     }
 
+    /**
+     * Put file to the path
+     *
+     * @param filePath
+     * @param data
+     */
     private void putFile(String filePath, String data) {
         try {
-            Files.write( Paths.get(filePath), data.getBytes(), StandardOpenOption.CREATE);
+            //Files.write( Paths.get(filePath), data.getBytes(), StandardOpenOption.CREATE);
+            File f = new File(filePath);
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(data.getBytes());
+            fos.close();
         } catch (IOException e) {
         }
     }
 
-
+    /**
+     * Get file content of the file
+     *
+     * @param filePath
+     * @return
+     */
     private String getFile(String filePath) {
         try {
-            return new String(Files.readAllBytes(Paths.get(filePath)), "UTF-8");
+            File f = new File(filePath);
+            FileInputStream fis = new FileInputStream(f);
+
+            long size = f.length();
+            DataInputStream dis = new DataInputStream(fis);
+            byte[] b = new byte[(int) size];
+            int length = dis.read(b, 0, (int) size);
+
+            dis.close();
+            fis.close();
+
+            return new String(b, 0, length);
+            //return new String(Files.readAllBytes(Paths.get(filePath)), "UTF-8");
         } catch (IOException e) {
         }
         return "";
     }
 
+    private void someDelay(int milliseconds) {
+        try {
+            wait(milliseconds);
+        } catch (InterruptedException e) {
+
+        }
+    }
+
+    /**
+     * Go to document folder
+     */
     private void gotToDocumentsFolder() {
-        while(hasText("..")) {
+        while(hasText(TPStrings.FOLDER_UP)) {
             onView(withText(TPStrings.FOLDER_UP)).check(matches(isDisplayed())).perform(click());
         }
+
+        //someDelay(3000);
+        //waitFor(3000);
+        //SystemClock.sleep(3000);
+
+        //if (hasText("storage")) {
+        //    onView(withText(("storage")))
+        //            .check(matches(isDisplayed()))
+        //            .perform(click());
+        //}
+
+        //someDelay(3000);
+        //waitFor(3000);
+        //SystemClock.sleep(3000);
 
         onView(withText(("emulated")))
                 .check(matches(isDisplayed()))
@@ -250,6 +312,25 @@ public class EditorActivityTest {
             @Override
             public String getDescription() {
                 return "replace text";
+            }
+        };
+    }
+
+    public static ViewAction waitFor(final long millis) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isRoot();
+            }
+
+            @Override
+            public String getDescription() {
+                return "Wait for " + millis + " milliseconds.";
+            }
+
+            @Override
+            public void perform(UiController uiController, final View view) {
+                uiController.loopMainThreadForAtLeast(millis);
             }
         };
     }
