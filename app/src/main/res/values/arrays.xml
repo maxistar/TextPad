@@ -14,16 +14,16 @@
 </string-array>    
     
 <integer-array name="history_lengths" translatable="false">
-    <item >1</item>
-    <item >2</item>
-    <item >3</item>
-    <item >4</item>
-    <item >5</item>
-    <item >6</item>
-    <item >7</item>
-    <item >8</item>
-    <item >9</item>
-    <item >10</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+    <item>7</item>
+    <item>8</item>
+    <item>9</item>
+    <item>10</item>
 </integer-array>
 
 <string-array name="language_names" translatable="false">
@@ -32,6 +32,8 @@
     <item>Portuguese</item>
     <item>Deutsch</item>
     <item>العربية</item>
+    <item>Espanol</item>
+    <item>Türk</item>
 </string-array>
 
 <string-array name="language_values" translatable="false">
@@ -40,6 +42,8 @@
     <item>pt</item>
     <item>de</item>
     <item>ar</item>
+    <item>es</item>
+    <item>tr</item>
 </string-array>
 
 <string-array name="line_delimiter_names" translatable="false">
