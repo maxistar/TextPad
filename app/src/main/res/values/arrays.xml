@@ -1,78 +1,38 @@
 <resources>
 
-<string-array name="history_lengths_titles" translatable="false">
-    <item >1</item>
-    <item >2</item>
-    <item >3</item>
-    <item >4</item>
-    <item >5</item>
-    <item >6</item>
-    <item >7</item>
-    <item >8</item>
-    <item >9</item>
-    <item >10</item>
-</string-array>    
-    
-<integer-array name="history_lengths" translatable="false">
-    <item>1</item>
-    <item>2</item>
-    <item>3</item>
-    <item>4</item>
-    <item>5</item>
-    <item>6</item>
-    <item>7</item>
-    <item>8</item>
-    <item>9</item>
-    <item>10</item>
-</integer-array>
+    <string-array name="language_names" translatable="false">
+        <item>English</item>
+        <item>Русский</item>
+        <item>Portuguese</item>
+        <item>Deutsch</item>
+        <item>العربية</item>
+        <item>Espanol</item>
+        <item>Türk</item>
+    </string-array>
 
-<string-array name="language_names" translatable="false">
-    <item>English</item>
-    <item>Русский</item>
-    <item>Portuguese</item>
-    <item>Deutsch</item>
-    <item>العربية</item>
-    <item>Espanol</item>
-    <item>Türk</item>
-</string-array>
+    <string-array name="language_values" translatable="false">
+        <item>en</item>
+        <item>ru</item>
+        <item>pt</item>
+        <item>de</item>
+        <item>ar</item>
+        <item>es</item>
+        <item>tr</item>
+    </string-array>
 
-<string-array name="language_values" translatable="false">
-    <item>en</item>
-    <item>ru</item>
-    <item>pt</item>
-    <item>de</item>
-    <item>ar</item>
-    <item>es</item>
-    <item>tr</item>
-</string-array>
+    <string-array name="line_delimiter_names" translatable="false">
+        <item>default</item>
+        <item>Unix (LF, \\n, 0A)</item>
+        <item>Windows (CRLF, \\r\\n, 0D0A)</item>
+        <item>MacOS 9 (CR, \\r, 0D)</item>
+    </string-array>
 
-<string-array name="line_delimiter_names" translatable="false">
-    <item>default</item>
-    <item>Unix (LF, \\n, 0A)</item>
-    <item>Windows (CRLF, \\r\\n, 0D0A)</item>
-    <item>MacOS 9 (CR, \\r, 0D)</item>
-</string-array>
+    <string-array name="line_delimiter_values" translatable="false">
+        <item>default</item>
+        <item>unix</item>
+        <item>windows</item>
+        <item>macos</item>
+    </string-array>
 
-<string-array name="line_delimiter_values" translatable="false">
-    <item>default</item>
-    <item>unix</item>
-    <item>windows</item>
-    <item>macos</item>
-</string-array>
 
-<string-array name="font_size_names" translatable="false">
-	<item>Extra Small</item>
-	<item>Small</item>
-	<item>Medium</item>
-	<item>Large</item>
-	<item>Huge</item>
-</string-array>
-
-<string-array name="font_sizes_values" translatable="false">
-	<item>@string/Extra_Small</item>
-	<item>@string/Small</item>
-	<item>@string/Medium</item>
-	<item>@string/Large</item>
-	<item>@string/Huge</item>
-</string-array>
 </resources>

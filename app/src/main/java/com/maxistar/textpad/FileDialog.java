@@ -211,7 +211,7 @@ public class FileDialog extends ListActivity {
         SharedPreferences settings = getSharedPreferences(TPStrings.FILE_DIALOG, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(TPStrings.START_PATH, currentPath);
-		editor.commit();
+		editor.apply();
 	}
 
 	@Override

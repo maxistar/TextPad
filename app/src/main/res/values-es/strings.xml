@@ -68,4 +68,6 @@
 <string name="s_not_found">%s no hallado</string>
 <string name="searchHint">Texto</string>
 <string name="searchLabel">Búsqueda</string>
+<string name="File_already_exists">El archivo ya existe</string>
+<string name="Existing_file_will_be_overwritten">El archivo existente se sobrescribirá, ¿está seguro de continuar?</string>
 </resources>

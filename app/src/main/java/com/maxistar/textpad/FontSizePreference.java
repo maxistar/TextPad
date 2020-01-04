@@ -62,7 +62,7 @@ public class FontSizePreference extends DialogPreference
 				else if (selected == 4)
 					editor.putString(TPStrings.FONTSIZE, TPStrings.HUGE);
 				
-				editor.commit();
+				editor.apply();
 				
 				notifyChanged();
 			}

@@ -16,7 +16,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.EditText;
 
-public class EditTextSelectable extends EditText {
+public class EditTextSelectable extends android.support.v7.widget.AppCompatEditText {
 
 	public interface OnSelectionChangedListener {
 		public void onSelectionChanged(int selStart, int selEnd);

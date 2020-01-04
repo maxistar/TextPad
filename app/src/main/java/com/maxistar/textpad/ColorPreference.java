@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 public class ColorPreference extends DialogPreference
@@ -63,7 +64,7 @@ public class ColorPreference extends DialogPreference
 				// save the color
 				Editor editor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();						
 				editor.putInt(attribute, color);
-				editor.commit();
+				editor.apply();
 				
 				notifyChanged();
 			}
@@ -78,7 +79,8 @@ public class ColorPreference extends DialogPreference
 		
 		// setup the view
 		LayoutInflater factory = LayoutInflater.from(getContext());
-		final View colorView = factory.inflate(R.layout.colorpicker, null);
+		final ViewGroup nullParent = null;
+		final View colorView = factory.inflate(R.layout.colorpicker, nullParent);
 		final ImageView colormap = (ImageView) colorView.findViewById(R.id.colormap);
 
 		// set the background to the current color

@@ -57,7 +57,7 @@ public class TPApplication extends Application {
     	SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString(name, value);
-		editor.commit();
+		editor.apply();
 	}
     
     public void saveLastFilename(String value){

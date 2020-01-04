@@ -55,7 +55,7 @@ public class FontTypePreference extends DialogPreference
 				else  
 					editor.putString(TPStrings.FONT, TPStrings.SANS_SERIF);
 				
-				editor.commit();
+				editor.apply();
 				
 				notifyChanged();
 			}
