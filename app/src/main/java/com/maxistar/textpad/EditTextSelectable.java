@@ -13,11 +13,9 @@ import java.util.List;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.EditText;
 
-public class EditTextSelectable extends android.support.v7.widget.AppCompatEditText {
-
+public class EditTextSelectable extends EditText {
 	public interface OnSelectionChangedListener {
 		public void onSelectionChanged(int selStart, int selEnd);
 	}
@@ -34,19 +32,22 @@ public class EditTextSelectable extends android.support.v7.widget.AppCompatEditT
 
 	public EditTextSelectable(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		
 	}
 
 	public void addOnSelectionChangedListener(OnSelectionChangedListener o) {
-		if (listeners==null) listeners = new ArrayList<OnSelectionChangedListener>();
+		if (listeners == null) {
+			listeners = new ArrayList<OnSelectionChangedListener>();
+		}
 		listeners.add(o);
 	}
 
 	protected void onSelectionChanged(int selStart, int selEnd) {
-		if (listeners==null) return;
+		if (listeners == null) {
+			return;
+		}
 
-		for (OnSelectionChangedListener l : listeners)
+		for (OnSelectionChangedListener l : listeners) {
 			l.onSelectionChanged(selStart, selEnd);
-
+		}
 	}
 }
