@@ -7,6 +7,7 @@
         <item>Deutsch</item>
         <item>العربية</item>
         <item>Espanol</item>
+        <item>Italiano</item>
         <item>Türk</item>
     </string-array>
 
@@ -17,6 +18,7 @@
         <item>de</item>
         <item>ar</item>
         <item>es</item>
+        <item>it</item>
         <item>tr</item>
     </string-array>
 
@@ -33,6 +35,5 @@
         <item>windows</item>
         <item>macos</item>
     </string-array>
-
 
 </resources>

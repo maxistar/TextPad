@@ -33,7 +33,14 @@ import android.widget.Toast;
 import com.maxistar.textpad.EditTextSelectable.OnSelectionChangedListener;
 
 public class EditorActivity extends Activity {
-	private static final int REQUEST_OPEN = 1;
+
+
+    private static final String STATE_TEXT = "text";
+    private static final String STATE_FILENAME = "filename";
+    private static final String STATE_CHANGED = "changed";
+
+
+    private static final int REQUEST_OPEN = 1;
 	private static final int REQUEST_SAVE = 2;
 	private static final int REQUEST_SETTINGS = 3;
 
@@ -52,12 +59,17 @@ public class EditorActivity extends Activity {
 	Handler handler = new Handler();
 	
 	static int selectionStart = 0;
-	
+
+	private String currentLanguage;
 	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        Locale locale = this.getResources().getConfiguration().locale;
+        currentLanguage = locale.getLanguage();
+
 		setContentView(R.layout.main);
 
 		mText = (EditTextSelectable) this.findViewById(R.id.editText1);
@@ -66,7 +78,7 @@ public class EditorActivity extends Activity {
 
 		applyPreferences();
 
-		if (savedInstanceState!=null) {
+		if (savedInstanceState != null) {
         	restoreState(savedInstanceState);
         } else {
         	Intent i = this.getIntent();
@@ -76,7 +88,7 @@ public class EditorActivity extends Activity {
 				
 			} else { // it this is just created
 				if (this.filename.equals(TPStrings.EMPTY)) {
-					if (TPApplication.settings.open_last_file) {
+					if (TPApplication.getInstance(this.getApplicationContext()).settings.open_last_file) {
 						openLastFile();
 					}
 				}
@@ -104,6 +116,7 @@ public class EditorActivity extends Activity {
 				}
 			}
 		};
+
 		handler.postDelayed(new Runnable(){
 			@Override
 			public void run() {
@@ -125,7 +138,7 @@ public class EditorActivity extends Activity {
 		updateTitle();
 		mText.requestFocus();
 		
-		TPApplication.instance.readLocale(); //additionally check locale
+		TPApplication.getInstance(this.getApplicationContext()).readLocale(this.getBaseContext()); //additionally check locale
 	}
 
     /**
@@ -157,9 +170,18 @@ public class EditorActivity extends Activity {
     protected void onResume(){
 		super.onResume();
 		String t = mText.getText().toString().toLowerCase(Locale.getDefault());
-		if (selectionStart<t.length()) {
-			mText.setSelection(selectionStart,selectionStart);			
+		if (selectionStart < t.length()) {
+			mText.setSelection(selectionStart, selectionStart);
 		}
+
+        //hm... to test this properly...
+        Locale locale = this.getResources().getConfiguration().locale;
+        String newLanguage = locale.getLanguage();
+        if (!currentLanguage.equals(newLanguage)) {
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        }
 	}
 
 	protected void onPause(){
@@ -167,18 +189,18 @@ public class EditorActivity extends Activity {
 	}
 
 	
-	void restoreState(Bundle state){
-		mText.setText(state.getString(TPStrings.TEXT));
-        filename = state.getString(TPStrings.FILENAME);
-        changed = state.getBoolean(TPStrings.CHANGED);
+	private void restoreState(Bundle state){
+		mText.setText(state.getString(STATE_TEXT));
+        filename = state.getString(STATE_FILENAME);
+        changed = state.getBoolean(STATE_CHANGED);
     }
     
 	
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(TPStrings.TEXT, mText.getText().toString());
-        outState.putString(TPStrings.FILENAME,filename);
-        outState.putBoolean(TPStrings.CHANGED, changed);
+        outState.putString(STATE_TEXT, mText.getText().toString());
+        outState.putString(STATE_FILENAME, filename);
+        outState.putBoolean(STATE_CHANGED, changed);
         
     }
 
@@ -266,9 +288,9 @@ public class EditorActivity extends Activity {
 	}
 	
 	void openLastFile() {
-		if (!TPApplication.settings.last_filename.equals(TPStrings.EMPTY)) {
-			showToast(formatString(R.string.opened_last_edited_file,TPApplication.settings.last_filename));
-			this.openNamedFile(TPApplication.settings.last_filename);
+		if (!TPApplication.getInstance(this.getApplicationContext()).settings.last_filename.equals(TPStrings.EMPTY)) {
+			showToast(formatString(R.string.opened_last_edited_file,TPApplication.getInstance(this.getApplicationContext()).settings.last_filename));
+			this.openNamedFile(TPApplication.getInstance(getApplicationContext()).settings.last_filename);
 		}
 	}
 
@@ -286,18 +308,18 @@ public class EditorActivity extends Activity {
 	}
 
 	void applyPreferences() {
+
 		mText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE |
 						   InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
 						   InputType.TYPE_TEXT_VARIATION_NORMAL |
-						   InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD |
+						   //InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD |
 						   InputType.TYPE_CLASS_TEXT);
 
-		TPApplication.instance.readSettings();
+		TPApplication.getInstance(this.getApplicationContext()).readSettings(this.getApplicationContext());
+
 		SharedPreferences sharedPref = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		/********************************
-		 * font face
-		 */
+
 		String font = sharedPref.getString(TPStrings.FONT, TPStrings.MONOSPACE);
 
 		if (font.equals(TPStrings.SERIF))
@@ -307,9 +329,6 @@ public class EditorActivity extends Activity {
 		else
 			mText.setTypeface(Typeface.MONOSPACE);
 
-		/********************************
-		 * font size
-		 */
 		String fontsize = sharedPref.getString(TPStrings.FONTSIZE, TPStrings.MEDIUM);
 
 		if (fontsize.equals(TPStrings.EXTRA_SMALL))
@@ -325,9 +344,6 @@ public class EditorActivity extends Activity {
 		else
 			mText.setTextSize(20.0f);
 
-		/********************************
-		 * Colors
-		 */
 		int bgcolor = sharedPref.getInt(TPStrings.BGCOLOR, 0xFFCCCCCC);
 		mText.setBackgroundColor(bgcolor);
 
@@ -506,7 +522,7 @@ public class EditorActivity extends Activity {
 			
 			s = applyEndings(s);
 			
-			fos.write(s.getBytes(TPApplication.settings.file_encoding));
+			fos.write(s.getBytes(TPApplication.getInstance(this.getApplicationContext()).settings.file_encoding));
 			fos.close();
 			showToast(l(R.string.File_Written));
 			changed = false;
@@ -545,7 +561,7 @@ public class EditorActivity extends Activity {
 			fis.close();
 
 			String ttt = new String(b, 0, length,
-					TPApplication.settings.file_encoding);
+					TPApplication.getInstance(this.getApplicationContext()).settings.file_encoding);
 
 			ttt = toUnixEndings(ttt);
 			
@@ -553,8 +569,8 @@ public class EditorActivity extends Activity {
 			showToast(l(R.string.File_opened_) + filename);
 			changed = false;
 			this.filename = filename;
-			if (!TPApplication.settings.last_filename.equals(filename)) {
-				TPApplication.instance.saveLastFilename(filename);
+			if (!TPApplication.getInstance(this.getApplicationContext()).settings.last_filename.equals(filename)) {
+				TPApplication.getInstance(this.getApplicationContext()).saveLastFilename(this.getApplicationContext(), filename);
 			}
 			selectionStart = 0;
 			updateTitle();
@@ -570,7 +586,7 @@ public class EditorActivity extends Activity {
 	 * @return
 	 */
 	String applyEndings(String value){
-		String to = TPApplication.settings.delimiters;
+		String to = TPApplication.getInstance(this.getApplicationContext()).settings.delimiters;
 		if (TPStrings.DEFAULT.equals(to)) return value; //this way we spare memory but will be unable to fix delimiters
 
 		if (TPStrings.WINDOWS.equals(to)){
@@ -596,7 +612,7 @@ public class EditorActivity extends Activity {
 	 * @return
 	 */
 	String toUnixEndings(String value){
-		String from = TPApplication.settings.delimiters;
+		String from = TPApplication.getInstance(this.getApplicationContext()).settings.delimiters;
 		if (TPStrings.DEFAULT.equals(from)) return value; //this way we spare memory but will be unable to fix delimiters
 		
 		//we should anyway fix any line delimenters

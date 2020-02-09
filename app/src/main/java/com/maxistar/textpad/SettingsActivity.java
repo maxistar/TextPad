@@ -78,7 +78,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		TPApplication.instance.readSettings();
+		TPApplication.getInstance(this.getApplicationContext()).readSettings(this.getApplicationContext());
 
 		//setSummaries();
     	
@@ -96,8 +96,8 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		config2.locale = locale2;
 
 		// updating locale
+		//getApplicationContext().getResources().updateConfiguration(config2, null);
 		getBaseContext().getResources().updateConfiguration(config2, null);
-
 		showPreferences();
 	}
 

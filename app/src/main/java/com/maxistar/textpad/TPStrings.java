@@ -34,9 +34,6 @@ public class TPStrings{
 	public static final String UTF_8 = "UTF-8";
 	public static final String AUTHORITY = "com.maxistar.authority";
 	public static final String FONT = "font";
-	public static final String TEXT = "text";
-	public static final String FILENAME = "filename";
-	public static final String CHANGED = "changed";
 	public static final String STAR = "*";
 	public static final String RN = "\r\n";
 	public static final String N = "\n";

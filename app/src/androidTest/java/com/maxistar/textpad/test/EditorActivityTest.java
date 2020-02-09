@@ -55,9 +55,12 @@ public class EditorActivityTest {
      * Check if the text is empty it to click on new menu item
      */
     public void listGoesOverTheFold() {
+
+
+
         openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
 
-        onView(withText((TPApplication.getApplication().getString(R.string.New))))
+        onView(withText((mActivityRule.getActivity().getString(R.string.New))))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -71,7 +74,7 @@ public class EditorActivityTest {
     public void listSaveText() {
         openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
 
-        onView(withText((TPApplication.getApplication().getString(R.string.New))))
+        onView(withText((mActivityRule.getActivity().getString(R.string.New))))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -83,7 +86,7 @@ public class EditorActivityTest {
 
         openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
 
-        onView(withText((TPApplication.getApplication().getString(R.string.Save))))
+        onView(withText((mActivityRule.getActivity().getString(R.string.Save))))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -95,7 +98,7 @@ public class EditorActivityTest {
         onView(withId(R.id.fdEditTextFile))
                 .perform(setTextInTextView(filename));
 
-        onView(withText((TPApplication.getApplication().getString(R.string.Save))))
+        onView(withText((mActivityRule.getActivity().getString(R.string.Save))))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -118,7 +121,7 @@ public class EditorActivityTest {
 
         openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
 
-        onView(withText((TPApplication.getApplication().getString(R.string.New))))
+        onView(withText((mActivityRule.getActivity().getString(R.string.New))))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -127,7 +130,7 @@ public class EditorActivityTest {
 
         openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
 
-        onView(withText((TPApplication.getApplication().getString(R.string.Save))))
+        onView(withText((mActivityRule.getActivity().getString(R.string.Save))))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -136,11 +139,11 @@ public class EditorActivityTest {
         onView(withId(R.id.fdEditTextFile))
                 .perform(setTextInTextView(filename));
 
-        onView(withText((TPApplication.getApplication().getString(R.string.Save))))
+        onView(withText((mActivityRule.getActivity().getString(R.string.Save))))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
-        onView(withText((TPApplication.getApplication().getString(R.string.No))))
+        onView(withText((mActivityRule.getActivity().getString(R.string.No))))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -165,7 +168,7 @@ public class EditorActivityTest {
 
         openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
 
-        onView(withText((TPApplication.getApplication().getString(R.string.New))))
+        onView(withText((mActivityRule.getActivity().getString(R.string.New))))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -174,7 +177,7 @@ public class EditorActivityTest {
 
         openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
 
-        onView(withText((TPApplication.getApplication().getString(R.string.Save))))
+        onView(withText((mActivityRule.getActivity().getString(R.string.Save))))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -183,11 +186,11 @@ public class EditorActivityTest {
         onView(withId(R.id.fdEditTextFile))
                 .perform(setTextInTextView(filename));
 
-        onView(withText((TPApplication.getApplication().getString(R.string.Save))))
+        onView(withText((mActivityRule.getActivity().getString(R.string.Save))))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
-        onView(withText((TPApplication.getApplication().getString(R.string.Yes))))
+        onView(withText((mActivityRule.getActivity().getString(R.string.Yes))))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
