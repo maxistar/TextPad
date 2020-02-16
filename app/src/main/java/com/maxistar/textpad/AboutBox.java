@@ -18,19 +18,23 @@ public class AboutBox extends DialogPreference
 	@Override
 	protected void onPrepareDialogBuilder(AlertDialog.Builder builder){
 	    // Data has changed, notify so UI can be refreshed!
-		builder.setTitle(TPApplication.getInstance(this.getContext()).l(this.getContext(), R.string.About));
-		builder.setPositiveButton(TPApplication.getInstance(this.getContext()).l(this.getContext(), R.string.Continue), new DialogInterface.OnClickListener() {
+		builder.setTitle(l(R.string.About));
+		builder.setPositiveButton(l(R.string.Continue), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				
 			}
 		});
 		
 		final SpannableString s = 
-              new SpannableString(TPApplication.getInstance(this.getContext()).l(this.getContext(), R.string.about_message));
+              new SpannableString(l(R.string.about_message));
 		Linkify.addLinks(s, Linkify.WEB_URLS);
 		
 		builder.setMessage(s);
 		builder.setNegativeButton(null, null);
     }
+
+	String l(int id) {
+		return getContext().getResources().getString(id);
+	}
 	
 }
