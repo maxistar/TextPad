@@ -17,8 +17,6 @@ public class TPStrings{
 
 	public static final String EN = "en";
 
-
-	
 	public static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";
 	public static final String DIALOG_TITLE = "dialogTitle";
 	public static final String DEFAULT = "default";
@@ -26,19 +24,8 @@ public class TPStrings{
 	public static final String AUTHORITY = "com.maxistar.authority";
 
 	public static final String STAR = "*";
-	public static final String RN = "\r\n";
-	public static final String N = "\n";
-	public static final String R = "\r";
-	public static final String WINDOWS = "windows";
-	public static final String UNIX = "unix";
-	public static final String MACOS = "macos";
 	public static final String VERSION_NAME = "version_name";
 	public static final String FILE_DIALOG = "FileDialog";
-	public static final String MEDIUM = "Medium";
-	public static final String EXTRA_SMALL = "Extra Small";
-	public static final String SMALL = "Small";
-	public static final String LARGE = "Large";
-	public static final String HUGE = "Huge";
 	public static final String FONT_MONOSPACE = "Monospace";
 	public static final String FONT_SERIF = "Serif";
 	public static final String FONT_SANS_SERIF = "Sans Serif";

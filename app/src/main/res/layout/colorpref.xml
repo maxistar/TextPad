@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-	So we can show the color in the preferences option
--->
 <View xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/currentcolor" 
     android:layout_width="30sp"

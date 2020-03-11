@@ -1,4 +1,4 @@
-package com.maxistar.textpad;
+package com.maxistar.textpad.preferences;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.maxistar.textpad.R;
+import com.maxistar.textpad.SettingsService;
+import com.maxistar.textpad.TPStrings;
+
 public class FontSizePreference extends DialogPreference
 {
     private int selected;
@@ -28,15 +32,15 @@ public class FontSizePreference extends DialogPreference
         // figure out the current size.
         String font = settingsService.getFont();
 
-        if (font.equals(TPStrings.EXTRA_SMALL))
+        if (font.equals(SettingsService.SETTING_EXTRA_SMALL))
             selected = 0;
-        else if (font.equals(TPStrings.SMALL))
+        else if (font.equals(SettingsService.SETTING_SMALL))
             selected = 1;
-        else if (font.equals(TPStrings.MEDIUM))
+        else if (font.equals(SettingsService.SETTING_MEDIUM))
             selected = 2;
-        else if (font.equals(TPStrings.LARGE))
+        else if (font.equals(SettingsService.SETTING_LARGE))
             selected = 3;
-        else if (font.equals(TPStrings.HUGE))
+        else if (font.equals(SettingsService.SETTING_HUGE))
             selected = 4;
     }
 
@@ -48,15 +52,15 @@ public class FontSizePreference extends DialogPreference
             public void onClick(DialogInterface dialog, int whichButton) {
 
                 if (selected == 0)
-                    settingsService.setFontSize(TPStrings.EXTRA_SMALL);
+                    settingsService.setFontSize(SettingsService.SETTING_EXTRA_SMALL, getContext());
                 else if (selected == 1)
-                    settingsService.setFontSize(TPStrings.SMALL);
+                    settingsService.setFontSize(SettingsService.SETTING_SMALL, getContext());
                 else if (selected == 2)
-                    settingsService.setFontSize(TPStrings.MEDIUM);
+                    settingsService.setFontSize(SettingsService.SETTING_MEDIUM, getContext());
                 else if (selected == 3)
-                    settingsService.setFontSize(TPStrings.LARGE);
+                    settingsService.setFontSize(SettingsService.SETTING_LARGE, getContext());
                 else if (selected == 4)
-                    settingsService.setFontSize(TPStrings.HUGE);
+                    settingsService.setFontSize(SettingsService.SETTING_HUGE, getContext());
 
                 notifyChanged();
             }
@@ -64,7 +68,13 @@ public class FontSizePreference extends DialogPreference
         builder.setNegativeButton(R.string.Cancel, null);
 
         // load the font names and create the adapter
-        String[] arrayOfFonts = {TPStrings.EXTRA_SMALL, TPStrings.SMALL, TPStrings.MEDIUM, TPStrings.LARGE, TPStrings.HUGE};
+        String[] arrayOfFonts = {
+                SettingsService.SETTING_EXTRA_SMALL,
+                SettingsService.SETTING_SMALL,
+                SettingsService.SETTING_MEDIUM,
+                SettingsService.SETTING_LARGE,
+                SettingsService.SETTING_HUGE
+        };
 
         List<String> fonts = Arrays.asList(arrayOfFonts);
 
@@ -100,15 +110,15 @@ public class FontSizePreference extends DialogPreference
 
 
             final String option = tv.getText().toString();
-            if (option.equals(TPStrings.EXTRA_SMALL))
+            if (option.equals(SettingsService.SETTING_EXTRA_SMALL))
                 tv.setTextSize(12.0f);
-            else if (option.equals(TPStrings.SMALL))
+            else if (option.equals(SettingsService.SETTING_SMALL))
                 tv.setTextSize(16.0f);
-            else if (option.equals(TPStrings.MEDIUM))
+            else if (option.equals(SettingsService.SETTING_MEDIUM))
                 tv.setTextSize(20.0f);
-            else if (option.equals(TPStrings.LARGE))
+            else if (option.equals(SettingsService.SETTING_LARGE))
                 tv.setTextSize(24.0f);
-            else if (option.equals(TPStrings.HUGE))
+            else if (option.equals(SettingsService.SETTING_HUGE))
                 tv.setTextSize(28.0f);
 
             // general options

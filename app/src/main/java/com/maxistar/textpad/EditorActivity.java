@@ -29,12 +29,13 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.maxistar.textpad.EditTextSelectable.OnSelectionChangedListener;
+import com.maxistar.textpad.utils.System;
+import com.maxistar.textpad.utils.TextConverter;
 
 public class EditorActivity extends Activity {
 
     private static final String STATE_FILENAME = "filename";
     private static final String STATE_CHANGED = "changed";
-
 
     private static final int REQUEST_OPEN = 1;
     private static final int REQUEST_SAVE = 2;
@@ -43,6 +44,7 @@ public class EditorActivity extends Activity {
     private static final int DO_NOTHING = 0;
     private static final int DO_OPEN = 1;
     private static final int DO_NEW = 2;
+    private static final int DO_EXIT = 3;
 
     private EditTextSelectable mText;
     private TextWatcher watcher;
@@ -50,7 +52,7 @@ public class EditorActivity extends Activity {
     boolean changed = false;
     boolean exitDialogShown = false;
 
-    private int open_when_saved = DO_NOTHING; // to figure out better way
+    private int next_action = DO_NOTHING; // to figure out better way
 
     Handler handler = new Handler();
 
@@ -66,8 +68,8 @@ public class EditorActivity extends Activity {
         settingsService = SettingsService.getInstance(this.getApplicationContext());
 
         setContentView(R.layout.main);
-        mText = (EditTextSelectable) this.findViewById(R.id.editText1);setContentView(R.layout.main);
-        mText = (EditTextSelectable) this.findViewById(R.id.editText1);
+        mText = this.findViewById(R.id.editText1);setContentView(R.layout.main);
+        mText = this.findViewById(R.id.editText1);
         applyPreferences();
 
         if (savedInstanceState != null) {
@@ -131,7 +133,8 @@ public class EditorActivity extends Activity {
         updateTitle();
         mText.requestFocus();
 
-        TPApplication.getInstance(this.getApplicationContext()).readLocale(this.getBaseContext()); //additionally check locale
+        SettingsService.getInstance(this.getApplicationContext()).applyLocale(this.getApplicationContext());
+        //additionally check locale
     }
 
     /**
@@ -318,15 +321,15 @@ public class EditorActivity extends Activity {
 
         String fontsize = settingsService.getFontSize();
 
-        if (fontsize.equals(TPStrings.EXTRA_SMALL))
+        if (fontsize.equals(SettingsService.SETTING_EXTRA_SMALL))
             mText.setTextSize(12.0f);
-        else if (fontsize.equals(TPStrings.SMALL))
+        else if (fontsize.equals(SettingsService.SETTING_SMALL))
             mText.setTextSize(16.0f);
-        else if (fontsize.equals(TPStrings.MEDIUM))
+        else if (fontsize.equals(SettingsService.SETTING_MEDIUM))
             mText.setTextSize(20.0f);
-        else if (fontsize.equals(TPStrings.LARGE))
+        else if (fontsize.equals(SettingsService.SETTING_LARGE))
             mText.setTextSize(24.0f);
-        else if (fontsize.equals(TPStrings.HUGE))
+        else if (fontsize.equals(SettingsService.SETTING_HUGE))
             mText.setTextSize(28.0f);
         else
             mText.setTextSize(20.0f);
@@ -367,6 +370,9 @@ public class EditorActivity extends Activity {
                         SettingsActivity.class);
                 this.startActivityForResult(intent, REQUEST_SETTINGS);
                 return true;
+            case R.id.menu_exit:
+                exitApplication();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -383,7 +389,7 @@ public class EditorActivity extends Activity {
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
                                     // Stop the activity
-                                    open_when_saved = DO_NEW;
+                                    next_action = DO_NEW;
                                     EditorActivity.this.saveFile();
                                 }
 
@@ -425,7 +431,7 @@ public class EditorActivity extends Activity {
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
                                     // Stop the activity
-                                    open_when_saved = DO_OPEN;
+                                    next_action = DO_OPEN;
                                     EditorActivity.this.saveFile();
                                 }
 
@@ -441,8 +447,36 @@ public class EditorActivity extends Activity {
         } else {
             openNewFile();
         }
+    }
 
+    protected void exitApplication() {
+        if (changed) {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(R.string.File_not_saved)
+                    .setMessage(R.string.Save_current_file)
+                    .setPositiveButton(R.string.Yes,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    // Stop the activity
+                                    next_action = DO_EXIT;
+                                    EditorActivity.this.saveFile();
+                                }
 
+                            })
+                    .setNegativeButton(R.string.No,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    System.exitFromApp(EditorActivity.this);
+                                }
+                            }).show();
+        } else {
+            System.exitFromApp(EditorActivity.this);
+        }
     }
 
     protected void openNewFile() {
@@ -472,7 +506,7 @@ public class EditorActivity extends Activity {
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
                                     // Stop the activity
-                                    open_when_saved = DO_OPEN;
+                                    next_action = DO_OPEN;
                                     EditorActivity.this.saveFile();
                                 }
 
@@ -515,17 +549,20 @@ public class EditorActivity extends Activity {
             changed = false;
             updateTitle();
 
-            if (open_when_saved == DO_OPEN) {   // because of multithread nature
+            if (next_action == DO_OPEN) {   // because of multithread nature
                 // figure out better way to do
                 // it
-                open_when_saved = DO_NOTHING;
+                next_action = DO_NOTHING;
                 openNewFile();
             }
-            if (open_when_saved == DO_NEW) { // because of multithread nature
+            if (next_action == DO_NEW) { // because of multithread nature
                 // figure out better way to do
                 // it
-                open_when_saved = DO_NOTHING;
+                next_action = DO_NOTHING;
                 clearFile();
+            }
+            if (next_action == DO_EXIT) {
+                exitApplication();
             }
         } catch (FileNotFoundException e) {
             this.showToast(l(R.string.File_not_found));
@@ -557,7 +594,7 @@ public class EditorActivity extends Activity {
             changed = false;
             this.filename = filename;
             if (!settingsService.getLastFilename().equals(filename)) {
-                settingsService.setLastFilename(filename);
+                settingsService.setLastFilename(filename, this.getApplicationContext());
             }
             selectionStart = 0;
             updateTitle();
@@ -574,22 +611,7 @@ public class EditorActivity extends Activity {
      */
     String applyEndings(String value){
         String to = settingsService.getDelimiters();
-        if (TPStrings.DEFAULT.equals(to)) return value; //this way we spare memory but will be unable to fix delimiters
-
-        if (TPStrings.WINDOWS.equals(to)){
-            value = value.replace(TPStrings.RN, TPStrings.N);
-            value = value.replace(TPStrings.R, TPStrings.N);
-            value = value.replace(TPStrings.N, TPStrings.RN); //simply replace unix endings to win endings
-        }
-        else if (TPStrings.UNIX.equals(to)){ //just in case it was previously read as other encoding
-            value = value.replace(TPStrings.RN, TPStrings.N);
-            value = value.replace(TPStrings.R, TPStrings.N);
-        }
-        else if (TPStrings.MACOS.equals(to)){
-            value = value.replace(TPStrings.RN, TPStrings.N);
-            value = value.replace(TPStrings.R, TPStrings.N);
-            value = value.replace(TPStrings.N, TPStrings.R); //simply replace unix endings to mac endings
-        }
+        value = TextConverter.getInstance().applyEndings(value, to);
         return value;
     }
 
@@ -604,8 +626,7 @@ public class EditorActivity extends Activity {
 
         //we should anyway fix any line delimenters
         //replace \r\n first, then \r into \n this way we will get pure unix ending used in android
-        value = value.replace(TPStrings.RN, TPStrings.N);
-        value = value.replace(TPStrings.R, TPStrings.N);
+        value = TextConverter.getInstance().applyEndings(value, TextConverter.UNIX);
 
         return value;
     }

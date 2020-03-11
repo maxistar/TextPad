@@ -1,4 +1,4 @@
-package com.maxistar.textpad;
+package com.maxistar.textpad.preferences;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -14,10 +14,13 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.maxistar.textpad.R;
+import com.maxistar.textpad.SettingsService;
+import com.maxistar.textpad.TPStrings;
+
 public class ColorPreference extends DialogPreference
 {
     protected int color;
-    //private int defaultColor;
     protected String attribute;
     protected String title;
 
@@ -65,9 +68,9 @@ public class ColorPreference extends DialogPreference
                 // save the color
 
                 if (SettingsService.SETTING_FONT_COLOR.equals(attribute)) {
-                    settingsService.setFontColor(color);
+                    settingsService.setFontColor(color, getContext());
                 } else {
-                    settingsService.setBgColor(color);
+                    settingsService.setBgColor(color, getContext());
                 }
 
                 notifyChanged();

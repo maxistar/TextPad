@@ -1,4 +1,4 @@
-package com.maxistar.textpad;
+package com.maxistar.textpad.preferences;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.maxistar.textpad.R;
+import com.maxistar.textpad.SettingsService;
+import com.maxistar.textpad.TPStrings;
 
 public class FontTypePreference extends DialogPreference
 {
@@ -43,11 +47,11 @@ public class FontTypePreference extends DialogPreference
         builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 if (selected == 0)
-                    settingsService.setFont(TPStrings.FONT_MONOSPACE);
+                    settingsService.setFont(TPStrings.FONT_MONOSPACE, getContext());
                 else if (selected == 1)
-                    settingsService.setFont(TPStrings.FONT_SERIF);
+                    settingsService.setFont(TPStrings.FONT_SERIF, getContext());
                 else
-                    settingsService.setFont(TPStrings.FONT_SANS_SERIF);
+                    settingsService.setFont(TPStrings.FONT_SANS_SERIF, getContext());
 
 
                 notifyChanged();

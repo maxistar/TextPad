@@ -2,7 +2,10 @@ package com.maxistar.textpad;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.preference.PreferenceManager;
+
+import java.util.Locale;
 
 public class SettingsService {
     public static final String SETTING_FONT = "font";
@@ -17,11 +20,18 @@ public class SettingsService {
     public static final String SETTING_FONT_COLOR = "fontcolor";
     public static final String SETTING_LANGUAGE = "language";
 
+    public static final String SETTING_MEDIUM = "Medium";
+    public static final String SETTING_EXTRA_SMALL = "Extra Small";
+    public static final String SETTING_SMALL = "Small";
+    public static final String SETTING_LARGE = "Large";
+    public static final String SETTING_HUGE = "Huge";
+
+
 
 
     //private static SettingsService instance;
 
-    private Context context;
+    //private Context context;
 
     private boolean open_last_file = true;
     private boolean autosave = true;
@@ -39,12 +49,10 @@ public class SettingsService {
 
 
     private SettingsService(Context context) {
-        this.context = context;
-
-        loadSettings();
+        loadSettings(context);
     }
 
-    private void loadSettings() {
+    private void loadSettings(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         autosave = sharedPref.getBoolean(SETTING_AUTO_SAVE_CURRENT_FILE, false);
         open_last_file = sharedPref.getBoolean(SETTING_OPEN_LAST_FILE, false);
@@ -52,14 +60,14 @@ public class SettingsService {
         file_encoding = sharedPref.getString(SETTING_FILE_ENCODING, TPStrings.UTF_8);
         delimiters = sharedPref.getString(SETTING_DELIMITERS, TPStrings.DEFAULT);
         font = sharedPref.getString(SETTING_FONT, TPStrings.FONT_SANS_SERIF);
-        font_size = sharedPref.getString(SETTING_FONT_SIZE, TPStrings.MEDIUM);
+        font_size = sharedPref.getString(SETTING_FONT_SIZE, SETTING_MEDIUM);
         bgcolor = sharedPref.getInt(SETTING_BG_COLOR, 0xFFCCCCCC);
         fontcolor = sharedPref.getInt(SETTING_FONT_COLOR, 0xFF000000);
         language = sharedPref.getString(SETTING_LANGUAGE, TPStrings.EMPTY);
     }
 
-    public void reloadSettings() {
-        loadSettings();
+    public void reloadSettings(Context context) {
+        loadSettings(context);
     }
 
     static public SettingsService getInstance(Context context) {
@@ -69,21 +77,21 @@ public class SettingsService {
         //return instance;
     }
 
-    private void setSettingValue(String name, String value) {
+    private void setSettingValue(String name, String value, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(name, value);
         editor.apply();
     }
 
-    private void setSettingValue(String name, boolean value) {
+    private void setSettingValue(String name, boolean value, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(name, value);
         editor.apply();
     }
 
-    private void setSettingValue(String name, int value) {
+    private void setSettingValue(String name, int value, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(name, value);
@@ -133,28 +141,28 @@ public class SettingsService {
     }
 
     //setters
-    public void setFontSize(String font_size) {
-        this.setSettingValue(SETTING_FONT_SIZE, font_size);
+    public void setFontSize(String font_size, Context context) {
+        this.setSettingValue(SETTING_FONT_SIZE, font_size, context);
         this.font_size = font_size;
     }
 
-    public void setBgColor(int bgcolor) {
-        this.setSettingValue(SETTING_BG_COLOR, bgcolor);
+    public void setBgColor(int bgcolor, Context context) {
+        this.setSettingValue(SETTING_BG_COLOR, bgcolor, context);
         this.bgcolor = bgcolor;
     }
 
-    public void setFontColor(int fontcolor) {
-        this.setSettingValue(SETTING_FONT_COLOR, fontcolor);
+    public void setFontColor(int fontcolor, Context context) {
+        this.setSettingValue(SETTING_FONT_COLOR, fontcolor, context);
         this.fontcolor = fontcolor;
     }
 
-    public void setLastFilename(String value) {
-        this.setSettingValue(SETTING_LAST_FILENAME, value);
+    public void setLastFilename(String value, Context context) {
+        this.setSettingValue(SETTING_LAST_FILENAME, value, context);
         last_filename = value;
     }
 
-    public void setFont(String value) {
-        this.setSettingValue(SETTING_FONT, value);
+    public void setFont(String value, Context context) {
+        this.setSettingValue(SETTING_FONT, value, context);
         font = value;
     }
 
@@ -166,5 +174,14 @@ public class SettingsService {
         boolean value = languageWasChanged;
         languageWasChanged = false;
         return value;
+    }
+
+    public void applyLocale(Context context){
+        String lang = getLanguage();
+        Locale locale2 = new Locale(lang);
+        Locale.setDefault(locale2);
+        Configuration config2 = new Configuration();
+        config2.locale = locale2;
+        context.getResources().updateConfiguration(config2, null);
     }
 }

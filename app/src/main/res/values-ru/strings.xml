@@ -29,9 +29,7 @@
 	<string name="Continue">Продолжить</string>
 	<string name="about_message">Это Простой Текстовый Редактор под Android. Посетите http://maxistar.ru/projects/textpad/ для более подробной информации.</string>
 	<string name="Choose_Language">Выберите язык</string>
-    <string name="English">Английский</string>
-    <string name="Russian">Русский</string>
-    <string name="Language">Язык</string>
+	<string name="Language">Язык</string>
     <string name="Click_to_change_language">нажмите чтобы сменить язык</string>
     <string name="searchLabel">Поиск</string> 
 	<string name="searchHint">Текст</string>
@@ -42,11 +40,10 @@
 	<string name="Choose_a_color">Выберите цвет</string>
 	<string name="Open_File">Открыть файл</string>
 	<string name="Save_File">Сохранить файл</string>
-	<string name="Extra_Small">Очень маленький</string>
-	<string name="Small">Маленький</string>
+    <!--<string name="Small">Маленький</string>
 	<string name="Medium">Средний</string>
 	<string name="Large">Большой</string>
-	<string name="Huge">Гиганский</string>
+	<string name="Huge">Гиганский</string>-->
 	<string name="Click_to_change_encoding">Нажмите, чтобы сменить кодировку</string>
 	<string name="Encoding">Кодировка</string>
 	<string name="Line_endings">Окончания строк</string>
@@ -70,4 +67,5 @@
 	<string name="Are_you_sure_to_quit">Вы уверены, что хотите выйти из приложения?</string>
 	<string name="File_already_exists">Файл уже существует</string>
 	<string name="Existing_file_will_be_overwritten">Существующий файл будет переписан, вы уверены, что хотите продолжать?</string>
+    <string name="Exit">Выход</string>
 </resources>

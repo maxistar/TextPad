@@ -9,5 +9,4 @@
 			android:fadingEdge="none"
 			android:scrollbars="vertical|horizontal"
 			android:gravity="top"
-
 	/>

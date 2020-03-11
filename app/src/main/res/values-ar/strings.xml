@@ -29,9 +29,7 @@
   <string name="Continue">متابعة</string>
   <string name="about_message">هذا هو محرر النص البسيط للأندرويد. للحصول على المزيد من المعلومات ، تفضل بزيارة http://en.maxistar.ru/projects/textpad.</string>
   <string name="Choose_Language">إختار اللغة</string>
-  <string name="English">الإنجليزية</string>
-  <string name="Russian">الروسية</string>
-  <string name="Language">اللغة</string>
+    <string name="Language">اللغة</string>
   <string name="Click_to_change_language">أنقر لتغيير لغة الواجهة</string>
   <string name="searchLabel">بحث</string>
   <string name="searchHint">النص</string>
@@ -41,11 +39,10 @@
   <string name="Choose_a_color">إختار لون</string>
   <string name="Open_File">فتح ملف</string>
   <string name="Save_File">حفظ الملف</string>
-  <string name="Extra_Small">صغير جداً</string>
-  <string name="Small">صغير</string>
+  <!--<string name="Small">صغير</string>
   <string name="Medium">متوسط</string>
   <string name="Large">كبير</string>
-  <string name="Huge">ضخم</string>
+  <string name="Huge">ضخم</string>-->
   <string name="Click_to_change_encoding">أنقر لتغيير الترميز</string>
   <string name="Encoding">الترميز</string>
   <string name="Line_endings">نهايات السطر</string>
@@ -70,4 +67,5 @@
   <string name="Are_you_sure_to_quit">هل تريد بالتاكيد الخروج من التطبيق ؟</string>
   <string name="File_already_exists">الملف موجود بالفعل</string>
   <string name="Existing_file_will_be_overwritten">سيتم إستبدال الملف الموجود، هل تريد المتابعة بالتاكيد؟</string>
+    <string name="Exit">خروج</string>
 </resources>

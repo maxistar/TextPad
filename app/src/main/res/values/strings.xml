@@ -29,9 +29,7 @@
 	<string name="Continue">Continue</string>
 	<string name="about_message">This is Simple Text Editor for Android. To get more information visit http://en.maxistar.ru/projects/textpad.</string>
     <string name="Choose_Language">Choose Language</string>
-    <string name="English">English</string>
-    <string name="Russian">Russian</string>
-    <string name="Language">Language</string>
+	<string name="Language">Language</string>
     <string name="Click_to_change_language">сlick to change language of interface</string>
     <string name="searchLabel">Search</string> 
 	<string name="searchHint">Text</string>
@@ -41,11 +39,10 @@
 	<string name="Choose_a_color">Choose a color</string>
 	<string name="Open_File">Open File</string>
 	<string name="Save_File">Save File</string>
-	<string name="Extra_Small">Extra Small</string>
-	<string name="Small">Small</string>
+	<!--<string name="Small">Small</string>
 	<string name="Medium">Medium</string>
 	<string name="Large">Large</string>
-	<string name="Huge">Huge</string>
+	<string name="Huge">Huge</string>-->
 	<string name="Click_to_change_encoding">Click to change encoding</string>
 	<string name="Encoding">Encoding</string>
 	<string name="Line_endings">Line endings</string>
@@ -70,4 +67,5 @@
 	<string name="Are_you_sure_to_quit">Are you sure you want to quit the application?</string>
 	<string name="File_already_exists">File already exists</string>
 	<string name="Existing_file_will_be_overwritten">Existing file will be overwritten, are you sure to proceed?</string>
+	<string name="Exit">Exit</string>
 </resources>

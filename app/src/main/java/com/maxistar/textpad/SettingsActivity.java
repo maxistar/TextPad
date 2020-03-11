@@ -86,7 +86,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             setLocale(lang);
             SettingsService.setLanguageChangedFlag();
         }
-        settingsService.reloadSettings();
+        settingsService.reloadSettings(this.getApplicationContext());
     }
 
 

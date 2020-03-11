@@ -11,3 +11,7 @@ Supports only plain text files at the moment.
 The code is open so can review code, send pull requests, new features, translations and so on. https://github.com/maxistar/TextPad.
 
 Any suggestions, pull requests, translations for this project are welcomed. Thank you!
+
+# How to run sniffer
+
+./gradlew lint
