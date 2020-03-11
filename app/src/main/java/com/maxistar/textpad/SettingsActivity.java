@@ -81,7 +81,12 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (SettingsService.SETTING_LANGUAGE.equals(key)){
+        if (SettingsService.SETTING_LANGUAGE.equals(key) ||
+            SettingsService.SETTING_FONT.equals(key) ||
+            SettingsService.SETTING_BG_COLOR.equals(key) ||
+            SettingsService.SETTING_FONT_COLOR.equals(key) ||
+            SettingsService.SETTING_FONT_SIZE.equals(key)
+        ) {
             String lang = sharedPreferences.getString(SettingsService.SETTING_LANGUAGE, TPStrings.EN);
             setLocale(lang);
             SettingsService.setLanguageChangedFlag();

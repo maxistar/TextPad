@@ -33,18 +33,16 @@ public class ColorPreference extends DialogPreference
         settingsService = SettingsService.getInstance(context);
 
         attribute = attrs.getAttributeValue(1);
-        title = attrs.getAttributeValue(TPStrings.ANDROID_NS, TPStrings.DIALOG_TITLE);
-        if (TPStrings.EMPTY.equals(title)){
-            title = context.getResources().getString(R.string.Choose_a_color);
-        }
 
         // set the layout so we can see the preview color
         setWidgetLayoutResource(R.layout.colorpref);
 
         if (SettingsService.SETTING_BG_COLOR.equals(attribute)) {
             color = settingsService.getBgColor();
+            title = context.getResources().getString(R.string.Choose_a_background_color);
         } else {
             color = settingsService.getFontColor();
+            title = context.getResources().getString(R.string.Choose_a_font_color);
         }
     }
 

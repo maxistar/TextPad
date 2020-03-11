@@ -12,14 +12,19 @@
             <TextView android:id="@+id/textViewFilename" android:text="@string/File_Name"
                 android:layout_width="fill_parent" android:layout_height="wrap_content" />
             <EditText android:text="" android:id="@+id/fdEditTextFile"
+                android:inputType="text"
+                android:autofillHints="@string/File_Name"
+                android:hint="@string/File_Name"
                 android:layout_width="fill_parent" android:layout_height="wrap_content"></EditText>
 
             <LinearLayout android:orientation="horizontal"
                 android:layout_width="fill_parent" android:layout_height="fill_parent">
                 <Button android:id="@+id/fdButtonCancel" android:layout_height="wrap_content"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dip" android:layout_weight=".3"
                     android:text="@string/Cancel"></Button>
                 <Button android:id="@+id/fdButtonCreate" android:layout_height="wrap_content"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dip" android:layout_weight=".7"
                     android:text="@string/Create"></Button>
             </LinearLayout>
