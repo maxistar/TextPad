@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.maxistar.textpad"
-    android:versionCode="16"
-    android:versionName="1.9.3" >
+    android:versionCode="17"
+    android:versionName="1.9.4" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:icon="@drawable/icon"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:allowBackup="true"
+        android:fullBackupContent="true">
         <activity
             android:name=".EditorActivity"
             android:label="@string/app_name"
@@ -59,7 +61,8 @@
             </intent-filter>
 
             <meta-data android:name="android.app.searchable"
-                   android:resource="@xml/searchable"/>
+                   android:resource="@xml/searchable"
+                   android:exported="false" />
              
         </activity>
         <activity
@@ -75,7 +78,8 @@
         </activity>
         <provider
             android:name=".SearchSuggestions"
-            android:authorities="com.maxistar.authority" />
+            android:authorities="com.maxistar.authority"
+            android:exported="false" />
     </application>
 
 </manifest>

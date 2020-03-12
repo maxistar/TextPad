@@ -30,8 +30,6 @@
     <string name="Continue">Devam</string>
     <string name="about_message">Android cihazlar için metin düzenleyici uygulamadır. Daha fazla bilgi için: http://en.maxistar.ru/projects/textpad.</string>
     <string name="Choose_Language">Dil Seçin</string>
-    <string name="English">İngilizce</string>
-    <string name="Russian">Rusça</string>
     <string name="Language">Dil</string>
     <string name="Click_to_change_language">Arayüz dilini değiştirmek için tıklayın</string>
     <string name="searchLabel">Ara</string>
@@ -42,11 +40,10 @@
     <string name="Choose_a_color">Renk Seçin</string>
     <string name="Open_File">Dosya Aç</string>
     <string name="Save_File">Dosya Kaydet</string>
-    <string name="Extra_Small">Çok Küçük</string>
-    <string name="Small">Küçük</string>
+    <!--<string name="Small">Küçük</string>
     <string name="Medium">Orta</string>
     <string name="Large">Büyük</string>
-    <string name="Huge">Çok Büyük</string>
+    <string name="Huge">Çok Büyük</string>-->
     <string name="Click_to_change_encoding">Kodlamayı değiştirmek için tıklayın</string>
     <string name="Encoding">Kodlama</string>
     <string name="Line_endings">Satır Sonları</string>
@@ -71,5 +68,6 @@
     <string name="Are_you_sure_to_quit">Uygulama Kapatılsın mı?</string>
     <string name="File_already_exists">Dosya zaten mevcut</string>
     <string name="Existing_file_will_be_overwritten">Mevcut dosyanın üzerine yazılacak, devam edilsin mi?</string>
+    <string name="Exit">çıkış</string>
 
 </resources>

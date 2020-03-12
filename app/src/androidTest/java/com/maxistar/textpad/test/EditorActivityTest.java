@@ -1,14 +1,13 @@
 package com.maxistar.textpad.test;
 
+import android.content.pm.ActivityInfo;
 import android.os.Environment;
 import android.os.SystemClock;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.TextView;
 
 import com.maxistar.textpad.EditorActivity;
 import com.maxistar.textpad.R;
-import com.maxistar.textpad.TPApplication;
 import com.maxistar.textpad.TPStrings;
 
 import org.hamcrest.Matcher;
@@ -55,9 +54,6 @@ public class EditorActivityTest {
      * Check if the text is empty it to click on new menu item
      */
     public void listGoesOverTheFold() {
-
-
-
         openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
 
         onView(withText((mActivityRule.getActivity().getString(R.string.New))))
@@ -200,6 +196,24 @@ public class EditorActivityTest {
         String content = getFile(filePath);
 
         Assert.assertEquals(textExample, content);
+    }
+
+    @Test
+    public void testActivityRotation() {
+        String textExample = "some new text";
+
+        mActivityRule.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        onView(withId(R.id.editText1))
+                .perform(setTextInTextView(textExample));
+
+        SystemClock.sleep(3000);
+
+        mActivityRule.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.editText1)).check(matches(withText(textExample)));
     }
 
     /**

@@ -1,76 +1,76 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="preferences" >
-   <PreferenceCategory 
-        android:title="@string/Main_Settings">
-        <CheckBoxPreference  
-			android:key="open_last_file"  
-			android:title="@string/Open_Last"  
-			android:summary="@string/To_open_last_edited_file" 
+	<PreferenceCategory
+		android:title="@string/Main_Settings">
+		<CheckBoxPreference
+			android:key="open_last_file"
+			android:title="@string/Open_Last"
+			android:summary="@string/To_open_last_edited_file"
 			android:defaultValue="false" />
-            
-         <ListPreference
-            android:key="encoding"
-            android:summary="@string/Click_to_change_encoding"
-            android:title="@string/Encoding"
-            android:defaultValue="UTF-8"
-        />
 
-        <ListPreference
-            android:entries="@array/line_delimiter_names"
-            android:entryValues="@array/line_delimiter_values"
-            android:key="delimeters" 
-            android:summary="@string/Line_endings"
-            android:title="@string/Line_Delimiters"
-            android:defaultValue="default"
-        /> 
-         
-    </PreferenceCategory> 
+		<ListPreference
+			android:key="encoding"
+			android:summary="@string/Click_to_change_encoding"
+			android:title="@string/Encoding"
+			android:defaultValue="UTF-8"
+			/>
 
-   
-   
-   <PreferenceCategory 
-        android:title="@string/Appearance">
-        <ListPreference
-            android:entries="@array/language_names"
-            android:entryValues="@array/language_values"
-            android:key="language"
-            android:summary="@string/Click_to_change_language"
-            android:title="@string/Language"
-        />
-		<com.maxistar.textpad.FontTypePreference
-			android:key="font"  
-			android:title="@string/Font"  
-			android:summary="@string/Choose_a_font_type"  
-			android:dialogTitle="@string/Choose_a_font_type" 
-			android:defaultValue="Monospace" />
-		<com.maxistar.textpad.FontSizePreference
-			android:key="fontsize"  
+		<ListPreference
+			android:entries="@array/line_delimiter_names"
+			android:entryValues="@array/line_delimiter_values"
+			android:key="delimeters"
+			android:summary="@string/Line_endings"
+			android:title="@string/Line_Delimiters"
+			android:dialogTitle="@string/Select"
+			android:defaultValue="default"
+			/>
+
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="@string/Appearance">
+		<ListPreference
+			android:entries="@array/language_names"
+			android:entryValues="@array/language_values"
+			android:key="language"
+			android:summary="@string/Click_to_change_language"
+			android:title="@string/Language"
+			android:dialogTitle="@string/Choose_Language"
+			/>
+		<com.maxistar.textpad.preferences.FontTypePreference
+			android:key="font"
+			android:title="@string/Font"
+			android:summary="@string/Choose_a_font_type"
+			android:dialogTitle="@string/Choose_a_font_type"
+			android:defaultValue="Sans Serif" />
+		<com.maxistar.textpad.preferences.FontSizePreference
+			android:key="fontsize"
 			android:title="@string/Font_Size"
-			android:summary="@string/Choose_a_font_size"  
+			android:summary="@string/Choose_a_font_size"
 			android:defaultValue="Medium"
-			android:dialogTitle="@string/Choose_a_font_size" />                
-		<com.maxistar.textpad.ColorPreference
-			android:key="fontcolor"  
+			android:dialogTitle="@string/Choose_a_font_size" />
+		<com.maxistar.textpad.preferences.ColorPreference
+			android:key="fontcolor"
 			android:title="@string/Font_Color"
-			android:summary="@string/Choose_a_font_color"  
+			android:summary="@string/Choose_a_font_color"
 			android:defaultValue="0xFF000000"
 			android:dialogTitle="@string/Choose_a_font_color" />
-		<com.maxistar.textpad.ColorPreference
+		<com.maxistar.textpad.preferences.ColorPreference
 			android:key="bgcolor"
 			android:title="@string/Background_Color"
-			android:summary="@string/Choose_a_background_color"  
+			android:summary="@string/Choose_a_background_color"
 			android:defaultValue="0xFFCCCCCC"
-			android:dialogTitle="@string/Choose_a_background_color" />        
-    </PreferenceCategory>
-    <PreferenceCategory 
-        android:title="@string/About">
-        <Preference 
-            android:key="version_name"
-            android:summary=""
-            android:title="@string/Version" />
-        <com.maxistar.textpad.AboutBox
-			android:title="@string/About_Editor"  
+			android:dialogTitle="@string/Choose_a_background_color" />
+	</PreferenceCategory>
+	<PreferenceCategory
+		android:title="@string/About">
+		<Preference
+			android:key="version_name"
+			android:summary=""
+			android:title="@string/Version" />
+		<com.maxistar.textpad.AboutBox
+			android:title="@string/About_Editor"
 			android:summary="@string/Just_a_little_FYI"
-			android:dialogTitle="@string/Warranty_Information" /> 
-        </PreferenceCategory>
+			android:dialogTitle="@string/Warranty_Information" />
+	</PreferenceCategory>
 </PreferenceScreen>

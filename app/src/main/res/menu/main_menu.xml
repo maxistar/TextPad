@@ -37,4 +37,10 @@
         app:showAsAction="never"
         android:title="@string/Settings"
         android:icon="@drawable/settings"/>
+    <item
+        android:id="@+id/menu_exit"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/Exit"
+        android:icon="@drawable/icon"/>
 </menu>
