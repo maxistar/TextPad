@@ -34,7 +34,7 @@
     <string name="searchLabel">Поиск</string> 
 	<string name="searchHint">Текст</string>
 	<string name="Choose_a_font_type">Выберите шрифт</string>
-	<string name="s_not_found">"%s" ненайден</string>
+	<string name="s_not_found">"%s" не найден</string>
 	<string name="opened_last_edited_file">открыт последний файл %s</string>
 	<string name="Search">Поиск</string>
 	<string name="Choose_a_color">Выберите цвет</string>

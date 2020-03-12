@@ -58,7 +58,7 @@ public class SettingsService {
         open_last_file = sharedPref.getBoolean(SETTING_OPEN_LAST_FILE, false);
         last_filename = sharedPref.getString(SETTING_LAST_FILENAME, TPStrings.EMPTY);
         file_encoding = sharedPref.getString(SETTING_FILE_ENCODING, TPStrings.UTF_8);
-        delimiters = sharedPref.getString(SETTING_DELIMITERS, TPStrings.DEFAULT);
+        delimiters = sharedPref.getString(SETTING_DELIMITERS, TPStrings.EMPTY);
         font = sharedPref.getString(SETTING_FONT, TPStrings.FONT_SANS_SERIF);
         font_size = sharedPref.getString(SETTING_FONT_SIZE, SETTING_MEDIUM);
         bgcolor = sharedPref.getInt(SETTING_BG_COLOR, 0xFFCCCCCC);
@@ -71,10 +71,7 @@ public class SettingsService {
     }
 
     static public SettingsService getInstance(Context context) {
-        //if (instance == null) {
         return new SettingsService(context);
-        //}
-        //return instance;
     }
 
     private void setSettingValue(String name, String value, Context context) {
@@ -178,6 +175,9 @@ public class SettingsService {
 
     public void applyLocale(Context context){
         String lang = getLanguage();
+        if ("".equals(lang)) {
+            return; //use system default
+        }
         Locale locale2 = new Locale(lang);
         Locale.setDefault(locale2);
         Configuration config2 = new Configuration();

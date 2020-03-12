@@ -133,7 +133,11 @@ public class EditorActivity extends Activity {
         updateTitle();
         mText.requestFocus();
 
-        SettingsService.getInstance(this.getApplicationContext()).applyLocale(this.getApplicationContext());
+        //SettingsService.getInstance(this.getApplicationContext()).applyLocale(this.getApplicationContext());
+
+        //it's important to use Base Content because otherwise it does not apply locale in SDK 23
+        SettingsService.getInstance(this.getApplicationContext()).applyLocale(this.getBaseContext());
+
         //additionally check locale
     }
 
