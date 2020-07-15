@@ -146,7 +146,7 @@ public class EditorActivity extends Activity {
      *
      * If the app does not has permission then the user will be prompted to grant permissions
      *
-     * @param activity
+     * @param activity Activity
      */
     public static void verifyPermissions(Activity activity) {
         // Check if we have write permission
@@ -265,7 +265,7 @@ public class EditorActivity extends Activity {
         int start;
         start = t.indexOf(query.toLowerCase(Locale.getDefault()), selectionStart+1);
         if (start == -1) {	// loop search
-            start = t.indexOf(query.toLowerCase(Locale.getDefault()), 0);
+            start = t.indexOf(query.toLowerCase(Locale.getDefault()));
         }
 
         if (start != -1) {
@@ -325,18 +325,23 @@ public class EditorActivity extends Activity {
 
         String fontsize = settingsService.getFontSize();
 
-        if (fontsize.equals(SettingsService.SETTING_EXTRA_SMALL))
+        switch (fontsize) {
+            case (SettingsService.SETTING_EXTRA_SMALL):
             mText.setTextSize(12.0f);
-        else if (fontsize.equals(SettingsService.SETTING_SMALL))
+            break;
+            case (SettingsService.SETTING_SMALL):
             mText.setTextSize(16.0f);
-        else if (fontsize.equals(SettingsService.SETTING_MEDIUM))
-            mText.setTextSize(20.0f);
-        else if (fontsize.equals(SettingsService.SETTING_LARGE))
+            break;
+            case (SettingsService.SETTING_LARGE):
             mText.setTextSize(24.0f);
-        else if (fontsize.equals(SettingsService.SETTING_HUGE))
+            break;
+            case (SettingsService.SETTING_HUGE):
             mText.setTextSize(28.0f);
-        else
+            break;
+            case (SettingsService.SETTING_MEDIUM):
+            default:
             mText.setTextSize(20.0f);
+        }
 
         int bgcolor = settingsService.getBgColor();
         mText.setBackgroundColor(bgcolor);
@@ -529,10 +534,7 @@ public class EditorActivity extends Activity {
 
     protected boolean fileAlreadyExists() {
         File f = new File(filename);
-        if (f.exists()) {
-            return true;
-        }
-        return false;
+        return f.exists();
     }
 
     protected void saveNamedFile() {
@@ -549,7 +551,7 @@ public class EditorActivity extends Activity {
 
             fos.write(s.getBytes(settingsService.getFileEncoding()));
             fos.close();
-            showToast(l(R.string.File_Written));
+            showToast(R.string.File_Written);
             changed = false;
             updateTitle();
 
@@ -569,9 +571,9 @@ public class EditorActivity extends Activity {
                 exitApplication();
             }
         } catch (FileNotFoundException e) {
-            this.showToast(l(R.string.File_not_found));
+            this.showToast(R.string.File_not_found);
         } catch (IOException e) {
-            this.showToast(l(R.string.Can_not_write_file));
+            this.showToast(R.string.Can_not_write_file);
         }
     }
 
@@ -594,7 +596,7 @@ public class EditorActivity extends Activity {
             ttt = toUnixEndings(ttt);
 
             this.mText.setText(ttt);
-            showToast(l(R.string.File_opened_) + filename);
+            showToast(getBaseContext().getResources().getString(R.string.File_opened_, filename));
             changed = false;
             this.filename = filename;
             if (!settingsService.getLastFilename().equals(filename)) {
@@ -603,15 +605,15 @@ public class EditorActivity extends Activity {
             selectionStart = 0;
             updateTitle();
         } catch (FileNotFoundException e) {
-            this.showToast(l(R.string.File_not_found));
+            this.showToast(R.string.File_not_found);
         } catch (IOException e) {
-            this.showToast(l(R.string.Can_not_read_file));
+            this.showToast(R.string.Can_not_read_file);
         }
     }
 
     /**
-     * @param value
-     * @return
+     * @param value String to fix
+     * @return Fixed String
      */
     String applyEndings(String value){
         String to = settingsService.getDelimiters();
@@ -620,26 +622,29 @@ public class EditorActivity extends Activity {
     }
 
     /**
-     * @param value
+     * @param value Value
      *
-     * @return
+     * @return String
      */
-    String toUnixEndings(String value){
+    String toUnixEndings(String value) {
         String from = settingsService.getDelimiters();
-        if (TPStrings.DEFAULT.equals(from)) return value; //this way we spare memory but will be unable to fix delimiters
+        if (TPStrings.DEFAULT.equals(from)) {
+            return value; //this way we spare memory but will be unable to fix delimiters
+        }
 
         //we should anyway fix any line delimenters
         //replace \r\n first, then \r into \n this way we will get pure unix ending used in android
-        value = TextConverter.getInstance().applyEndings(value, TextConverter.UNIX);
-
-        return value;
+        return TextConverter.getInstance().applyEndings(value, TextConverter.UNIX);
     }
 
     /**
      *
      */
-    public synchronized void onActivityResult(final int requestCode,
-                                              int resultCode, final Intent data) {
+    public synchronized void onActivityResult(
+        final int requestCode,
+        int resultCode,
+        final Intent data
+    ) {
 
         if (requestCode == REQUEST_SAVE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -647,17 +652,24 @@ public class EditorActivity extends Activity {
                         .getStringExtra(TPStrings.RESULT_PATH);
                 this.saveFileWithConfirmation();
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                showToast(l(R.string.Operation_Canceled));
+                showToast(R.string.Operation_Canceled);
             }
         } else if (requestCode == REQUEST_OPEN) {
             if (resultCode == Activity.RESULT_OK) {
                 this.openNamedFile(data.getStringExtra(TPStrings.RESULT_PATH));
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                showToast(l(R.string.Operation_Canceled));
+                showToast(R.string.Operation_Canceled);
             }
         } else if (requestCode == REQUEST_SETTINGS) {
             applyPreferences();
         }
+    }
+
+    protected void showToast(int toast_str) {
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, toast_str, duration);
+        toast.show();
     }
 
     protected void showToast(String toast_str) {
@@ -665,9 +677,5 @@ public class EditorActivity extends Activity {
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, toast_str, duration);
         toast.show();
-    }
-
-    String l(int id) {
-        return getBaseContext().getResources().getString(id);
     }
 }

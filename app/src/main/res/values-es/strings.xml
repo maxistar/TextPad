@@ -23,7 +23,7 @@
     <string name="File_Written">Archivo escrito y guardado</string>
     <string name="File_not_found">Archivo no hallado</string>
     <string name="File_not_saved">Archivo no guardado:</string>
-    <string name="File_opened_">Archivo abierto</string>
+    <string name="File_opened_">Archivo abierto %s</string>
     <string name="Font">Fuentes</string>
     <string name="Font_Color">Color de la fuente</string>
     <string name="Font_Size">Tamaño de la fuente</string>

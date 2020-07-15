@@ -57,8 +57,6 @@ public class FileDialog extends ListActivity {
 	 */
 	private String rootPath;
 
-
-
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -66,8 +64,8 @@ public class FileDialog extends ListActivity {
 		setResult(RESULT_CANCELED, getIntent());
 
 		setContentView(R.layout.file_dialog_main);
-		myPath = (TextView) findViewById(R.id.path);
-		mFileName = (EditText) findViewById(R.id.fdEditTextFile);
+		myPath = findViewById(R.id.path);
+		mFileName = findViewById(R.id.fdEditTextFile);
 
 		/*
 		 * final Button newButton = (Button) findViewById(R.id.fdButtonNew);
@@ -78,12 +76,11 @@ public class FileDialog extends ListActivity {
 		 * mFileName.setText(TPStrings.EMPTY); mFileName.requestFocus(); } });
 		 */
 		mFileName.setText(TPStrings.NEW_FILE_TXT);
-		int selectionMode = getIntent().getIntExtra(TPStrings.SELECTION_MODE,
-				SelectionMode.MODE_CREATE);
+		int selectionMode = getIntent().getIntExtra(
+			TPStrings.SELECTION_MODE,
+			SelectionMode.MODE_CREATE
+		);
 
-        /**
-         *
-         */
         LinearLayout layoutCreate = findViewById(R.id.fdLinearLayoutCreate);
 
 		if (selectionMode == SelectionMode.MODE_OPEN) {
@@ -110,10 +107,11 @@ public class FileDialog extends ListActivity {
 			public void onClick(View v) {
 				if (mFileName.getText().length() > 0) {
 					getIntent()
-							.putExtra(
-									TPStrings.RESULT_PATH,
-									currentPath + TPStrings.SLASH
-											+ mFileName.getText());
+						.putExtra(
+							TPStrings.RESULT_PATH,
+							currentPath
+								+ TPStrings.SLASH
+								+ mFileName.getText());
 					setResult(RESULT_OK, getIntent());
 					finish();
 				}
@@ -123,8 +121,7 @@ public class FileDialog extends ListActivity {
 
         SharedPreferences settings = getSharedPreferences(TPStrings.FILE_DIALOG, 0);
         rootPath = Environment.getExternalStorageDirectory().getPath();
-        //rootPath = Environment.getRootDirectory().getPath();
-		String startPath = settings.getString(TPStrings.START_PATH, rootPath);
+        String startPath = settings.getString(TPStrings.START_PATH, rootPath);
         currentPath = startPath;
 
 		readDir(startPath);
@@ -133,8 +130,8 @@ public class FileDialog extends ListActivity {
 	private void readDir(String dirPath) {
 		currentPath = dirPath;
 
-		path = new ArrayList<String>();
-		mList = new ArrayList<HashMap<String, Object>>();
+		path = new ArrayList<>();
+		mList = new ArrayList<>();
 
 		File f = new File(currentPath);
 		File[] files = f.listFiles();
@@ -157,11 +154,11 @@ public class FileDialog extends ListActivity {
 			//
 		}
 
-		TreeMap<String, String> dirsMap = new TreeMap<String, String>();
-		TreeMap<String, String> dirsPathMap = new TreeMap<String, String>();
+		TreeMap<String, String> dirsMap = new TreeMap<>();
+		TreeMap<String, String> dirsPathMap = new TreeMap<>();
 
-		TreeMap<String, String> filesMap = new TreeMap<String, String>();
-		TreeMap<String, String> filesPathMap = new TreeMap<String, String>();
+		TreeMap<String, String> filesMap = new TreeMap<>();
+		TreeMap<String, String> filesPathMap = new TreeMap<>();
 
         if (parentPath != null) {
             dirsMap.put(TPStrings.FOLDER_UP, TPStrings.FOLDER_UP);
@@ -181,10 +178,18 @@ public class FileDialog extends ListActivity {
         path.addAll(dirsPathMap.values());
         path.addAll(filesPathMap.values());
 
-		SimpleAdapter fileList = new SimpleAdapter(this, mList,
-				R.layout.file_dialog_row, new String[] { TPStrings.ITEM_KEY,
-				TPStrings.ITEM_IMAGE }, new int[] { R.id.fdrowtext,
-				R.id.fdrowimage });
+		SimpleAdapter fileList = new SimpleAdapter(
+			this,
+			mList,
+			R.layout.file_dialog_row, new String[] {
+				TPStrings.ITEM_KEY,
+				TPStrings.ITEM_IMAGE
+			},
+			new int[] {
+				R.id.fdrowtext,
+				R.id.fdrowimage
+			}
+		);
 
 		for (String dir : dirsMap.tailMap(TPStrings.EMPTY).values()) {
 			addItem(dir, R.drawable.folder);
@@ -201,7 +206,7 @@ public class FileDialog extends ListActivity {
 
 
 	private void addItem(String fileName, int imageId) {
-		HashMap<String, Object> item = new HashMap<String, Object>();
+		HashMap<String, Object> item = new HashMap<>();
 		item.put(TPStrings.ITEM_KEY, fileName);
 		item.put(TPStrings.ITEM_IMAGE, imageId);
 		mList.add(item);
@@ -242,9 +247,5 @@ public class FileDialog extends ListActivity {
 		} else {
 			return super.onKeyDown(keyCode, event);
 		}
-	}
-
-	String l(int id) {
-		return getBaseContext().getResources().getString(id);
 	}
 }

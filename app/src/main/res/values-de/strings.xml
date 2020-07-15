@@ -20,7 +20,7 @@
 	<string name="OK">OK</string>
 	<string name="File_Written">Datei geschrieben</string>
 	<string name="Can_not_write_file">Datei kann nicht geschrieben werden</string>
-	<string name="File_opened_">Datei geöffnet</string>
+	<string name="File_opened_">Datei geöffnet %s</string>
 	<string name="File_not_found">Datei nicht gefunden</string>
 	<string name="Can_not_read_file">Datei kann nicht gelesen werden</string>
 	<string name="Operation_Canceled">Vorgang abgebrochen</string>

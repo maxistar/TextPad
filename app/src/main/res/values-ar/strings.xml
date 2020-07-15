@@ -20,7 +20,7 @@
   <string name="OK">حسنا</string>
   <string name="File_Written">تم حفظ الملف</string>
   <string name="Can_not_write_file">لا يمكن حفظ الملف</string>
-  <string name="File_opened_">تم فتح الملف</string>
+  <string name="File_opened_">تم فتح الملف %s</string>
   <string name="File_not_found">لم يتم العثور على الملف</string>
   <string name="Can_not_read_file">لا يمكن قراءة الملف</string>
   <string name="Operation_Canceled">تم إلغاء العملية</string>

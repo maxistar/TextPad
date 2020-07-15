@@ -20,7 +20,7 @@
 	<string name="OK">OK</string> 
 	<string name="File_Written">Файл сохранён</string>
 	<string name="Can_not_write_file">Невозможно записать файл</string>
-	<string name="File_opened_">Файл открыт </string>
+	<string name="File_opened_">Файл открыт %s</string>
 	<string name="File_not_found">Файл не найдет</string>
 	<string name="Can_not_read_file">Не могу прочитать файл</string>
 	<string name="Operation_Canceled">Операция Отменена</string>

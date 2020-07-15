@@ -14,7 +14,6 @@ public class SettingsService {
     public static final String SETTING_OPEN_LAST_FILE = "open_last_file";
     public static final String SETTING_DELIMITERS = "delimeters";
     public static final String SETTING_FILE_ENCODING = "encoding";
-    public static final String SETTING_AUTOSAVE = "autosave";
     public static final String SETTING_FONT_SIZE = "fontsize";
     public static final String SETTING_BG_COLOR = "bgcolor";
     public static final String SETTING_FONT_COLOR = "fontcolor";
@@ -26,15 +25,7 @@ public class SettingsService {
     public static final String SETTING_LARGE = "Large";
     public static final String SETTING_HUGE = "Huge";
 
-
-
-
-    //private static SettingsService instance;
-
-    //private Context context;
-
     private boolean open_last_file = true;
-    private boolean autosave = true;
 
     private String file_encoding = "";
     private String last_filename = "";
@@ -54,7 +45,6 @@ public class SettingsService {
 
     private void loadSettings(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        autosave = sharedPref.getBoolean(SETTING_AUTO_SAVE_CURRENT_FILE, false);
         open_last_file = sharedPref.getBoolean(SETTING_OPEN_LAST_FILE, false);
         last_filename = sharedPref.getString(SETTING_LAST_FILENAME, TPStrings.EMPTY);
         file_encoding = sharedPref.getString(SETTING_FILE_ENCODING, TPStrings.UTF_8);
@@ -81,13 +71,6 @@ public class SettingsService {
         editor.apply();
     }
 
-    private void setSettingValue(String name, boolean value, Context context) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean(name, value);
-        editor.apply();
-    }
-
     private void setSettingValue(String name, int value, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = settings.edit();
@@ -95,14 +78,8 @@ public class SettingsService {
         editor.apply();
     }
 
-    //getters
-
     public boolean isOpenLastFile() {
         return open_last_file;
-    };
-
-    public boolean isAutosave() {
-        return autosave;
     };
 
     public String getFileEncoding() {

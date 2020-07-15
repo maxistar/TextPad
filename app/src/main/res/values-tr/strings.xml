@@ -21,7 +21,7 @@
     <string name="OK">Tamam</string>
     <string name="File_Written">Dosya Yazıldı</string>
     <string name="Can_not_write_file">Dosya yazılamıyor!</string>
-    <string name="File_opened_">Dosya açıldı </string>
+    <string name="File_opened_">Dosya açıldı %s</string>
     <string name="File_not_found">Dosya bulunamadı!</string>
     <string name="Can_not_read_file">Dosya okunamadı!</string>
     <string name="Operation_Canceled">İşlem iptal edildi</string>

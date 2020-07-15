@@ -4,9 +4,7 @@ package com.maxistar.textpad;
  * very simple selectable interface
  * 
  * thanks: http://stackoverflow.com/questions/5962366/android-edittext-listener-for-cursor-position-change
- * 
- * 
- * 
+ *
  */
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,7 @@ import android.widget.EditText;
 
 public class EditTextSelectable extends EditText {
 	public interface OnSelectionChangedListener {
-		public void onSelectionChanged(int selStart, int selEnd);
+		void onSelectionChanged(int selStart, int selEnd);
 	}
 
 	private List<OnSelectionChangedListener> listeners = null;
@@ -36,12 +34,13 @@ public class EditTextSelectable extends EditText {
 
 	public void addOnSelectionChangedListener(OnSelectionChangedListener o) {
 		if (listeners == null) {
-			listeners = new ArrayList<OnSelectionChangedListener>();
+			listeners = new ArrayList<>();
 		}
 		listeners.add(o);
 	}
 
 	protected void onSelectionChanged(int selStart, int selEnd) {
+		super.onSelectionChanged(selStart, selEnd);
 		if (listeners == null) {
 			return;
 		}

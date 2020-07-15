@@ -19,9 +19,6 @@ import android.preference.PreferenceManager;
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
-    /** Called when the activity is first created. */
-    //Preference mCountOfFilesToRemember;
-
     Preference mVersion;
 
     SettingsService settingsService;

@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.SettingsService;
-import com.maxistar.textpad.TPStrings;
 
 public class FontSizePreference extends DialogPreference
 {
@@ -32,16 +31,22 @@ public class FontSizePreference extends DialogPreference
         // figure out the current size.
         String font = settingsService.getFont();
 
-        if (font.equals(SettingsService.SETTING_EXTRA_SMALL))
-            selected = 0;
-        else if (font.equals(SettingsService.SETTING_SMALL))
-            selected = 1;
-        else if (font.equals(SettingsService.SETTING_MEDIUM))
-            selected = 2;
-        else if (font.equals(SettingsService.SETTING_LARGE))
-            selected = 3;
-        else if (font.equals(SettingsService.SETTING_HUGE))
-            selected = 4;
+        switch (font) {
+            case SettingsService.SETTING_EXTRA_SMALL:
+                selected = 0;
+                break;
+            case SettingsService.SETTING_SMALL:
+                selected = 1;
+                break;
+            case SettingsService.SETTING_MEDIUM:
+                selected = 2;
+                break;
+            case SettingsService.SETTING_LARGE:
+                selected = 3;
+                break;
+            case SettingsService.SETTING_HUGE:
+                selected = 4;
+        }
     }
 
     @Override
@@ -51,16 +56,23 @@ public class FontSizePreference extends DialogPreference
         builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 
-                if (selected == 0)
+                switch (selected) {
+                    case 0:
                     settingsService.setFontSize(SettingsService.SETTING_EXTRA_SMALL, getContext());
-                else if (selected == 1)
+                    break;
+                    case 1:
                     settingsService.setFontSize(SettingsService.SETTING_SMALL, getContext());
-                else if (selected == 2)
+                    break;
+                    case 2:
                     settingsService.setFontSize(SettingsService.SETTING_MEDIUM, getContext());
-                else if (selected == 3)
+                    break;
+                    case 3:
                     settingsService.setFontSize(SettingsService.SETTING_LARGE, getContext());
-                else if (selected == 4)
+                    break;
+                    case 4:
                     settingsService.setFontSize(SettingsService.SETTING_HUGE, getContext());
+                    break;
+                }
 
                 notifyChanged();
             }
@@ -99,9 +111,10 @@ public class FontSizePreference extends DialogPreference
 
         } // end constructor one
 
-        /****************************************************************
+        /**
          * getView
-         * 		the overroad getView method */
+         * the overload getView method
+         */
         public View getView(int position, View convertView, ViewGroup parent)
         {
             // get the view that would normally be returned
@@ -110,17 +123,23 @@ public class FontSizePreference extends DialogPreference
 
 
             final String option = tv.getText().toString();
-            if (option.equals(SettingsService.SETTING_EXTRA_SMALL))
-                tv.setTextSize(12.0f);
-            else if (option.equals(SettingsService.SETTING_SMALL))
-                tv.setTextSize(16.0f);
-            else if (option.equals(SettingsService.SETTING_MEDIUM))
-                tv.setTextSize(20.0f);
-            else if (option.equals(SettingsService.SETTING_LARGE))
-                tv.setTextSize(24.0f);
-            else if (option.equals(SettingsService.SETTING_HUGE))
-                tv.setTextSize(28.0f);
 
+            switch(option) {
+                case SettingsService.SETTING_EXTRA_SMALL:
+                    tv.setTextSize(12.0f);
+                    break;
+                case SettingsService.SETTING_SMALL:
+                    tv.setTextSize(16.0f);
+                    break;
+                case SettingsService.SETTING_MEDIUM:
+                    tv.setTextSize(20.0f);
+                    break;
+                case SettingsService.SETTING_LARGE:
+                    tv.setTextSize(24.0f);
+                    break;
+                case SettingsService.SETTING_HUGE:
+                    tv.setTextSize(28.0f);
+            }
             // general options
             tv.setTextColor(Color.BLACK);
             tv.setPadding(10, 3, 3, 3);

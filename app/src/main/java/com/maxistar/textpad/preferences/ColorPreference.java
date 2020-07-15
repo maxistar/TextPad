@@ -16,13 +16,12 @@ import android.widget.ImageView;
 
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.SettingsService;
-import com.maxistar.textpad.TPStrings;
 
 public class ColorPreference extends DialogPreference
 {
-    protected int color;
-    protected String attribute;
-    protected String title;
+    private int color;
+    private String attribute;
+    private String title;
 
     private SettingsService settingsService;
 
