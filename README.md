@@ -18,4 +18,4 @@ Any suggestions, pull requests, translations for this project are welcomed. Than
 
 # To Do
 
-many many things to do
+many many things to do.
