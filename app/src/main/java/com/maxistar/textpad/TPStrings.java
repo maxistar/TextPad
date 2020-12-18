@@ -14,7 +14,6 @@ public class TPStrings{
 	public static final String EN = "en";
 	public static final String DEFAULT = "default";
 	public static final String UTF_8 = "UTF-8";
-	public static final String AUTHORITY = "com.maxistar.authority";
 	public static final String STAR = "*";
 	public static final String VERSION_NAME = "version_name";
 	public static final String FILE_DIALOG = "FileDialog";

@@ -169,7 +169,7 @@ public class EditorActivity extends Activity {
     }
 
 
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         String t = mText.getText().toString().toLowerCase(Locale.getDefault());
         if (selectionStart < t.length()) {
@@ -183,17 +183,21 @@ public class EditorActivity extends Activity {
         }
     }
 
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
     }
 
-
-    private void restoreState(Bundle state){
+    /**
+     * @param state
+     */
+    private void restoreState(Bundle state) {
         filename = state.getString(STATE_FILENAME);
         changed = state.getBoolean(STATE_CHANGED);
     }
 
-
+    /**
+     * @param outState
+     */
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_FILENAME, filename);
@@ -212,7 +216,11 @@ public class EditorActivity extends Activity {
         // search action
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             final String query = intent.getStringExtra(SearchManager.QUERY);
-            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, TPStrings.AUTHORITY, SearchSuggestions.MODE);
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
+                this,
+                SearchSuggestions.AUTHORITY,
+                SearchSuggestions.MODE
+            );
             suggestions.saveRecentQuery(query, null);
 
             handler.postDelayed(new Runnable(){
@@ -220,7 +228,7 @@ public class EditorActivity extends Activity {
                 public void run() {
                     doSearch(query);
                 }
-            }, 1000);
+            }, 500);
         }
     }
 
@@ -249,15 +257,15 @@ public class EditorActivity extends Activity {
                             EditorActivity.super.onBackPressed();
                         }
                     })
-                    .create().show();
+                    .create()
+                    .show();
             exitDialogShown = true;
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
 
-    void doSearch(String query){
+    void doSearch(String query) {
         String t = mText.getText().toString().toLowerCase(Locale.getDefault());
 
         if (selectionStart >= t.length()) {
@@ -265,7 +273,7 @@ public class EditorActivity extends Activity {
         }
 
         int start;
-        start = t.indexOf(query.toLowerCase(Locale.getDefault()), selectionStart+1);
+        start = t.indexOf(query.toLowerCase(Locale.getDefault()), selectionStart + 1);
         if (start == -1) {	// loop search
             start = t.indexOf(query.toLowerCase(Locale.getDefault()));
         }
@@ -279,7 +287,7 @@ public class EditorActivity extends Activity {
         }
     }
 
-    String formatString(int stringId, String parameter){
+    String formatString(int stringId, String parameter) {
         return this.getResources().getString(stringId, parameter);
     }
 
@@ -308,15 +316,9 @@ public class EditorActivity extends Activity {
         mText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE |
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
                 InputType.TYPE_TEXT_VARIATION_NORMAL |
-                //InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD |
                 InputType.TYPE_CLASS_TEXT);
 
-        //TPApplication.getInstance(this.getApplicationContext()).readSettings(this.getApplicationContext());
-
-        //SharedPreferences sharedPref = PreferenceManager
-        //        .getDefaultSharedPreferences(this);
-
-        String font = settingsService.getFont();//sharedPref.getString(SettingsService.SETTING_FONT, TPStrings.FONT_MONOSPACE);
+        String font = settingsService.getFont();
 
         if (font.equals(TPStrings.FONT_SERIF))
             mText.setTypeface(Typeface.SERIF);
