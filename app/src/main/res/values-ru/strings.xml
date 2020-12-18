@@ -7,7 +7,6 @@
     <string name="Save">Сохранить</string>
     <string name="Save_As">Сохранить Как</string>
     <string name="Location">Путь: %s</string>
-    <string name="cant_read_folder">нельзя открыть директорию!</string>
     <string name="Select">Выбрать</string>
     <string name="File_Name">Имя файла:</string>
     <string name="Cancel">Отмена</string>

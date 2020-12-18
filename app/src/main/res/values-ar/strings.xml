@@ -7,7 +7,6 @@
   <string name="Save">حفظ</string>
   <string name="Save_As">حفظ كـ</string>
   <string name="Location">الموقع: %s</string>
-  <string name="cant_read_folder">لا يمكن قراءة المجلد!</string>
   <string name="Select">تحديد</string>
   <string name="File_Name">إسم الملف:</string>
   <string name="Cancel">إلغاء</string>

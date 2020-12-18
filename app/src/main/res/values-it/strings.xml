@@ -7,7 +7,6 @@
     <string name="Save">Salvare</string>
     <string name="Save_As">Salvare come</string>
     <string name="Location">Posizione: %s</string>
-    <string name="cant_read_folder">la cartella non può essere letta!</string>
     <string name="Select">Selezionare</string>
     <string name="File_Name">Nome del file:</string>
     <string name="Cancel">Annulla</string>

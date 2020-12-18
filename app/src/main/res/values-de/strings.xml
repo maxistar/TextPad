@@ -7,7 +7,6 @@
     <string name="Save">Speichern</string>
     <string name="Save_As">Speichern Als</string>
     <string name="Location">Lage: %s</string>
-    <string name="cant_read_folder">Ordner kann nicht gelesen werden!</string>
     <string name="Select">Wählen</string>
     <string name="File_Name">Dateiname:</string>
     <string name="Cancel">Stornieren</string>

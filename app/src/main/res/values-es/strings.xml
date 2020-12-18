@@ -60,7 +60,6 @@
     <string name="about_message">Simple Text Editor es un sencillo editor de texto para Android. Obtén más información aquí: http://en.maxistar.ru/projects/textpad.</string>
     <string name="app_name">Editor de Texto</string>
     <string name="app_name_settings">Editor de Texto - Configuración</string>
-    <string name="cant_read_folder">"No se puede leer la carpeta!"</string>
     <string name="opened_last_edited_file">Último archivo editado abierto %s</string>
     <string name="s_not_found">%s no hallado</string>
     <string name="searchHint">Texto</string>

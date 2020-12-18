@@ -1,5 +1,6 @@
 package com.maxistar.textpad.preferences;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -56,6 +57,7 @@ public class ColorPreference extends DialogPreference
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder){
         // Data has changed, notify so UI can be refreshed!
@@ -96,6 +98,7 @@ public class ColorPreference extends DialogPreference
 
         // setup the click listener
         colormap.setOnTouchListener(new OnTouchListener() {
+
             public boolean onTouch(View v, MotionEvent event) {
                 BitmapDrawable bd = (BitmapDrawable) colormap.getDrawable();
                 Bitmap bitmap = bd.getBitmap();

@@ -8,7 +8,6 @@
     <string name="Save">Kaydet</string>
     <string name="Save_As">Farklı Kaydet</string>
     <string name="Location">Yer: %s</string>
-    <string name="cant_read_folder">klasör okunamıyor!</string>
     <string name="Select">Seç</string>
     <string name="File_Name">Dosya Adı:</string>
     <string name="Cancel">İptal</string>

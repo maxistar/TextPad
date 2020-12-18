@@ -25,7 +25,7 @@
         android:id="@+id/menu_document_search"
         android:orderInCategory="100"
         android:title="@string/Search"
-        android:icon="@drawable/editfind"/>
+        android:icon="@drawable/editfind" />
     <item
         android:id="@+id/menu_document_settings"
         android:orderInCategory="100"

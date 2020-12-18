@@ -7,7 +7,6 @@
   <string name="Save">Salvar</string>
   <string name="Save_As">Salvar como</string>
   <string name="Location">Local: %s</string>
-  <string name="cant_read_folder">a pasta não pode ser lida!</string>
   <string name="Select">Selecionar</string>
   <string name="File_Name">Nome do arquivo:</string>
   <string name="Cancel">Cancelar</string>
