@@ -12,10 +12,11 @@ The code is open so can review code, send pull requests, new features, translati
 
 Any suggestions, pull requests, translations for this project are welcomed. Thank you!
 
-# How to run sniffer
+
+### How to run sniffer
 
 ./gradlew lint
 
-# To Do
+### To Do
 
 many many things to do.

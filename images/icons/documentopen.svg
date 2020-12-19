@@ -223,11 +223,11 @@
        id="linearGradient3390-178-986-453">
       <stop
          id="stop3624"
-         style="stop-color:#bb5e12;stop-opacity:1"
+         style="stop-color:#afafaf;stop-opacity:1"
          offset="0" />
       <stop
          id="stop3626"
-         style="stop-color:#cd8033;stop-opacity:1"
+         style="stop-color:#a9a9a9;stop-opacity:1"
          offset="1" />
     </linearGradient>
     <linearGradient
@@ -243,11 +243,11 @@
        id="linearGradient7012-661-145-733-759-865-745-661-970-94">
       <stop
          id="stop3618"
-         style="stop-color:#edd563;stop-opacity:1"
+         style="stop-color:#e2e2e2;stop-opacity:1"
          offset="0" />
       <stop
          id="stop3620"
-         style="stop-color:#e08223;stop-opacity:1"
+         style="stop-color:#b5b5b5;stop-opacity:1"
          offset="1" />
     </linearGradient>
     <radialGradient
@@ -295,7 +295,7 @@
        x="5"
        y="10"
        id="rect3562"
-       style="fill:#edbd74;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:block;overflow:visible;enable-background:accumulate" />
+       style="fill:#dcdcdc;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:block;overflow:visible;enable-background:accumulate" />
     <path
        d="M 12.999966,13.495697 24.027636,0.99566297 35.000034,13.495697 l -5.500034,0 0,23.500034 -11,-0.0735 0,-23.426535 -5.500034,0 z"
        id="path5656"

@@ -19,7 +19,7 @@
             android:configChanges="locale">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />                
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <intent-filter>
@@ -63,7 +63,7 @@
             <meta-data android:name="android.app.searchable"
                    android:resource="@xml/searchable"
                    android:exported="false" />
-             
+
         </activity>
         <activity
             android:name=".FileDialog"

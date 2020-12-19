@@ -2,8 +2,8 @@
 /**
  * scale SVG image
  *
- * there is a better way to scal images, see scal-icons instead
- * but it does not work :(
+ * to run this we need Batik Resterizer
+ * https://xmlgraphics.apache.org/batik/download.html
  */
 
 
@@ -78,7 +78,7 @@ class SvgScaler {
             //print "\n".$value.";\n";
             list($name,$v) = explode(':',$value);
             if ($name=='stroke-width'){
-                $v = $v*$k;
+                $v = $v * $k;
             }
             $components1[] = $name.':'.$v;
         }
@@ -163,7 +163,11 @@ class androidResizer {
             $s->save($scaledSvgFile);
 
             //now resterize
-            system('java -jar ~/bin/batik-1.11/batik-rasterizer-1.11.jar '. $scaledSvgFile);
+            system('java -jar ~/bin/batik-1.13/batik-rasterizer-1.13.jar '. $scaledSvgFile);
+            $targetFolder = __DIR__ . '/scaled/drawable-' . $mode;
+            if (!is_dir($targetFolder)) {
+                mkdir($targetFolder);
+            }
             copy(__DIR__ . '/scaled/'.$mode.'_'.$name.'.png', __DIR__ . '/scaled/drawable-' . $mode . '/' . $name . '.png');
         }
     }
