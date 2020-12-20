@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -32,7 +33,10 @@ import com.maxistar.textpad.EditTextSelectable.OnSelectionChangedListener;
 import com.maxistar.textpad.utils.System;
 import com.maxistar.textpad.utils.TextConverter;
 
-public class EditorActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuBuilder;
+
+public class EditorActivity extends AppCompatActivity {
 
     private static final String STATE_FILENAME = "filename";
     private static final String STATE_CHANGED = "changed";
@@ -354,9 +358,16 @@ public class EditorActivity extends Activity {
         mText.setTextColor(fontcolor);
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        if(menu instanceof MenuBuilder){
+            MenuBuilder m = (MenuBuilder) menu;
+            m.setOptionalIconsVisible(true);
+        }
+
         return true;
     }
 

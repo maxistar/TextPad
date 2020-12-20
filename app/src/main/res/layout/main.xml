@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
- 
-<com.maxistar.textpad.EditTextSelectable xmlns:android="http://schemas.android.com/apk/res/android"	
-			android:id="@+id/editText1"
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"
-			android:padding="5dip"
-			android:hint=""
-			android:fadingEdge="none"
-			android:scrollbars="vertical|horizontal"
-			android:gravity="top"
-	/>
+
+
+	<com.maxistar.textpad.EditTextSelectable xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/editText1"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:padding="5dip"
+		android:hint=""
+		android:fadingEdge="none"
+		android:scrollbars="vertical|horizontal"
+		android:gravity="top"
+		/>
+
