@@ -119,10 +119,10 @@ public class FileDialog extends ListActivity {
 		});
 
 
-        SharedPreferences settings = getSharedPreferences(TPStrings.FILE_DIALOG, 0);
-        rootPath = Environment.getExternalStorageDirectory().getPath();
-        String startPath = settings.getString(TPStrings.START_PATH, rootPath);
-        currentPath = startPath;
+			SharedPreferences settings = getSharedPreferences(TPStrings.FILE_DIALOG, 0);
+			rootPath = Environment.getExternalStorageDirectory().getPath();
+			String startPath = settings.getString(TPStrings.START_PATH, rootPath);
+			currentPath = startPath;
 
 		readDir(startPath);
 	}
@@ -130,6 +130,7 @@ public class FileDialog extends ListActivity {
 	private void readDir(String dirPath) {
 		currentPath = dirPath;
 
+		path = new ArrayList<>();
 		path = new ArrayList<>();
 		mList = new ArrayList<>();
 
@@ -165,14 +166,16 @@ public class FileDialog extends ListActivity {
             dirsPathMap.put(TPStrings.FOLDER_UP, parentPath);
         }
 
-		for (File file : files) {
-			if (file.isDirectory()) {
-				String dirName = file.getName();
-				dirsMap.put(dirName, dirName);
-				dirsPathMap.put(dirName, file.getPath());
-			} else {
-				filesMap.put(file.getName(), file.getName());
-				filesPathMap.put(file.getName(), file.getPath());
+		if (files != null) {
+			for (File file : files) {
+				if (file.isDirectory()) {
+					String dirName = file.getName();
+					dirsMap.put(dirName, dirName);
+					dirsPathMap.put(dirName, file.getPath());
+				} else {
+					filesMap.put(file.getName(), file.getName());
+					filesPathMap.put(file.getName(), file.getPath());
+				}
 			}
 		}
         path.addAll(dirsPathMap.values());

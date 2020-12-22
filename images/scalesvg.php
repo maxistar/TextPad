@@ -163,7 +163,7 @@ class androidResizer {
             $s->save($scaledSvgFile);
 
             //now resterize
-            system('java -jar ~/bin/batik-1.13/batik-rasterizer-1.13.jar '. $scaledSvgFile);
+            system('java -jar ~/bin/batik-1.11/batik-rasterizer-1.11.jar '. $scaledSvgFile);
             $targetFolder = __DIR__ . '/scaled/drawable-' . $mode;
             if (!is_dir($targetFolder)) {
                 mkdir($targetFolder);
@@ -186,6 +186,7 @@ class androidResizer {
         $this->resize('file');
         $this->resize('folder');
         $this->resize('editfind');
+        $this->resize('exit');
     }
 
     /**
@@ -216,6 +217,7 @@ $r->resize('documentsave',1.5);
 $r->resize('documentopen',1.5);
 $r->resize('documentnew',1.5);
 $r->resize('documentsave_as',1.5);
+$r->resize('exit',1.5);
 $r->resize('file',2);
 $r->resize('folder',2);*/
 //$r->resize('editfind',1.5);

@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -28,11 +27,9 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import com.maxistar.textpad.EditTextSelectable.OnSelectionChangedListener;
 import com.maxistar.textpad.utils.System;
 import com.maxistar.textpad.utils.TextConverter;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 
@@ -678,6 +675,7 @@ public class EditorActivity extends AppCompatActivity {
         } else if (requestCode == REQUEST_SETTINGS) {
             applyPreferences();
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     protected void showToast(int toast_str) {
