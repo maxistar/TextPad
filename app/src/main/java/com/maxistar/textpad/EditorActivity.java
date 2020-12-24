@@ -7,27 +7,32 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.SearchRecentSuggestions;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ScrollView;
+import android.widget.SearchView;
 import android.widget.Toast;
-import com.maxistar.textpad.EditTextSelectable.OnSelectionChangedListener;
 import com.maxistar.textpad.utils.System;
 import com.maxistar.textpad.utils.TextConverter;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,7 +52,8 @@ public class EditorActivity extends AppCompatActivity {
     private static final int DO_NEW = 2;
     private static final int DO_EXIT = 3;
 
-    private EditTextSelectable mText;
+    private EditText mText;
+    private ScrollView scrollView;
     private TextWatcher watcher;
     String filename = TPStrings.EMPTY;
     boolean changed = false;
@@ -55,11 +61,12 @@ public class EditorActivity extends AppCompatActivity {
 
     private int next_action = DO_NOTHING; // to figure out better way
 
-    Handler handler = new Handler();
-
     static int selectionStart = 0;
 
     SettingsService settingsService;
+
+    private MenuItem searchItem;
+    private SearchView searchView;
 
     /** Called when the activity is first created. */
     @Override
@@ -69,8 +76,8 @@ public class EditorActivity extends AppCompatActivity {
         settingsService = SettingsService.getInstance(this.getApplicationContext());
 
         setContentView(R.layout.main);
-        mText = this.findViewById(R.id.editText1);setContentView(R.layout.main);
         mText = this.findViewById(R.id.editText1);
+        scrollView = findViewById(R.id.vscroll);
         applyPreferences();
 
         if (savedInstanceState != null) {
@@ -114,32 +121,10 @@ public class EditorActivity extends AppCompatActivity {
             }
         };
 
-        handler.postDelayed(new Runnable(){
-            @Override
-            public void run() {
-                mText.addTextChangedListener(watcher);
-
-                mText.addOnSelectionChangedListener(new OnSelectionChangedListener(){
-
-                    @Override
-                    public void onSelectionChanged(int selStart, int selEnd) {
-                        selectionStart = mText.getSelectionStart();
-                    }
-
-                });
-
-            }
-        }, 1000);
-
         updateTitle();
         mText.requestFocus();
 
-        //SettingsService.getInstance(this.getApplicationContext()).applyLocale(this.getApplicationContext());
-
-        //it's important to use Base Content because otherwise it does not apply locale in SDK 23
         SettingsService.getInstance(this.getApplicationContext()).applyLocale(this.getBaseContext());
-
-        //additionally check locale
     }
 
     /**
@@ -211,28 +196,6 @@ public class EditorActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    public void onNewIntent(Intent intent)
-    {
-        super.onNewIntent(intent);
-        // search action
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            final String query = intent.getStringExtra(SearchManager.QUERY);
-            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
-                this,
-                SearchSuggestions.AUTHORITY,
-                SearchSuggestions.MODE
-            );
-            suggestions.saveRecentQuery(query, null);
-
-            handler.postDelayed(new Runnable(){
-                @Override
-                public void run() {
-                    doSearch(query);
-                }
-            }, 500);
-        }
-    }
-
     @Override
     public void onBackPressed() {
         if (this.changed && !exitDialogShown) {
@@ -263,28 +226,6 @@ public class EditorActivity extends AppCompatActivity {
             exitDialogShown = true;
         } else {
             super.onBackPressed();
-        }
-    }
-
-    void doSearch(String query) {
-        String t = mText.getText().toString().toLowerCase(Locale.getDefault());
-
-        if (selectionStart >= t.length()) {
-            selectionStart = -1;
-        }
-
-        int start;
-        start = t.indexOf(query.toLowerCase(Locale.getDefault()), selectionStart + 1);
-        if (start == -1) {	// loop search
-            start = t.indexOf(query.toLowerCase(Locale.getDefault()));
-        }
-
-        if (start != -1) {
-            selectionStart = start;
-            mText.setSelection(start, start + query.length());
-        } else {
-            selectionStart = 0;
-            Toast.makeText(this, formatString(R.string.s_not_found, query), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -349,10 +290,27 @@ public class EditorActivity extends AppCompatActivity {
         }
 
         int bgcolor = settingsService.getBgColor();
-        mText.setBackgroundColor(bgcolor);
+        scrollView.setBackgroundColor(bgcolor);
 
         int fontcolor = settingsService.getFontColor();//
         mText.setTextColor(fontcolor);
+    }
+
+    // onPrepareOptionsMenu
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Set up search view
+        searchItem = menu.findItem(R.id.menu_document_search);
+        searchView = (SearchView) searchItem.getActionView();
+
+        // Set up search view options and listener
+        if (searchView != null) {
+               searchView.setSubmitButtonEnabled(true);
+               searchView.setIconified(false);
+               searchView.setImeOptions(EditorInfo.IME_ACTION_GO);
+               searchView.setOnQueryTextListener(new QueryTextListener());
+        }
+        return true;
     }
 
     @SuppressLint("RestrictedApi")
@@ -370,31 +328,27 @@ public class EditorActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_document_open:
-                openFile();
-                return true;
-            case R.id.menu_document_new:
-                newFile();
-                return true;
-            case R.id.menu_document_save:
-                saveFile();
-                return true;
-            case R.id.menu_document_save_as:
-                saveAs();
-                return true;
-            case R.id.menu_document_search: // Trigger search
-                this.onSearchRequested();
-                break;
-            case R.id.menu_document_settings:
-                Intent intent = new Intent(this.getBaseContext(),
-                        SettingsActivity.class);
-                this.startActivityForResult(intent, REQUEST_SETTINGS);
-                return true;
-            case R.id.menu_exit:
-                exitApplication();
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_document_open) {
+            openFile();
+        } else if (itemId == R.id.menu_document_new) {
+            newFile();
+        } else if (itemId == R.id.menu_document_save) {
+            saveFile();
+        } else if (itemId == R.id.menu_document_save_as) {
+            saveAs();
+        } else if (itemId == R.id.menu_document_settings) {
+            Intent intent = new Intent(this.getBaseContext(),
+                    SettingsActivity.class);
+            this.startActivityForResult(intent, REQUEST_SETTINGS);
+        } else if (itemId == R.id.menu_exit) {
+            exitApplication();
         }
+
+        // Close text search
+        if (searchItem != null && searchItem.isActionViewExpanded())
+            searchItem.collapseActionView();
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -690,5 +644,100 @@ public class EditorActivity extends AppCompatActivity {
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, toast_str, duration);
         toast.show();
+    }
+
+    // QueryTextListener
+    private class QueryTextListener implements SearchView.OnQueryTextListener
+    {
+        private BackgroundColorSpan span = new BackgroundColorSpan(Color.YELLOW);
+        private Editable editable;
+        private Matcher matcher;
+        private Pattern pattern;
+        private int index;
+        private int height;
+
+        // onQueryTextChange
+        @Override
+        @SuppressWarnings("deprecation")
+        public boolean onQueryTextChange(String newText)
+        {
+            // Use regex search and spannable for highlighting
+            height = scrollView.getHeight();
+            editable = mText.getEditableText();
+
+            // Reset the index and clear highlighting
+            if (newText.length() == 0) {
+                index = 0;
+                editable.removeSpan(span);
+                return false;
+            }
+
+            // Check pattern
+            try {
+                pattern = Pattern.compile(newText, Pattern.MULTILINE);
+                matcher = pattern.matcher(editable);
+            } catch (Exception e) {
+                return false;
+            }
+
+            // Find text
+            if (matcher.find(index)) {
+                // Get index
+                index = matcher.start();
+
+                // Check layout
+                if (mText.getLayout() == null)
+                    return false;
+
+                // Get text position
+                int line = mText.getLayout().getLineForOffset(index);
+                int pos = mText.getLayout().getLineBaseline(line);
+
+                // Scroll to it
+                scrollView.smoothScrollTo(0, pos - height / 2);
+
+                // Highlight it
+                editable.setSpan(
+                        span,
+                        matcher.start(),
+                        matcher.end(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            } else {
+                index = 0;
+            }
+            return true;
+        }
+
+        // onQueryTextSubmit
+        @Override
+        public boolean onQueryTextSubmit(String query)
+        {
+            // Find next text
+            if (matcher.find()) {
+                // Get index
+                index = matcher.start();
+
+                // Get text position
+                int line = mText.getLayout().getLineForOffset(index);
+                int pos = mText.getLayout().getLineBaseline(line);
+
+                // Scroll to it
+                scrollView.smoothScrollTo(0, pos - height / 2);
+
+                // Highlight it
+                editable.setSpan(
+                        span,
+                        matcher.start(),
+                        matcher.end(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            } else {
+                matcher.reset();
+                index = 0;
+            }
+
+            return true;
+        }
     }
 }
