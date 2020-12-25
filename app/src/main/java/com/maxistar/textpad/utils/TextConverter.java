@@ -5,9 +5,9 @@ public class TextConverter {
     private static final String RN = "\r\n";
     private static final String N = "\n";
     private static final String R = "\r";
-    private static final String WINDOWS = "windows";
+    public static final String WINDOWS = "windows";
     public static final String UNIX = "unix";
-    private static final String MACOS = "macos";
+    public static final String MACOS = "macos";
 
     static private TextConverter instance = null;
 

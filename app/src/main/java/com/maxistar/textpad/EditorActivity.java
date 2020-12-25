@@ -35,6 +35,8 @@ import android.widget.SearchView;
 import android.widget.Toast;
 import com.maxistar.textpad.utils.System;
 import com.maxistar.textpad.utils.TextConverter;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 
@@ -66,7 +68,6 @@ public class EditorActivity extends AppCompatActivity {
     SettingsService settingsService;
 
     private MenuItem searchItem;
-    private SearchView searchView;
 
     /** Called when the activity is first created. */
     @Override
@@ -174,7 +175,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     /**
-     * @param state
+     * @param state Bundle
      */
     private void restoreState(Bundle state) {
         filename = state.getString(STATE_FILENAME);
@@ -182,9 +183,9 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     /**
-     * @param outState
+     * @param outState Bundle
      */
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_FILENAME, filename);
         outState.putBoolean(STATE_CHANGED, changed);
@@ -301,7 +302,7 @@ public class EditorActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Set up search view
         searchItem = menu.findItem(R.id.menu_document_search);
-        searchView = (SearchView) searchItem.getActionView();
+        SearchView searchView = (SearchView) searchItem.getActionView();
 
         // Set up search view options and listener
         if (searchView != null) {
@@ -649,16 +650,14 @@ public class EditorActivity extends AppCompatActivity {
     // QueryTextListener
     private class QueryTextListener implements SearchView.OnQueryTextListener
     {
-        private BackgroundColorSpan span = new BackgroundColorSpan(Color.YELLOW);
+        final private BackgroundColorSpan span = new BackgroundColorSpan(Color.YELLOW);
         private Editable editable;
         private Matcher matcher;
-        private Pattern pattern;
         private int index;
         private int height;
 
         // onQueryTextChange
         @Override
-        @SuppressWarnings("deprecation")
         public boolean onQueryTextChange(String newText)
         {
             // Use regex search and spannable for highlighting
@@ -674,7 +673,7 @@ public class EditorActivity extends AppCompatActivity {
 
             // Check pattern
             try {
-                pattern = Pattern.compile(newText, Pattern.MULTILINE);
+                Pattern pattern = Pattern.compile(newText, Pattern.MULTILINE);
                 matcher = pattern.matcher(editable);
             } catch (Exception e) {
                 return false;
@@ -733,6 +732,11 @@ public class EditorActivity extends AppCompatActivity {
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 );
             } else {
+                Toast.makeText(
+                        EditorActivity.this,
+                        formatString(R.string.s_not_found, query),
+                        Toast.LENGTH_SHORT
+                ).show();
                 matcher.reset();
                 index = 0;
             }

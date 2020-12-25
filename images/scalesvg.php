@@ -177,16 +177,16 @@ class androidResizer {
      *
      */
     public function resizeAllIcons() {
-        $this->resize('icon');
-        $this->resize('settings');
-        $this->resize('documentsave');
-        $this->resize('documentopen');
-        $this->resize('documentnew');
-        $this->resize('documentsave_as');
-        $this->resize('file');
-        $this->resize('folder');
-        $this->resize('editfind');
-        $this->resize('exit');
+        $this->resize('icon', 1);
+        $this->resize('settings', 1.5);
+        $this->resize('documentsave', 1.5);
+        $this->resize('documentopen', 1.5);
+        $this->resize('documentnew', 1.5);
+        $this->resize('documentsave_as', 1.5);
+        $this->resize('file', 1.5);
+        $this->resize('folder', 1.5);
+        $this->resize('editfind', 1.5);
+        $this->resize('exit', 1.5);
     }
 
     /**

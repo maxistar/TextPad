@@ -26,6 +26,7 @@
 		android:fadingEdge="none"
 		android:scrollbars="none"
 		android:gravity="top"
+		android:autofillHints=""
 		android:inputType="text|textAutoComplete|textAutoCorrect"
 		/>
 
