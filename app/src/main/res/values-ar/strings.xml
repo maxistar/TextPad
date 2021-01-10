@@ -67,4 +67,5 @@
   <string name="File_already_exists">الملف موجود بالفعل</string>
   <string name="Existing_file_will_be_overwritten">سيتم إستبدال الملف الموجود، هل تريد المتابعة بالتاكيد؟</string>
     <string name="Exit">خروج</string>
+    <string name="Type_Something_Here">اكتب شيئًا هنا</string>
 </resources>

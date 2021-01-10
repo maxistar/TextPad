@@ -68,5 +68,6 @@
     <string name="File_already_exists">Dosya zaten mevcut</string>
     <string name="Existing_file_will_be_overwritten">Mevcut dosyanın üzerine yazılacak, devam edilsin mi?</string>
     <string name="Exit">çıkış</string>
+    <string name="Type_Something_Here">Buraya Bir Şey Yazın</string>
 
 </resources>

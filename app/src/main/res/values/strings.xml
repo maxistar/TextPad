@@ -67,4 +67,5 @@
 	<string name="File_already_exists">File already exists</string>
 	<string name="Existing_file_will_be_overwritten">Existing file will be overwritten, are you sure to proceed?</string>
 	<string name="Exit">Exit</string>
+	<string name="Type_Something_Here">Type Something Here</string>
 </resources>

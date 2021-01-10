@@ -67,4 +67,5 @@
     <string name="File_already_exists">El archivo ya existe</string>
     <string name="Existing_file_will_be_overwritten">El archivo existente se sobrescribirá, ¿está seguro de continuar?</string>
     <string name="Exit">Salida</string>
+    <string name="Type_Something_Here">Escriba algo aquí</string>
 </resources>

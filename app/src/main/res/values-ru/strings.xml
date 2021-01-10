@@ -67,4 +67,5 @@
 	<string name="File_already_exists">Файл уже существует</string>
 	<string name="Existing_file_will_be_overwritten">Существующий файл будет переписан, вы уверены, что хотите продолжать?</string>
     <string name="Exit">Выход</string>
+    <string name="Type_Something_Here">Напишите что-нибудь здесь</string>
 </resources>

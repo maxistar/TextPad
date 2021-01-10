@@ -2,33 +2,21 @@
 
 <ScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/vscroll"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:fillViewport="true">
 
-	<HorizontalScrollView
-		android:id="@+id/hscroll"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:fillViewport="true"
-		android:layout_marginLeft="8dp"
-		android:layout_marginRight="8dp"
-		android:layout_marginBottom="8dp"
-		tools:ignore="LabelFor">
 	<EditText
 		android:id="@+id/editText1"
 		android:layout_width="wrap_content"
-		android:layout_height="fill_parent"
+		android:layout_height="wrap_content"
 		android:padding="5dip"
-		android:hint=""
+		android:hint="@string/Type_Something_Here"
 		android:fadingEdge="none"
 		android:scrollbars="none"
 		android:gravity="top"
 		android:autofillHints=""
 		android:inputType="text|textAutoComplete|textAutoCorrect"
 		/>
-
-		</HorizontalScrollView>
 </ScrollView>
