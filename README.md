@@ -2,7 +2,13 @@
 
 This is simple text editor that can help you with editing text files. 
 
-It is available on [Android Market](https://play.google.com/store/apps/details?id=com.maxistar.textpad)
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/com.maxistar.textpad/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=com.maxistar.textpad)
 
 This editor mostly used by me for small text notes, write down ideas while I have a break.
 
