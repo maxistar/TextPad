@@ -62,7 +62,13 @@ public class EditorActivity extends AppCompatActivity {
     private static final int DO_NEW = 2;
     private static final int DO_EXIT = 3;
 
-    String [] mimeTypes = {"text/*", "plain/*", "text/javascript", "application/ecmascript", "application/javascript"};
+    String [] mimeTypes = {
+            "text/*",
+            "plain/*",
+            "text/javascript",
+            "application/ecmascript",
+            "application/javascript"
+    };
 
     private EditText mText;
     private ScrollView scrollView;
@@ -79,6 +85,8 @@ public class EditorActivity extends AppCompatActivity {
     SettingsService settingsService;
 
     private MenuItem searchItem;
+
+    private TextWatcher textWatcher;
 
     /** Called when the activity is first created. */
     @Override
@@ -117,6 +125,28 @@ public class EditorActivity extends AppCompatActivity {
             }
         }
 
+        textWatcher = new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                if (!changed) {
+                    changed = true;
+                    updateTitle();
+                }
+            }
+        };
 
         updateTitle();
         mText.requestFocus();
@@ -155,6 +185,7 @@ public class EditorActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         String t = mText.getText().toString().toLowerCase(Locale.getDefault());
+        mText.addTextChangedListener(textWatcher);
         if (selectionStart < t.length()) {
             mText.setSelection(selectionStart, selectionStart);
         }
@@ -167,6 +198,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void onPause() {
+        mText.removeTextChangedListener(textWatcher);      // to prevent text
         super.onPause();
     }
 
@@ -186,6 +218,13 @@ public class EditorActivity extends AppCompatActivity {
         outState.putString(STATE_FILENAME, urlFilename);
         outState.putBoolean(STATE_CHANGED, changed);
     }
+
+    protected void onStop() {
+        //
+        // modification once rotated
+        super.onStop();
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -260,12 +299,21 @@ public class EditorActivity extends AppCompatActivity {
             title = TPStrings.NEW_FILE_TXT;
         } else {
             Uri uri = Uri.parse(urlFilename);
-            title = uri.getPath();
+            title = getFilenameByUri(uri);
         }
         if (changed) {
             title = title + TPStrings.STAR;
         }
         this.setTitle(title);
+    }
+
+    String getFilenameByUri(Uri uri) {
+        String path = uri.getPath();
+        String[] paths = path.split("/");
+        if (paths.length == 0) {
+            return "";
+        }
+        return paths[paths.length -1];
     }
 
     void applyPreferences() {
@@ -497,7 +545,11 @@ public class EditorActivity extends AppCompatActivity {
         if (urlFilename.equals(TPStrings.EMPTY)) {
             saveAs();
         } else {
-            saveNamedFile();
+            if (useAndroidManager()) {
+                saveNamedFile();
+            } else {
+                saveNamedFileLegacy();
+            }
         }
     }
 
@@ -530,7 +582,7 @@ public class EditorActivity extends AppCompatActivity {
             if (useAndroidManager()) {
                 saveNamedFile();
             } else {
-                saveNamedFileOld();
+                saveNamedFileLegacy();
             }
         }
     }
@@ -540,7 +592,7 @@ public class EditorActivity extends AppCompatActivity {
         return f.exists();
     }
 
-    protected void saveNamedFileOld() {
+    protected void saveNamedFileLegacy() {
         try {
             File f = new File(urlFilename);
             if (!f.exists()) {
