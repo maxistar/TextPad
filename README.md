@@ -1,6 +1,6 @@
 # Simple Text Editor for Android
 
-This is simple text editor that can help you with editing text files. 
+This is very simple text editor that can help you with editing text files. 
 
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
@@ -10,14 +10,19 @@ This is simple text editor that can help you with editing text files.
      alt="Get it on Google Play"
      height="80">](https://play.google.com/store/apps/details?id=com.maxistar.textpad)
 
-This editor mostly used by me for small text notes, write down ideas while I have a break.
+This editor mostly used by me for small text notes, write down small notes.
 
 Supports only plain text files at the moment.
 
-The code is open so can review code, send pull requests, new features, translations and so on. https://github.com/maxistar/TextPad.
+The code is open so can review code, send pull requests, new features, translations and so on. 
+
+Github repo: https://github.com/maxistar/TextPad.
 
 Any suggestions, pull requests, translations for this project are welcomed. Thank you!
 
+### Issues Tracker
+
+https://github.com/maxistar/TextPad/issues
 
 ### How to run sniffer
 
@@ -26,3 +31,4 @@ Any suggestions, pull requests, translations for this project are welcomed. Than
 ### To Do
 
 many many things to do.
+

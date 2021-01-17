@@ -31,4 +31,10 @@
         android:id="@+id/menu_exit"
         android:title="@string/Exit"
         android:icon="@drawable/exit"/>
+
+    <item
+        android:id="@+id/menu_test"
+        android:title="@string/Type_Something_Here"
+        android:icon="@drawable/settings"/>
+
 </menu>

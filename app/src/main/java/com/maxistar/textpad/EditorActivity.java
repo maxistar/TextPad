@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,12 +15,14 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -37,6 +41,7 @@ import com.maxistar.textpad.utils.System;
 import com.maxistar.textpad.utils.TextConverter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 
@@ -49,6 +54,9 @@ public class EditorActivity extends AppCompatActivity {
     private static final int REQUEST_SAVE = 2;
     private static final int REQUEST_SETTINGS = 3;
 
+    private static final int ACTION_OPTION_FILE = 4;
+    private static final int ACTION_SAVE_FILE = 5;
+
     private static final int DO_NOTHING = 0;
     private static final int DO_OPEN = 1;
     private static final int DO_NEW = 2;
@@ -56,8 +64,9 @@ public class EditorActivity extends AppCompatActivity {
 
     private EditText mText;
     private ScrollView scrollView;
-    private TextWatcher watcher;
-    String filename = TPStrings.EMPTY;
+    
+    String urlFilename = TPStrings.EMPTY;
+    
     boolean changed = false;
     boolean exitDialogShown = false;
 
@@ -90,9 +99,9 @@ public class EditorActivity extends AppCompatActivity {
             Intent i = this.getIntent();
             if (TPStrings.ACTION_VIEW.equals(i.getAction())) {
                 android.net.Uri u = i.getData();
-                openNamedFile(u.getPath());
+                openNamedFile(u);
             } else { // it this is just created
-                if (this.filename.equals(TPStrings.EMPTY)) {
+                if (this.urlFilename.equals(TPStrings.EMPTY)) {
                     if (settingsService.isOpenLastFile()) {
                         openLastFile();
                     }
@@ -100,27 +109,6 @@ public class EditorActivity extends AppCompatActivity {
             }
         }
 
-        watcher = new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                if (!changed) {
-                    changed = true;
-                    updateTitle();
-                }
-            }
-        };
 
         updateTitle();
         mText.requestFocus();
@@ -178,7 +166,7 @@ public class EditorActivity extends AppCompatActivity {
      * @param state Bundle
      */
     private void restoreState(Bundle state) {
-        filename = state.getString(STATE_FILENAME);
+        urlFilename = state.getString(STATE_FILENAME);
         changed = state.getBoolean(STATE_CHANGED);
     }
 
@@ -187,14 +175,8 @@ public class EditorActivity extends AppCompatActivity {
      */
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(STATE_FILENAME, filename);
+        outState.putString(STATE_FILENAME, urlFilename);
         outState.putBoolean(STATE_CHANGED, changed);
-    }
-
-    protected void onStop() {
-        mText.removeTextChangedListener(watcher); 	// to prevent text
-        // modification once rotated
-        super.onStop();
     }
 
     @Override
@@ -237,16 +219,18 @@ public class EditorActivity extends AppCompatActivity {
     void openLastFile() {
         if (!settingsService.getLastFilename().equals(TPStrings.EMPTY)) {
             showToast(formatString(R.string.opened_last_edited_file, settingsService.getLastFilename()));
-            this.openNamedFile(settingsService.getLastFilename());
+            Uri uri = Uri.parse(settingsService.getLastFilename());
+            this.openNamedFile(uri);
         }
     }
 
     void updateTitle() {
         String title;
-        if (filename.equals(TPStrings.EMPTY)) {
+        if (urlFilename.equals(TPStrings.EMPTY)) {
             title = TPStrings.NEW_FILE_TXT;
         } else {
-            title = filename;
+            Uri uri = Uri.parse(urlFilename);
+            title = uri.getPath();
         }
         if (changed) {
             title = title + TPStrings.STAR;
@@ -385,14 +369,17 @@ public class EditorActivity extends AppCompatActivity {
 
     protected void clearFile() {
         this.mText.setText(TPStrings.EMPTY);
-        filename = TPStrings.EMPTY;
+        urlFilename = TPStrings.EMPTY;
         changed = false;
         this.updateTitle();
     }
 
     protected void saveAs() {
-        Intent intent = new Intent(this.getBaseContext(), FileDialog.class);
-        this.startActivityForResult(intent, REQUEST_SAVE);
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("plain/text");
+        intent.putExtra(Intent.EXTRA_TITLE, "text.txt");
+        startActivityForResult(intent, ACTION_OPTION_FILE);
     }
 
     protected void openFile() {
@@ -456,15 +443,15 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void openNewFile() {
-        Intent intent = new Intent(this.getBaseContext(), FileDialog.class);
-        intent.putExtra(TPStrings.SELECTION_MODE, SelectionMode.MODE_OPEN);
-        this.startActivityForResult(intent, REQUEST_OPEN);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/plain");
+        startActivityForResult(intent, ACTION_SAVE_FILE);
     }
 
     protected void saveFile() {
-        if (filename.equals(TPStrings.EMPTY)) {
-            Intent intent = new Intent(this.getBaseContext(), FileDialog.class);
-            this.startActivityForResult(intent, REQUEST_SAVE);
+        if (urlFilename.equals(TPStrings.EMPTY)) {
+            saveAs();
         } else {
             saveNamedFile();
         }
@@ -500,13 +487,13 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected boolean fileAlreadyExists() {
-        File f = new File(filename);
+        File f = new File(urlFilename);
         return f.exists();
     }
 
-    protected void saveNamedFile() {
+    protected void saveNamedFileOld() {
         try {
-            File f = new File(filename);
+            File f = new File(urlFilename);
             if (!f.exists()) {
                 f.createNewFile();
             }
@@ -544,7 +531,46 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    protected void openNamedFile(String filename) {
+    protected void saveFile(Uri uri) throws FileNotFoundException, IOException {
+        ContentResolver contentResolver = getContentResolver();
+        OutputStream fos = contentResolver.openOutputStream(uri);
+        String s = this.mText.getText().toString();
+
+        s = applyEndings(s);
+
+        fos.write(s.getBytes(settingsService.getFileEncoding()));
+        fos.close();
+    }
+
+    protected void saveNamedFile() {
+        try {
+            Uri uri = Uri.parse(urlFilename);
+            saveFile(uri);
+
+            showToast(R.string.File_Written);
+            changed = false;
+            updateTitle();
+
+            if (next_action == DO_OPEN) {   // because of multithread nature
+                next_action = DO_NOTHING;
+                openNewFile();
+            }
+            if (next_action == DO_NEW) { // because of multithread nature
+                next_action = DO_NOTHING;
+                clearFile();
+            }
+            if (next_action == DO_EXIT) {
+                exitApplication();
+            }
+        } catch (FileNotFoundException e) {
+            this.showToast(R.string.File_not_found);
+        } catch (IOException e) {
+            this.showToast(R.string.Can_not_write_file);
+        }
+
+    }
+
+    protected void openNamedFile1(String filename) {
         try {
             File f = new File(filename);
             FileInputStream fis = new FileInputStream(f);
@@ -565,9 +591,42 @@ public class EditorActivity extends AppCompatActivity {
             this.mText.setText(ttt);
             showToast(getBaseContext().getResources().getString(R.string.File_opened_, filename));
             changed = false;
-            this.filename = filename;
+            this.urlFilename = filename;
             if (!settingsService.getLastFilename().equals(filename)) {
                 settingsService.setLastFilename(filename, this.getApplicationContext());
+            }
+            selectionStart = 0;
+            updateTitle();
+        } catch (FileNotFoundException e) {
+            this.showToast(R.string.File_not_found);
+        } catch (IOException e) {
+            this.showToast(R.string.Can_not_read_file);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    protected void openNamedFile(Uri uri) {
+        try {
+            ContentResolver contentResolver = getContentResolver();
+            InputStream inputStream = contentResolver.openInputStream(uri);
+            int size = inputStream.available();
+            DataInputStream dis = new DataInputStream(inputStream);
+            byte[] b = new byte[(int) size];
+            int length = dis.read(b, 0, (int) size);
+
+            String ttt = new String(b, 0, length, settingsService.getFileEncoding());
+            ttt = toUnixEndings(ttt);
+
+            inputStream.close();
+            dis.close();
+
+            this.mText.setText(ttt);
+
+            showToast(getBaseContext().getResources().getString(R.string.File_opened_, urlFilename));
+            changed = false;
+            this.urlFilename = uri.toString();
+            if (!settingsService.getLastFilename().equals(urlFilename)) {
+                settingsService.setLastFilename(urlFilename, this.getApplicationContext());
             }
             selectionStart = 0;
             updateTitle();
@@ -615,7 +674,7 @@ public class EditorActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_SAVE) {
             if (resultCode == Activity.RESULT_OK) {
-                filename = data
+                urlFilename = data
                         .getStringExtra(TPStrings.RESULT_PATH);
                 this.saveFileWithConfirmation();
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -623,12 +682,40 @@ public class EditorActivity extends AppCompatActivity {
             }
         } else if (requestCode == REQUEST_OPEN) {
             if (resultCode == Activity.RESULT_OK) {
-                this.openNamedFile(data.getStringExtra(TPStrings.RESULT_PATH));
+                Uri uri = Uri.parse(data.getStringExtra(TPStrings.RESULT_PATH));
+                this.openNamedFile(uri);
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 showToast(R.string.Operation_Canceled);
             }
         } else if (requestCode == REQUEST_SETTINGS) {
             applyPreferences();
+        } else if (requestCode == ACTION_SAVE_FILE
+                && resultCode == Activity.RESULT_OK) {
+            // The result data contains a URI for the document or directory that
+            // the user selected.
+            Uri uri = null;
+            if (data != null) {
+                uri = data.getData();
+                //String path = uri.getPath();
+
+                final int takeFlags = data.getFlags()
+                        & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+// Check for the freshest data.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                }
+
+                openNamedFile(uri);
+                // Perform operations on the document using its URI.
+            }
+        } else if (requestCode == ACTION_OPTION_FILE) {
+            Uri uri = null;
+            if (data != null) {
+                uri = data.getData();
+                urlFilename = uri.toString();
+                this.saveFileWithConfirmation();
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
