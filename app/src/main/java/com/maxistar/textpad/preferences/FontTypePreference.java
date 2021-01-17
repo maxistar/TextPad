@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.maxistar.textpad.R;
+import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
 import com.maxistar.textpad.TPStrings;
 
@@ -29,7 +30,7 @@ public class FontTypePreference extends DialogPreference
     public FontTypePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        settingsService = SettingsService.getInstance(context);
+        settingsService = ServiceLocator.getInstance().getSettingsService(context);
 
         String font = settingsService.getFont();
 

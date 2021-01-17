@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.maxistar.textpad.R;
+import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
 
 public class ColorPreference extends DialogPreference
@@ -30,7 +31,7 @@ public class ColorPreference extends DialogPreference
     public ColorPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        settingsService = SettingsService.getInstance(context);
+        settingsService = ServiceLocator.getInstance().getSettingsService(context);
 
         attribute = attrs.getAttributeValue(1);
 

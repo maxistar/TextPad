@@ -68,4 +68,6 @@
     <string name="Existing_file_will_be_overwritten">Il file esistente verrà sovrascritto, sei sicuro di procedere?</string>
     <string name="Exit">Uscita</string>
     <string name="Type_Something_Here">Digita qualcosa qui</string>
+    <string name="Legacy_file_picker">Selettore di file legacy</string>
+    <string name="Use_legacy_file_picker">Usa il selettore di file legacy</string>
 </resources>

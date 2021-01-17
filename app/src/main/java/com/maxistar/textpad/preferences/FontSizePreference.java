@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.maxistar.textpad.R;
+import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
 
 public class FontSizePreference extends DialogPreference
@@ -27,7 +28,7 @@ public class FontSizePreference extends DialogPreference
     public FontSizePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        settingsService = SettingsService.getInstance(context);
+        settingsService = ServiceLocator.getInstance().getSettingsService(context);
         // figure out the current size.
         String font = settingsService.getFont();
 

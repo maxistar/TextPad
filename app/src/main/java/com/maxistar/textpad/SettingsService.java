@@ -18,6 +18,7 @@ public class SettingsService {
         public static final String SETTING_BG_COLOR = "bgcolor";
         public static final String SETTING_FONT_COLOR = "fontcolor";
         public static final String SETTING_LANGUAGE = "language";
+        public static final String SETTING_LEGASY_FILE_PICKER = "use_legacy_file_picker";
 
         public static final String SETTING_MEDIUM = "Medium";
         public static final String SETTING_EXTRA_SMALL = "Extra Small";
@@ -26,6 +27,7 @@ public class SettingsService {
         public static final String SETTING_HUGE = "Huge";
 
         private boolean open_last_file = true;
+        private boolean legacy_file_picker = false;
 
         private String file_encoding = "";
         private String last_filename = "";
@@ -39,13 +41,14 @@ public class SettingsService {
         private static boolean languageWasChanged = false;
 
 
-        private SettingsService(Context context) {
+        SettingsService(Context context) {
             loadSettings(context);
         }
 
         private void loadSettings(Context context) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             open_last_file = sharedPref.getBoolean(SETTING_OPEN_LAST_FILE, false);
+            legacy_file_picker = sharedPref.getBoolean(SETTING_LEGASY_FILE_PICKER, false);
             last_filename = sharedPref.getString(SETTING_LAST_FILENAME, TPStrings.EMPTY);
             file_encoding = sharedPref.getString(SETTING_FILE_ENCODING, TPStrings.UTF_8);
             delimiters = sharedPref.getString(SETTING_DELIMITERS, TPStrings.EMPTY);
@@ -58,10 +61,6 @@ public class SettingsService {
 
         public void reloadSettings(Context context) {
             loadSettings(context);
-        }
-
-        static public SettingsService getInstance(Context context) {
-            return new SettingsService(context);
         }
 
         private void setSettingValue(String name, String value, Context context) {
@@ -80,7 +79,11 @@ public class SettingsService {
 
         public boolean isOpenLastFile() {
             return open_last_file;
-        };
+        }
+
+        public boolean isLegacyFilePicker() {
+            return legacy_file_picker;
+        }
 
         public String getFileEncoding() {
             return file_encoding;
@@ -88,11 +91,11 @@ public class SettingsService {
 
         public String getDelimiters() {
             return delimiters;
-        };
+        }
 
         public String getFontSize() {
             return font_size;
-        };
+        }
 
         public int getBgColor() {
             return bgcolor;

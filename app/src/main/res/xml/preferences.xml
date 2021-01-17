@@ -8,6 +8,12 @@
 			android:summary="@string/To_open_last_edited_file"
 			android:defaultValue="false" />
 
+		<CheckBoxPreference
+			android:key="use_legacy_file_picker"
+			android:title="@string/Legacy_file_picker"
+			android:summary="@string/Use_legacy_file_picker"
+			android:defaultValue="false" />
+
 		<ListPreference
 			android:key="encoding"
 			android:summary="@string/Click_to_change_encoding"

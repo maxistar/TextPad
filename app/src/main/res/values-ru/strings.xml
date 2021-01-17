@@ -20,7 +20,7 @@
 	<string name="File_Written">Файл сохранён</string>
 	<string name="Can_not_write_file">Невозможно записать файл</string>
 	<string name="File_opened_">Файл открыт %s</string>
-	<string name="File_not_found">Файл не найдет</string>
+	<string name="File_not_found">Файл не найден</string>
 	<string name="Can_not_read_file">Не могу прочитать файл</string>
 	<string name="Operation_Canceled">Операция Отменена</string>
 	<string name="Settings">Настройки</string>
@@ -68,4 +68,6 @@
 	<string name="Existing_file_will_be_overwritten">Существующий файл будет переписан, вы уверены, что хотите продолжать?</string>
     <string name="Exit">Выход</string>
     <string name="Type_Something_Here">Напишите что-нибудь здесь</string>
+	<string name="Legacy_file_picker">Старый селектор файлов</string>
+	<string name="Use_legacy_file_picker">Использовать устаревшее средство выбора файлов</string>
 </resources>

@@ -11,11 +11,14 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
@@ -26,8 +29,13 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        settingsService = SettingsService.getInstance(getApplicationContext());
+        settingsService = ServiceLocator.getInstance().getSettingsService(getApplicationContext());
         addPreferencesFromResource(R.xml.preferences);
+
+        if (hideLegacyPicker()) {
+            Preference legacyPicker = this.findPreference(SettingsService.SETTING_LEGASY_FILE_PICKER);
+            legacyPicker.setEnabled(false);
+        }
 
         //get default value for count of files
 
@@ -59,6 +67,18 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         encoding.setEntryValues(entry_values.toArray(entry_values_arr));
     }
 
+    boolean hideLegacyPicker() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return true;
+        }
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            return true;
+        }
+
+        return false;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -75,6 +95,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
         // Unregister the listener whenever a key changes
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+        settingsService.reloadSettings(this.getApplicationContext());
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {

@@ -68,4 +68,6 @@
   <string name="Existing_file_will_be_overwritten">سيتم إستبدال الملف الموجود، هل تريد المتابعة بالتاكيد؟</string>
     <string name="Exit">خروج</string>
     <string name="Type_Something_Here">اكتب شيئًا هنا</string>
+    <string name="Legacy_file_picker">محدد الملفات القديم</string>
+  <string name="Use_legacy_file_picker">استخدم منتقي الملفات القديم</string>
 </resources>

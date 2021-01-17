@@ -68,4 +68,6 @@
 	<string name="Existing_file_will_be_overwritten">Bestehende Datei wird überschrieben. Möchten Sie fortfahren?</string>
     <string name="Exit">Ausgang</string>
     <string name="Type_Something_Here">Geben Sie hier etwas ein</string>
+    <string name="Legacy_file_picker">Legacy-Dateiselektor</string>
+	<string name="Use_legacy_file_picker">Verwenden die Legacy-Dateiauswahl</string>
 </resources>

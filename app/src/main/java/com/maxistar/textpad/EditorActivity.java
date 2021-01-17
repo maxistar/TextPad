@@ -62,6 +62,8 @@ public class EditorActivity extends AppCompatActivity {
     private static final int DO_NEW = 2;
     private static final int DO_EXIT = 3;
 
+    String [] mimeTypes = {"text/*", "plain/*", "text/javascript", "application/ecmascript", "application/javascript"};
+
     private EditText mText;
     private ScrollView scrollView;
     
@@ -83,7 +85,7 @@ public class EditorActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        settingsService = SettingsService.getInstance(this.getApplicationContext());
+        settingsService = ServiceLocator.getInstance().getSettingsService(this.getApplicationContext());
 
         setContentView(R.layout.main);
         mText = this.findViewById(R.id.editText1);
@@ -98,8 +100,14 @@ public class EditorActivity extends AppCompatActivity {
 
             Intent i = this.getIntent();
             if (TPStrings.ACTION_VIEW.equals(i.getAction())) {
-                android.net.Uri u = i.getData();
-                openNamedFile(u);
+                Uri u = i.getData();
+                if (useAndroidManager()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        openNamedFile(u);
+                    }
+                } else {
+                    openNamedFileLegacy(u.getPath());
+                }
             } else { // it this is just created
                 if (this.urlFilename.equals(TPStrings.EMPTY)) {
                     if (settingsService.isOpenLastFile()) {
@@ -113,7 +121,7 @@ public class EditorActivity extends AppCompatActivity {
         updateTitle();
         mText.requestFocus();
 
-        SettingsService.getInstance(this.getApplicationContext()).applyLocale(this.getBaseContext());
+        settingsService.applyLocale(this.getBaseContext());
     }
 
     /**
@@ -216,11 +224,33 @@ public class EditorActivity extends AppCompatActivity {
         return this.getResources().getString(stringId, parameter);
     }
 
+    boolean useAndroidManager() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return false;
+        }
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            return true;
+        }
+
+        if (settingsService.isLegacyFilePicker()) {
+            return false;
+        }
+        return true;
+    }
+
     void openLastFile() {
         if (!settingsService.getLastFilename().equals(TPStrings.EMPTY)) {
-            showToast(formatString(R.string.opened_last_edited_file, settingsService.getLastFilename()));
-            Uri uri = Uri.parse(settingsService.getLastFilename());
-            this.openNamedFile(uri);
+            if (useAndroidManager()) {
+                showToast(formatString(R.string.opened_last_edited_file, settingsService.getLastFilename()));
+                Uri uri = Uri.parse(settingsService.getLastFilename());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //dublicated in useAndroidManager
+                    this.openNamedFile(uri);
+                }
+            } else {
+                this.openNamedFileLegacy(settingsService.getLastFilename());
+            }
+
         }
     }
 
@@ -375,11 +405,17 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void saveAs() {
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_TITLE, "text.txt");
-        startActivityForResult(intent, ACTION_OPTION_FILE);
+        if (useAndroidManager()) {
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+            intent.putExtra(Intent.EXTRA_TITLE, TPStrings.NEW_FILE_TXT);
+            startActivityForResult(intent, ACTION_OPTION_FILE);
+        } else {
+            Intent intent = new Intent(this.getBaseContext(), FileDialog.class);
+            this.startActivityForResult(intent, REQUEST_SAVE);
+        }
     }
 
     protected void openFile() {
@@ -443,10 +479,18 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void openNewFile() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/plain");
-        startActivityForResult(intent, ACTION_SAVE_FILE);
+        if (useAndroidManager()) {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+            intent.putExtra(Intent.EXTRA_TITLE, TPStrings.NEW_FILE_TXT);
+            startActivityForResult(intent, ACTION_SAVE_FILE);
+        } else {
+            Intent intent = new Intent(this.getBaseContext(), FileDialog.class);
+            intent.putExtra(TPStrings.SELECTION_MODE, SelectionMode.MODE_OPEN);
+            this.startActivityForResult(intent, REQUEST_OPEN);
+        }
     }
 
     protected void saveFile() {
@@ -482,7 +526,12 @@ public class EditorActivity extends AppCompatActivity {
                         }
                     }).show();
         } else {
-            saveNamedFile();
+
+            if (useAndroidManager()) {
+                saveNamedFile();
+            } else {
+                saveNamedFileOld();
+            }
         }
     }
 
@@ -570,7 +619,7 @@ public class EditorActivity extends AppCompatActivity {
 
     }
 
-    protected void openNamedFile1(String filename) {
+    protected void openNamedFileLegacy(String filename) {
         try {
             File f = new File(filename);
             FileInputStream fis = new FileInputStream(f);
@@ -682,8 +731,7 @@ public class EditorActivity extends AppCompatActivity {
             }
         } else if (requestCode == REQUEST_OPEN) {
             if (resultCode == Activity.RESULT_OK) {
-                Uri uri = Uri.parse(data.getStringExtra(TPStrings.RESULT_PATH));
-                this.openNamedFile(uri);
+                this.openNamedFileLegacy(data.getStringExtra(TPStrings.RESULT_PATH));
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 showToast(R.string.Operation_Canceled);
             }
@@ -693,7 +741,7 @@ public class EditorActivity extends AppCompatActivity {
                 && resultCode == Activity.RESULT_OK) {
             // The result data contains a URI for the document or directory that
             // the user selected.
-            Uri uri = null;
+            Uri uri;
             if (data != null) {
                 uri = data.getData();
                 //String path = uri.getPath();
@@ -701,13 +749,12 @@ public class EditorActivity extends AppCompatActivity {
                 final int takeFlags = data.getFlags()
                         & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-// Check for the freshest data.
+
+                // Check for the freshest data.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                    openNamedFile(uri);
                 }
-
-                openNamedFile(uri);
-                // Perform operations on the document using its URI.
             }
         } else if (requestCode == ACTION_OPTION_FILE) {
             Uri uri = null;
