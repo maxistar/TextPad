@@ -96,6 +96,10 @@
         android:icon="@drawable/ic_print"
         app:iconTint="@color/colorIcon" />
     <item
+        android:id="@+id/menu_dictate"
+        android:title="@string/Dictate"
+        android:icon="@drawable/ic_settings"/>
+    <item
         android:id="@+id/menu_document_settings"
         android:title="@string/Settings"
         android:icon="@drawable/ic_settings"
