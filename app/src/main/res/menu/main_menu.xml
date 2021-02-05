@@ -2,33 +2,33 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_document_new"
-        android:title="@string/New"
-        android:icon="@drawable/documentnew"/>
-    <item
-        android:id="@+id/menu_document_open"
-        android:title="@string/Open"
-        android:icon="@drawable/documentopen"/>
-    <item
-        android:id="@+id/menu_document_save"
-        android:title="@string/Save"
-        android:icon="@drawable/documentsave"/>
-    <item
-        android:id="@+id/menu_document_save_as"
-        android:title="@string/Save_As"
-        android:icon="@drawable/documentsave_as"/>
-    <item
         android:id="@+id/menu_document_search"
         android:title="@string/Search"
-        android:icon="@drawable/editfind"
+        android:icon="@drawable/ic_search"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="never|collapseActionView" />
     <item
+        android:id="@+id/menu_document_new"
+        android:title="@string/New"
+        android:icon="@drawable/ic_file"/>
+    <item
+        android:id="@+id/menu_document_open"
+        android:title="@string/Open"
+        android:icon="@drawable/ic_folder_open"/>
+    <item
+        android:id="@+id/menu_document_save"
+        android:title="@string/Save"
+        android:icon="@drawable/ic_save"/>
+    <item
+        android:id="@+id/menu_document_save_as"
+        android:title="@string/Save_As"
+        android:icon="@drawable/ic_save_as"/>
+    <item
         android:id="@+id/menu_document_settings"
         android:title="@string/Settings"
-        android:icon="@drawable/settings"/>
+        android:icon="@drawable/ic_settings"/>
     <item
         android:id="@+id/menu_exit"
         android:title="@string/Exit"
-        android:icon="@drawable/exit"/>
+        android:icon="@drawable/ic_arrow_right"/>
 </menu>

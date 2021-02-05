@@ -859,7 +859,7 @@ public class EditorActivity extends AppCompatActivity {
 
             // Check pattern
             try {
-                Pattern pattern = Pattern.compile(newText, Pattern.MULTILINE);
+                Pattern pattern = Pattern.compile(newText, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
                 matcher = pattern.matcher(editable);
             } catch (Exception e) {
                 return false;
