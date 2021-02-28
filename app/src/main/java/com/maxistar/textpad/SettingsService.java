@@ -77,6 +77,13 @@ public class SettingsService {
             editor.apply();
         }
 
+        private void setSettingValue(String name, boolean value, Context context) {
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean(name, value);
+            editor.apply();
+        }
+
         public boolean isOpenLastFile() {
             return open_last_file;
         }
@@ -115,6 +122,15 @@ public class SettingsService {
 
         public String getLanguage() {
             return language;
+        }
+
+        public void setLegacyFilePicker(boolean value) {
+            legacy_file_picker = value;
+        }
+
+        public void setLegacyFilePicker(boolean value, Context context) {
+            this.setSettingValue(SETTING_LEGASY_FILE_PICKER, legacy_file_picker, context);
+            legacy_file_picker = value;
         }
 
         //setters

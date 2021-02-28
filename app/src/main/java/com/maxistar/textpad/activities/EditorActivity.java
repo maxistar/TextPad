@@ -1,4 +1,4 @@
-package com.maxistar.textpad;
+package com.maxistar.textpad.activities;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -37,6 +37,13 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.Toast;
+
+import com.maxistar.textpad.FileDialog;
+import com.maxistar.textpad.R;
+import com.maxistar.textpad.SelectionMode;
+import com.maxistar.textpad.ServiceLocator;
+import com.maxistar.textpad.SettingsService;
+import com.maxistar.textpad.TPStrings;
 import com.maxistar.textpad.utils.System;
 import com.maxistar.textpad.utils.TextConverter;
 
@@ -49,6 +56,7 @@ public class EditorActivity extends AppCompatActivity {
 
     private static final String STATE_FILENAME = "filename";
     private static final String STATE_CHANGED = "changed";
+    private static final String STATE_CURSOR_POSITION = "cursor-position";
 
     private static final int REQUEST_OPEN = 1;
     private static final int REQUEST_SAVE = 2;
@@ -208,6 +216,7 @@ public class EditorActivity extends AppCompatActivity {
     private void restoreState(Bundle state) {
         urlFilename = state.getString(STATE_FILENAME);
         changed = state.getBoolean(STATE_CHANGED);
+        selectionStart = state.getInt(STATE_CURSOR_POSITION);
     }
 
     /**
@@ -217,6 +226,7 @@ public class EditorActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_FILENAME, urlFilename);
         outState.putBoolean(STATE_CHANGED, changed);
+        outState.putInt(STATE_CURSOR_POSITION, mText.getSelectionStart());
     }
 
     protected void onStop() {
