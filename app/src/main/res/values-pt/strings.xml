@@ -28,7 +28,7 @@
   <string name="Continue">Continuar</string>
   <string name="about_message">Este é um simples editor de texto para Android. Para mais informações visite http://en.maxistar.ru/projects/textpad.</string>
   <string name="Choose_Language">Alterar idioma</string>
-    <string name="Language">Idioma</string>
+  <string name="Language">Idioma</string>
   <string name="Click_to_change_language">Toque para alterar o idioma do aplicativo</string>
   <string name="searchLabel">Procurar</string>
   <string name="searchHint">Texto</string>
@@ -38,10 +38,6 @@
   <string name="Choose_a_color">Alterar cor</string>
   <string name="Open_File">Abrir arquivo</string>
   <string name="Save_File">Salvar arquivo</string>
-  <!--<string name="Small">Pequeno</string>
-  <string name="Medium">Médio</string>
-  <string name="Large">Grande</string>
-  <string name="Huge">Extra grande</string>-->
   <string name="Click_to_change_encoding">Toque para alterar a codificação</string>
   <string name="Encoding">Codificação</string>
   <string name="Line_endings">Final da linha</string>
@@ -66,8 +62,8 @@
   <string name="Are_you_sure_to_quit">Tem certeza de que deseja sair do aplicativo?</string>
   <string name="File_already_exists">File already exists</string>
   <string name="Existing_file_will_be_overwritten">Existing file will be overwritten, are you sure to proceed?</string>
-    <string name="Exit">Saída</string>
-    <string name="Type_Something_Here">Digite algo aqui</string>
-    <string name="Legacy_file_picker">Seletor de arquivos legado</string>
+  <string name="Exit">Saída</string>
+  <string name="Type_Something_Here">Digite algo aqui</string>
+  <string name="Legacy_file_picker">Seletor de arquivos legado</string>
   <string name="Use_legacy_file_picker">Usar seletor de arquivo legado</string>
 </resources>

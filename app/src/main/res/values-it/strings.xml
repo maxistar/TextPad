@@ -38,10 +38,6 @@
     <string name="Choose_a_color">Scegli un colore</string>
     <string name="Open_File">Apri il file</string>
     <string name="Save_File">Salvare il file</string>
-    <!--<string name="Small">Piccolo</string>
-    <string name="Medium">Medio</string>
-    <string name="Large">Grande</string>
-    <string name="Huge">Enorme</string>-->
     <string name="Click_to_change_encoding">Fai clic per modificare la codifica</string>
     <string name="Encoding">Codifica</string>
     <string name="Line_endings">Fine linea</string>
