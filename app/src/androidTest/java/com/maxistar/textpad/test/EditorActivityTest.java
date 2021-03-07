@@ -203,7 +203,7 @@ public class EditorActivityTest {
     }
 
 
-    //Test
+    @Test
     public void rewriteConfirmationYesText() {
         String textExample = "some new text";
         String oldTextExample = "some old content";
@@ -237,10 +237,11 @@ public class EditorActivityTest {
                 .check(matches(isDisplayed()))
                 .perform(click());
 
+        SystemClock.sleep(1000);
+
         onView(withText(R.string.Yes))
                 .check(matches(isDisplayed()))
                 .perform(click());
-
 
         String rootPath = Environment.getExternalStorageDirectory().getPath();
         String filePath = rootPath + "/" + filename;

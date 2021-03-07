@@ -30,6 +30,7 @@ import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
@@ -69,6 +70,10 @@ public class EditorActivity extends AppCompatActivity {
     private static final int DO_OPEN = 1;
     private static final int DO_NEW = 2;
     private static final int DO_EXIT = 3;
+
+    private static final String LOG_TAG = "TextEditor";
+
+    private QueryTextListener queryTextListener;
 
     String [] mimeTypes = {
             "text/*",
@@ -378,13 +383,21 @@ public class EditorActivity extends AppCompatActivity {
 
         // Set up search view options and listener
         if (searchView != null) {
-               searchView.setSubmitButtonEnabled(true);
-               searchView.setIconified(false);
-               searchView.setImeOptions(EditorInfo.IME_ACTION_GO);
-               searchView.setOnQueryTextListener(new QueryTextListener());
+            searchView.setSubmitButtonEnabled(true);
+            searchView.setIconified(false);
+            searchView.setImeOptions(EditorInfo.IME_ACTION_GO);
+            searchView.setOnQueryTextListener(getQueryTextListener());
+            searchItem.setOnActionExpandListener(getQueryTextListener());
         }
         return true;
     }
+
+    private QueryTextListener getQueryTextListener() {
+        if (queryTextListener == null) {
+            queryTextListener = new QueryTextListener();
+        }
+        return queryTextListener;
+    };
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -588,7 +601,6 @@ public class EditorActivity extends AppCompatActivity {
                         }
                     }).show();
         } else {
-
             if (useAndroidManager()) {
                 saveNamedFile();
             } else {
@@ -844,22 +856,25 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     // QueryTextListener
-    private class QueryTextListener implements SearchView.OnQueryTextListener
+    private class QueryTextListener
+            implements SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener
     {
         final private BackgroundColorSpan span = new BackgroundColorSpan(Color.YELLOW);
-        private Editable editable;
+        private final Editable editable;
         private Matcher matcher;
         private int index;
-        private int height;
+        private final int height;
+
+        public QueryTextListener() {
+            // Use regex search and spannable for highlighting
+            height = scrollView.getHeight();
+            editable = mText.getEditableText();
+        }
 
         // onQueryTextChange
         @Override
         public boolean onQueryTextChange(String newText)
         {
-            // Use regex search and spannable for highlighting
-            height = scrollView.getHeight();
-            editable = mText.getEditableText();
-
             // Reset the index and clear highlighting
             if (newText.length() == 0) {
                 index = 0;
@@ -877,27 +892,11 @@ public class EditorActivity extends AppCompatActivity {
 
             // Find text
             if (matcher.find(index)) {
-                // Get index
-                index = matcher.start();
-
                 // Check layout
                 if (mText.getLayout() == null)
                     return false;
 
-                // Get text position
-                int line = mText.getLayout().getLineForOffset(index);
-                int pos = mText.getLayout().getLineBaseline(line);
-
-                // Scroll to it
-                scrollView.smoothScrollTo(0, pos - height / 2);
-
-                // Highlight it
-                editable.setSpan(
-                        span,
-                        matcher.start(),
-                        matcher.end(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
+                doSearch();
             } else {
                 index = 0;
             }
@@ -910,23 +909,11 @@ public class EditorActivity extends AppCompatActivity {
         {
             // Find next text
             if (matcher.find()) {
-                // Get index
-                index = matcher.start();
+                // Check layout
+                if (mText.getLayout() == null)
+                    return false;
 
-                // Get text position
-                int line = mText.getLayout().getLineForOffset(index);
-                int pos = mText.getLayout().getLineBaseline(line);
-
-                // Scroll to it
-                scrollView.smoothScrollTo(0, pos - height / 2);
-
-                // Highlight it
-                editable.setSpan(
-                        span,
-                        matcher.start(),
-                        matcher.end(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
+                doSearch();
             } else {
                 Toast.makeText(
                         EditorActivity.this,
@@ -935,8 +922,43 @@ public class EditorActivity extends AppCompatActivity {
                 ).show();
                 matcher.reset();
                 index = 0;
+                editable.removeSpan(span);
             }
 
+            return true;
+        }
+
+        private void doSearch() {
+            // Get index
+            index = matcher.start();
+
+            // Get text position
+            int line = mText.getLayout().getLineForOffset(index);
+            int pos = mText.getLayout().getLineBaseline(line);
+
+            // Scroll to it
+            scrollView.smoothScrollTo(0, pos - height / 2);
+
+            // Highlight it
+            editable.setSpan(
+                    span,
+                    matcher.start(),
+                    matcher.end(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+        }
+
+        @Override
+        public boolean onMenuItemActionExpand(MenuItem menuItem) {
+            return true;
+        }
+
+        @Override
+        public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+            Log.d(LOG_TAG, "onClose");
+            editable.removeSpan(span);
+            mText.requestFocus();
+            queryTextListener = null;
             return true;
         }
     }
