@@ -29,7 +29,7 @@
     <string name="about_message">Editor de Texto Simple para Android. Para obtener más información visite http://en.maxistar.ru/projects/textpad.</string>
     <string name="Choose_Language">Elegir idioma</string>
     <string name="Language">Idioma</string>
-    <string name="Click_to_change_language">Pulsar para cambiar idioma</string>
+    <string name="Click_to_change_language">Pulsar para cambiar el idioma</string>
     <string name="searchLabel">Buscar</string>
     <string name="searchHint">Texto</string>
     <string name="s_not_found">"%s" no encontrado</string>
@@ -38,9 +38,9 @@
     <string name="Choose_a_color">Elegir color</string>
     <string name="Open_File">Abrir archivo</string>
     <string name="Save_File">Guardar archivo</string>
-    <string name="Click_to_change_encoding">Pulsar para cambiar codificación</string>
+    <string name="Click_to_change_encoding">Pulsar para cambiar la codificación</string>
     <string name="Encoding">Codificación</string>
-    <string name="Line_endings">Pulsar para cambiar terminación de línea</string>
+    <string name="Line_endings">Pulsar para cambiar la terminación de línea</string>
     <string name="Line_Delimiters">Delimitadores de línea</string>
     <string name="Font_Size">Tamaño de la fuente</string>
     <string name="Choose_a_font_size">Elegir tamaño de la fuente</string>
@@ -59,7 +59,7 @@
     <string name="Main_Settings">Ajustes principales</string>
     <string name="Appearance">Apariencia</string>
     <string name="You_have_made_some_changes">Ha realizado algunas modificaciones.</string>
-    <string name="Are_you_sure_to_quit">¿Desea salir de la aplicación?</string>
+    <string name="Are_you_sure_to_quit">¿Está seguro de que desea salir de la aplicación?</string>
     <string name="File_already_exists">El archivo ya existe</string>
     <string name="Existing_file_will_be_overwritten">El archivo existente se sobrescribirá, ¿desea continuar?</string>
     <string name="Exit">Salir</string>
