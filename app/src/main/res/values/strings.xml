@@ -104,5 +104,20 @@
     <string name="preference_color_theme_custom">Custom</string>
 
 
-	<string name="Dictate">Dictate</string>
+    <string name="Dictate">Dictate</string>
+
+    <string name="tts.waiting_the_command">waiting the command</string>
+    <string name="tts.ready_to_dictate">ready to dictate</string>
+    <string name="tts.dictate">dictate</string>
+    <string name="tts.done">done</string>
+    <string name="tts.read_last_sentence">read last sentence</string>
+    <string name="tts.go_to_start">go to start</string>
+    <string name="tts.go_to_end">go to end</string>
+    <string name="tts.do_not_understand">do not understand</string>
+    <string name="tts.read_current_sentence">read current sentence</string>
+    <string name="tts.proceed">proceed</string>
+    <string name="tts.further">further</string>
+    <string name="tts.good_bye">good bye</string>
+    <string name="tts.unknown_command">unknown command</string>
+    <string name="tts.repeat">repeat</string>
 </resources>
