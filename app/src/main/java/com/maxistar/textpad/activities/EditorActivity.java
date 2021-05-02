@@ -45,6 +45,7 @@ import com.maxistar.textpad.SelectionMode;
 import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
 import com.maxistar.textpad.TPStrings;
+import com.maxistar.textpad.utils.EditTextUndoRedo;
 import com.maxistar.textpad.utils.System;
 import com.maxistar.textpad.utils.TextConverter;
 
@@ -101,6 +102,8 @@ public class EditorActivity extends AppCompatActivity {
 
     private TextWatcher textWatcher;
 
+    EditTextUndoRedo editTextUndoRedo;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,6 +113,7 @@ public class EditorActivity extends AppCompatActivity {
 
         setContentView(R.layout.main);
         mText = this.findViewById(R.id.editText1);
+        editTextUndoRedo = new EditTextUndoRedo(mText);
         scrollView = findViewById(R.id.vscroll);
         applyPreferences();
 
@@ -373,7 +377,13 @@ public class EditorActivity extends AppCompatActivity {
         mText.setTextColor(fontcolor);
     }
 
-    // onPrepareOptionsMenu
+    private QueryTextListener getQueryTextListener() {
+        if (queryTextListener == null) {
+            queryTextListener = new QueryTextListener();
+        }
+        return queryTextListener;
+    };
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Set up search view
@@ -388,15 +398,15 @@ public class EditorActivity extends AppCompatActivity {
             searchView.setOnQueryTextListener(getQueryTextListener());
             searchItem.setOnActionExpandListener(getQueryTextListener());
         }
+
+        MenuItem undoMenu = menu.findItem(R.id.menu_edit_undo);
+        undoMenu.setEnabled(editTextUndoRedo.getCanUndo());
+
+        MenuItem redoMenu = menu.findItem(R.id.menu_edit_redo);
+        redoMenu.setEnabled(editTextUndoRedo.getCanRedo());
+
         return true;
     }
-
-    private QueryTextListener getQueryTextListener() {
-        if (queryTextListener == null) {
-            queryTextListener = new QueryTextListener();
-        }
-        return queryTextListener;
-    };
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -422,6 +432,10 @@ public class EditorActivity extends AppCompatActivity {
             saveFile();
         } else if (itemId == R.id.menu_document_save_as) {
             saveAs();
+        } else if (itemId == R.id.menu_edit_undo) {
+            editUndo();
+        } else if (itemId == R.id.menu_edit_redo) {
+            editRedo();
         } else if (itemId == R.id.menu_document_settings) {
             Intent intent = new Intent(this.getBaseContext(),
                     SettingsActivity.class);
@@ -468,10 +482,19 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void clearFile() {
-        this.mText.setText(TPStrings.EMPTY);
+        mText.setText(TPStrings.EMPTY);
+        editTextUndoRedo.clearHistory();
         urlFilename = TPStrings.EMPTY;
         changed = false;
         this.updateTitle();
+    }
+
+    protected void editRedo() {
+        editTextUndoRedo.redo();
+    }
+
+    protected void editUndo() {
+        editTextUndoRedo.undo();
     }
 
     protected void saveAs() {
@@ -712,7 +735,9 @@ public class EditorActivity extends AppCompatActivity {
 
             ttt = toUnixEndings(ttt);
 
-            this.mText.setText(ttt);
+            mText.setText(ttt);
+            editTextUndoRedo.clearHistory();
+
             showToast(getBaseContext().getResources().getString(R.string.File_opened_, filename));
             changed = false;
             this.urlFilename = filename;
@@ -744,7 +769,8 @@ public class EditorActivity extends AppCompatActivity {
             inputStream.close();
             dis.close();
 
-            this.mText.setText(ttt);
+            mText.setText(ttt);
+            editTextUndoRedo.clearHistory();
 
             showToast(getBaseContext().getResources().getString(R.string.File_opened_, urlFilename));
             changed = false;

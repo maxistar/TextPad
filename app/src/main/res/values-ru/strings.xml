@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources> 
+<resources>
     <string name="app_name">Простой Текстовый Редактор</string>
     <string name="app_name_settings">Простой Текстовый Редактор - Настройки</string>
     <string name="Open">Открыть</string>
@@ -30,7 +30,7 @@
     <string name="Choose_Language">Выберите язык</string>
     <string name="Language">Язык</string>
     <string name="Click_to_change_language">нажмите чтобы сменить язык</string>
-    <string name="searchLabel">Поиск</string> 
+    <string name="searchLabel">Поиск</string>
     <string name="searchHint">Текст</string>
     <string name="Choose_a_font_type">Выберите шрифт</string>
     <string name="s_not_found">"%s" не найден</string>
@@ -66,4 +66,7 @@
     <string name="Type_Something_Here">Напишите что-нибудь здесь</string>
     <string name="Legacy_file_picker">Старый селектор файлов</string>
     <string name="Use_legacy_file_picker">Использовать устаревшее средство выбора файлов</string>
+    <string name="action_edit">Редактировать</string>
+    <string name="action_undo">Отменить</string>
+    <string name="action_redo">Повторить</string>
 </resources>

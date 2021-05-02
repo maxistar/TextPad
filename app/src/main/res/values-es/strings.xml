@@ -66,4 +66,7 @@
     <string name="Type_Something_Here">Escriba algo aquí</string>
     <string name="Legacy_file_picker">Selector de archivos heredado</string>
     <string name="Use_legacy_file_picker">Usar el selector de archivos heredado</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_undo">Deshacer</string>
+    <string name="action_redo">Rehacer</string>
 </resources>

@@ -5,30 +5,56 @@
         android:id="@+id/menu_document_search"
         android:title="@string/Search"
         android:icon="@drawable/ic_search"
+        app:iconTint="@color/colorIcon"
         app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="never|collapseActionView" />
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/action_edit"
+        android:title="@string/action_edit"
+        android:icon="@drawable/ic_edit"
+        app:iconTint="@color/colorIcon"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/menu_edit_undo"
+                android:title="@string/action_undo"
+                android:icon="@drawable/ic_undo"
+                app:iconTint="@color/colorIcon"/>
+            <item
+                android:id="@+id/menu_edit_redo"
+                android:title="@string/action_redo"
+                android:icon="@drawable/ic_redo"
+                app:iconTint="@color/colorIcon"/>
+        </menu>
+    </item>
     <item
         android:id="@+id/menu_document_new"
         android:title="@string/New"
-        android:icon="@drawable/ic_file"/>
+        android:icon="@drawable/ic_file"
+        app:iconTint="@color/colorIcon" />
     <item
         android:id="@+id/menu_document_open"
         android:title="@string/Open"
-        android:icon="@drawable/ic_folder_open"/>
+        android:icon="@drawable/ic_folder_open"
+        app:iconTint="@color/colorIcon" />
     <item
         android:id="@+id/menu_document_save"
         android:title="@string/Save"
-        android:icon="@drawable/ic_save"/>
+        android:icon="@drawable/ic_save"
+        app:iconTint="@color/colorIcon" />
     <item
         android:id="@+id/menu_document_save_as"
         android:title="@string/Save_As"
-        android:icon="@drawable/ic_save_as"/>
+        android:icon="@drawable/ic_save_as"
+        app:iconTint="@color/colorIcon" />
     <item
         android:id="@+id/menu_document_settings"
         android:title="@string/Settings"
-        android:icon="@drawable/ic_settings"/>
+        android:icon="@drawable/ic_settings"
+        app:iconTint="@color/colorIcon" />
     <item
         android:id="@+id/menu_exit"
         android:title="@string/Exit"
-        android:icon="@drawable/ic_arrow_right"/>
+        android:icon="@drawable/ic_arrow_right"
+        app:iconTint="@color/colorIcon" />
 </menu>

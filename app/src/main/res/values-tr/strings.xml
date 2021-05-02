@@ -66,4 +66,7 @@
     <string name="Type_Something_Here">Buraya Bir Şey Yazın</string>
     <string name="Legacy_file_picker">Eski dosya seçici</string>
     <string name="Use_legacy_file_picker">Eski dosya seçiciyi kullan</string>
+    <string name="action_edit">Düzenle</string>
+    <string name="action_undo">Geri alma</string>
+    <string name="action_redo">Yeniden yap</string>
 </resources>
