@@ -116,4 +116,6 @@
     <string name="tts.good_bye">пока</string>
     <string name="tts.unknown_command">неизвестная команда</string>
     <string name="tts.repeat">повтори</string>
+    <string name="tts.select_sentence">выделите предложение</string>
+    <string name="tts.sentence_selected">предложение выделено</string>
 </resources>

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,9 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.text.Editable;
+import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -21,7 +25,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.maxistar.textpad.R;
-import com.maxistar.textpad.TPStrings;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -57,6 +60,7 @@ public class Dictator implements RecognitionListener  {
     static final int COMMAND_DICTATE = 2;
     static final int COMMAND_EXIT = 3;
     static final int COMMAND_REPEAT = 4;
+    static final int COMMAND_SELECT_SENTENCE = 5;
 
     int mode = 0;
     int lastCommand = 0;
@@ -167,6 +171,9 @@ public class Dictator implements RecognitionListener  {
             if (isCommandDictate(result)) {
                 lastCommand = COMMAND_DICTATE;
                 sayReady();
+            }  else if (isCommandSelectSentence(result)) {
+                lastCommand = COMMAND_SELECT_SENTENCE;
+                selectSentence();
             } else if (isCommandRepeat(result)) {
                 lastCommand = COMMAND_REPEAT;
                 repeatLast();
@@ -194,8 +201,31 @@ public class Dictator implements RecognitionListener  {
         sayMessage(R.string.tts_unknown_command);
     }
 
+    void selectSentence() {
+        sayMessage(R.string.tts_sentence_selected);
+
+        Editable editable = mText.getEditableText();
+        final BackgroundColorSpan span = new BackgroundColorSpan(Color.YELLOW);
+        editable.setSpan(
+                span,
+                0,
+                10,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+    }
+
     void repeatLast() {
         sayString(lastDictation);
+    }
+
+    boolean isCommandSelectSentence(ArrayList<String> result) {
+        String command = context.getResources().getString(R.string.tts_select_sentence);
+        for (String variant : result) {
+            if (command.toLowerCase().equals(variant.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     boolean isCommandRepeat(ArrayList<String> result) {
@@ -308,6 +338,9 @@ public class Dictator implements RecognitionListener  {
                         if (lastCommand == COMMAND_DICTATE) {
                             mode = DICTATION_MODE;
                             startHearingDelay();
+                        } else if (lastCommand == COMMAND_SELECT_SENTENCE) {
+
+
                         } else if (lastCommand == COMMAND_EXIT) {
                             //exit
                         } else if (lastCommand == COMMAND_REPEAT) {
