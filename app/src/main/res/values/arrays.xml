@@ -8,6 +8,7 @@
         <item>Deutsch</item>
         <item>العربية</item>
         <item>Espanol</item>
+        <item>Français</item>
         <item>Italiano</item>
         <item>Türk</item>
     </string-array>
@@ -20,6 +21,7 @@
         <item>de</item>
         <item>ar</item>
         <item>es</item>
+        <item>fr</item>
         <item>it</item>
         <item>tr</item>
     </string-array>
