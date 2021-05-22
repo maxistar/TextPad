@@ -1,14 +1,14 @@
 package com.maxistar.textpad.test;
 
 import android.app.Activity;
-import android.app.Application;
+import android.app.Instrumentation;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.Bundle;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -21,9 +21,9 @@ import com.maxistar.textpad.TPStrings;
 import com.maxistar.textpad.test.assertions.TextViewAssertions;
 
 import org.hamcrest.Matcher;
-import org.hamcrest.core.AllOf;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,21 +37,23 @@ import java.util.Date;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.FailureHandler;
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewAssertion;
-import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
@@ -59,23 +61,22 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.core.AllOf.allOf;
 
-@RunWith(AndroidJUnit4.class)
 @LargeTest
 public class EditorActivityTest {
 
     Context targetContext;
 
-    ActivityScenario activityRule;
+    ActivityScenario<EditorActivity> activityRule;
 
     private Activity currentActivity;
 
+    @Rule
+    public IntentsTestRule<EditorActivity> intentsTestRule =
+            new IntentsTestRule<>(EditorActivity.class);
+
     @Before
     public void launchActivity() {
-        targetContext = ApplicationProvider.getApplicationContext();
-
-        SettingsService settingsService = ServiceLocator.getInstance()
-                .getSettingsService(targetContext);
-        settingsService.setLegacyFilePicker(true, targetContext);
+        setLegacyFileFinder();
 
         activityRule = ActivityScenario.launch(EditorActivity.class);
 
@@ -98,12 +99,28 @@ public class EditorActivityTest {
         });
     }
 
+    void setLegacyFileFinder() {
+        targetContext = ApplicationProvider.getApplicationContext();
+
+        SettingsService settingsService = ServiceLocator.getInstance()
+                .getSettingsService(targetContext);
+        settingsService.setLegacyFilePicker(true, targetContext);
+    }
+
+    void setDefaultFileFinder() {
+        targetContext = ApplicationProvider.getApplicationContext();
+
+        SettingsService settingsService = ServiceLocator.getInstance()
+                .getSettingsService(targetContext);
+        settingsService.setLegacyFilePicker(false, targetContext);
+    }
+
     @Test
     /**
-     * Check if the text is empty it to click on new menu item
+     * Check if the text is empty if to click on new menu item
      */
     public void listGoesOverTheFold() {
-        Context context = androidx.test.InstrumentationRegistry.getTargetContext();
+        Context context = ApplicationProvider.getApplicationContext();
         openActionBarOverflowOrOptionsMenu(context );
 
         onView(withText(R.string.New))
@@ -119,7 +136,11 @@ public class EditorActivityTest {
      *
      */
     public void listSaveText() {
-        openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            return;
+        }
+
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
 
         onView(withText(R.string.New))
                 .check(matches(isDisplayed()))
@@ -131,7 +152,7 @@ public class EditorActivityTest {
         onView(withId(R.id.editText1))
                 .perform(setTextInTextView(textExample));
 
-        openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
 
         onView(withText(R.string.Save))
                 .check(matches(isDisplayed()))
@@ -158,15 +179,19 @@ public class EditorActivityTest {
 
     @Test
     public void rewriteConfirmationText() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            return;
+        }
+
         String textExample = "some new text";
         String oldTextExample = "some old content";
 
         long time = (new Date()).getTime();
-        String filename = "file" + String.valueOf(time) + ".txt";
+        String filename = "file" + time + ".txt";
 
         putFile(Environment.getExternalStorageDirectory().getPath() + "/" + filename, oldTextExample);
 
-        openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
 
         onView(withText(R.string.New))
                 .check(matches(isDisplayed()))
@@ -175,7 +200,7 @@ public class EditorActivityTest {
         onView(withId(R.id.editText1))
                 .perform(setTextInTextView(textExample));
 
-        openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
 
         onView(withText(R.string.Save))
                 .check(matches(isDisplayed()))
@@ -205,15 +230,19 @@ public class EditorActivityTest {
 
     @Test
     public void rewriteConfirmationYesText() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            return;
+        }
+
         String textExample = "some new text";
         String oldTextExample = "some old content";
 
         long time = (new Date()).getTime();
-        String filename = "file" + String.valueOf(time) + ".txt";
+        String filename = "file" + time + ".txt";
 
         putFile(Environment.getExternalStorageDirectory().getPath() + "/" + filename, oldTextExample);
 
-        openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
 
         onView(withText(R.string.New))
                 .check(matches(isDisplayed()))
@@ -222,7 +251,7 @@ public class EditorActivityTest {
         onView(withId(R.id.editText1))
                 .perform(setTextInTextView(textExample));
 
-        openActionBarOverflowOrOptionsMenu(androidx.test.InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
 
         onView(withText(R.string.Save))
                 .check(matches(isDisplayed()))
@@ -269,6 +298,55 @@ public class EditorActivityTest {
         onView(withId(R.id.editText1)).check(TextViewAssertions.hasInsertionPointerAtIndex(13));
     }
 
+    @Test
+    public void testRewriteDocument() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            return;
+        }
+        setDefaultFileFinder();
+        String textExample = "some new long long long long long long long long long text";
+        onView(withId(R.id.editText1)).perform(typeText(textExample));
+
+        String filenameUrl = "content://com.android.externalstorage.documents/document/primary%3Anewfile.txt";
+
+        Intent resultData = new Intent();
+        resultData.setData(Uri.parse(filenameUrl));
+        Instrumentation.ActivityResult result =
+                new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(toPackage("com.android.documentsui")).respondWith(result);
+
+        clickOptionMenu(R.string.Save);
+
+        String textNewExample = "some new short text";
+        onView(withId(R.id.editText1)).perform(replaceText(textNewExample));
+
+        clickOptionMenu(R.string.Save);
+
+        onView(withId(R.id.editText1)).perform(typeText("something"));
+
+        SystemClock.sleep(3000);
+
+        clickOptionMenu(R.string.Open);
+
+        onView(withText(R.string.No))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        someDelay(3000);
+
+        onView(withId(R.id.editText1)).check(matches(withText(textNewExample)));
+
+        SystemClock.sleep(10000);
+
+    }
+
+    private void clickOptionMenu(int stringId) {
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
+        onView(withText(stringId))
+                .check(matches(isDisplayed()))
+                .perform(click());
+    }
+
     /**
      * Put file to the path
      *
@@ -285,7 +363,7 @@ public class EditorActivityTest {
             FileOutputStream fos = new FileOutputStream(f);
             fos.write(data.getBytes());
             fos.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 
@@ -316,11 +394,7 @@ public class EditorActivityTest {
     }
 
     private void someDelay(int milliseconds) {
-        try {
-            wait(milliseconds);
-        } catch (InterruptedException e) {
-
-        }
+        SystemClock.sleep(milliseconds);
     }
 
     /**
@@ -365,7 +439,6 @@ public class EditorActivityTest {
 
     public static ViewAction setTextInTextView(final String value){
         return new ViewAction() {
-            @SuppressWarnings("unchecked")
             @Override
             public org.hamcrest.Matcher<View> getConstraints() {
                 return allOf(isDisplayed(), isAssignableFrom(TextView.class));

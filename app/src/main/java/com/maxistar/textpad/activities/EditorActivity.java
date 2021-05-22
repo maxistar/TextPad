@@ -7,10 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -25,6 +26,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spanned;
@@ -131,7 +133,9 @@ public class EditorActivity extends AppCompatActivity {
                         openNamedFile(u);
                     }
                 } else {
-                    openNamedFileLegacy(u.getPath());
+                    if (u != null) {
+                        openNamedFileLegacy(u.getPath());
+                    }
                 }
             } else { // it this is just created
                 if (this.urlFilename.equals(TPStrings.EMPTY)) {
@@ -291,10 +295,7 @@ public class EditorActivity extends AppCompatActivity {
             return true;
         }
 
-        if (settingsService.isLegacyFilePicker()) {
-            return false;
-        }
-        return true;
+        return !settingsService.isLegacyFilePicker();
     }
 
     void openLastFile() {
@@ -327,6 +328,9 @@ public class EditorActivity extends AppCompatActivity {
 
     String getFilenameByUri(Uri uri) {
         String path = uri.getPath();
+        if (path == null) {
+            return "";
+        }
         String[] paths = path.split("/");
         if (paths.length == 0) {
             return "";
@@ -382,7 +386,7 @@ public class EditorActivity extends AppCompatActivity {
             queryTextListener = new QueryTextListener();
         }
         return queryTextListener;
-    };
+    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -678,15 +682,29 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    protected void saveFile(Uri uri) throws FileNotFoundException, IOException {
+    /**
+     * https://stackoverflow.com/questions/56902845/how-to-properly-overwrite-content-of-file-using-android-storage-access-framework
+     * @param uri File Url
+     * @throws IOException Error Exception
+     */
+    protected void saveFile(Uri uri) throws IOException {
         ContentResolver contentResolver = getContentResolver();
-        OutputStream fos = contentResolver.openOutputStream(uri);
+        ParcelFileDescriptor pfd = contentResolver.openFileDescriptor(uri, "w");
+        if (pfd == null) {
+            throw new IOException();
+        }
+        FileOutputStream fos = new FileOutputStream(pfd.getFileDescriptor());
+        // Use this code to ensure that the file is 'emptied'
+        FileChannel fChan = fos.getChannel();
+        fChan.truncate(0);
+
         String s = this.mText.getText().toString();
 
         s = applyEndings(s);
 
         fos.write(s.getBytes(settingsService.getFileEncoding()));
         fos.close();
+        pfd.close();
     }
 
     protected void saveNamedFile() {
@@ -758,6 +776,9 @@ public class EditorActivity extends AppCompatActivity {
         try {
             ContentResolver contentResolver = getContentResolver();
             InputStream inputStream = contentResolver.openInputStream(uri);
+            if (inputStream == null) {
+                throw new IOException();
+            }
             int size = inputStream.available();
             DataInputStream dis = new DataInputStream(inputStream);
             byte[] b = new byte[(int) size];
@@ -845,7 +866,6 @@ public class EditorActivity extends AppCompatActivity {
             Uri uri;
             if (data != null) {
                 uri = data.getData();
-                //String path = uri.getPath();
 
                 final int takeFlags = data.getFlags()
                         & (Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -858,9 +878,8 @@ public class EditorActivity extends AppCompatActivity {
                 }
             }
         } else if (requestCode == ACTION_OPTION_FILE) {
-            Uri uri = null;
             if (data != null) {
-                uri = data.getData();
+                Uri uri = data.getData();
                 urlFilename = uri.toString();
                 this.saveFileWithConfirmation();
             }

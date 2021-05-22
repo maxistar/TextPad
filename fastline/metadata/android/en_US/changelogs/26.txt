@@ -1,0 +1,2 @@
+- fixed a bug when overwriting a file
+- added French translation (thanks smed79)
