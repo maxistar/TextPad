@@ -388,12 +388,10 @@ public class EditorActivity extends AppCompatActivity {
         return queryTextListener;
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
+    private void initSearch(MenuItem searchItem) {
         // Set up search view
-        searchItem = menu.findItem(R.id.menu_document_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
 
+        SearchView searchView = (SearchView) searchItem.getActionView();
         // Set up search view options and listener
         if (searchView != null) {
             searchView.setSubmitButtonEnabled(true);
@@ -402,6 +400,12 @@ public class EditorActivity extends AppCompatActivity {
             searchView.setOnQueryTextListener(getQueryTextListener());
             searchItem.setOnActionExpandListener(getQueryTextListener());
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        this.searchItem = menu.findItem(R.id.menu_document_search);
 
         MenuItem undoMenu = menu.findItem(R.id.menu_edit_undo);
         undoMenu.setEnabled(editTextUndoRedo.getCanUndo());
@@ -427,9 +431,16 @@ public class EditorActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Close text search
+        if (searchItem != null && searchItem.isActionViewExpanded()) {
+            searchItem.collapseActionView();
+        }
+
         int itemId = item.getItemId();
         if (itemId == R.id.menu_document_open) {
             openFile();
+        } else if (itemId == R.id.menu_document_search) {
+            initSearch(item);
         } else if (itemId == R.id.menu_document_new) {
             newFile();
         } else if (itemId == R.id.menu_document_save) {
@@ -447,10 +458,6 @@ public class EditorActivity extends AppCompatActivity {
         } else if (itemId == R.id.menu_exit) {
             exitApplication();
         }
-
-        // Close text search
-        if (searchItem != null && searchItem.isActionViewExpanded())
-            searchItem.collapseActionView();
 
         return super.onOptionsItemSelected(item);
     }
@@ -496,6 +503,7 @@ public class EditorActivity extends AppCompatActivity {
         changed = false;
         editTextUndoRedo.clearHistory();
         queryTextListener = null;
+        searchItem = null;
     }
 
     protected void editRedo() {
