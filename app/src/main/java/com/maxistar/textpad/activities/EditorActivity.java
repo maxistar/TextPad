@@ -487,10 +487,15 @@ public class EditorActivity extends AppCompatActivity {
 
     protected void clearFile() {
         mText.setText(TPStrings.EMPTY);
-        editTextUndoRedo.clearHistory();
         urlFilename = TPStrings.EMPTY;
+        initEditor();
+        updateTitle();
+    }
+
+    protected void initEditor() {
         changed = false;
-        this.updateTitle();
+        editTextUndoRedo.clearHistory();
+        queryTextListener = null;
     }
 
     protected void editRedo() {
@@ -657,7 +662,7 @@ public class EditorActivity extends AppCompatActivity {
             fos.write(s.getBytes(settingsService.getFileEncoding()));
             fos.close();
             showToast(R.string.File_Written);
-            changed = false;
+            initEditor();
             updateTitle();
 
             if (next_action == DO_OPEN) {   // because of multithread nature
@@ -713,7 +718,7 @@ public class EditorActivity extends AppCompatActivity {
             saveFile(uri);
 
             showToast(R.string.File_Written);
-            changed = false;
+            initEditor();
             updateTitle();
 
             if (next_action == DO_OPEN) {   // because of multithread nature
@@ -757,7 +762,7 @@ public class EditorActivity extends AppCompatActivity {
             editTextUndoRedo.clearHistory();
 
             showToast(getBaseContext().getResources().getString(R.string.File_opened_, filename));
-            changed = false;
+            initEditor();
             this.urlFilename = filename;
             if (!settingsService.getLastFilename().equals(filename)) {
                 settingsService.setLastFilename(filename, this.getApplicationContext());
@@ -794,7 +799,7 @@ public class EditorActivity extends AppCompatActivity {
             editTextUndoRedo.clearHistory();
 
             showToast(getBaseContext().getResources().getString(R.string.File_opened_, urlFilename));
-            changed = false;
+            initEditor();
             this.urlFilename = uri.toString();
             if (!settingsService.getLastFilename().equals(urlFilename)) {
                 settingsService.setLastFilename(urlFilename, this.getApplicationContext());
@@ -905,11 +910,11 @@ public class EditorActivity extends AppCompatActivity {
     private class QueryTextListener
             implements SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener
     {
-        final private BackgroundColorSpan span = new BackgroundColorSpan(Color.YELLOW);
-        private final Editable editable;
+        private BackgroundColorSpan span = new BackgroundColorSpan(Color.YELLOW);
+        private Editable editable;
         private Matcher matcher;
         private int index;
-        private final int height;
+        private int height;
 
         public QueryTextListener() {
             // Use regex search and spannable for highlighting
