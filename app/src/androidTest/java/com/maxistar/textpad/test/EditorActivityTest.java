@@ -23,10 +23,8 @@ import com.maxistar.textpad.test.assertions.TextViewAssertions;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -44,7 +42,6 @@ import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.filters.LargeTest;
-import androidx.test.runner.AndroidJUnit4;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
@@ -59,6 +56,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread;
 import static org.hamcrest.core.AllOf.allOf;
 
 @LargeTest
@@ -68,7 +66,7 @@ public class EditorActivityTest {
 
     ActivityScenario<EditorActivity> activityRule;
 
-    private Activity currentActivity;
+    private EditorActivity currentActivity;
 
     @Rule
     public IntentsTestRule<EditorActivity> intentsTestRule =
@@ -91,7 +89,7 @@ public class EditorActivityTest {
                     checkedView = ((ViewGroup) checkedView).getChildAt(0);
 
                     if (checkedView.getContext() instanceof Activity) {
-                        currentActivity = (Activity) checkedView.getContext();
+                        currentActivity = (EditorActivity) checkedView.getContext();
                         return;
                     }
                 }
@@ -115,10 +113,10 @@ public class EditorActivityTest {
         settingsService.setLegacyFilePicker(false, targetContext);
     }
 
-    @Test
     /**
      * Check if the text is empty if to click on new menu item
      */
+    @Test
     public void listGoesOverTheFold() {
         Context context = ApplicationProvider.getApplicationContext();
         openActionBarOverflowOrOptionsMenu(context );
@@ -131,10 +129,10 @@ public class EditorActivityTest {
         //settingsService.reloadSettings(context);
     }
 
-    @Test
     /**
-     *
+     * Test save text
      */
+    @Test
     public void listSaveText() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             return;
@@ -161,7 +159,7 @@ public class EditorActivityTest {
         gotToDocumentsFolder();
 
         long time = (new Date()).getTime();
-        String filename = "file" + String.valueOf(time) + ".txt";
+        String filename = "file" + time + ".txt";
 
         onView(withId(R.id.fdEditTextFile))
                 .perform(setTextInTextView(filename));
@@ -299,6 +297,49 @@ public class EditorActivityTest {
     }
 
     @Test
+    public void testUndoRedo() throws Throwable {
+        testUndoRedoFunctions();
+
+        setText();
+
+        testUndoRedoFunctions();
+    }
+
+    private void setText() throws Throwable {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                currentActivity.clearFile();
+            }
+        });
+    }
+
+    void testUndoRedoFunctions() {
+        String textExample = "some new text";
+
+        onView(withId(R.id.editText1)).perform(typeText(textExample));
+
+        onView(withId(R.id.editText1)).check(matches(withText(textExample)));
+
+        clickOptionMenu(R.string.action_edit);
+
+        onView(withText(R.string.action_undo))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(withId(R.id.editText1)).check(matches(withText("some new tex")));
+
+
+        clickOptionMenu(R.string.action_edit);
+
+        onView(withText(R.string.action_redo))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(withId(R.id.editText1)).check(matches(withText("some new text")));
+    }
+
+    @Test
     public void testRewriteDocument() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             return;
@@ -336,8 +377,7 @@ public class EditorActivityTest {
 
         onView(withId(R.id.editText1)).check(matches(withText(textNewExample)));
 
-        SystemClock.sleep(10000);
-
+        someDelay(10000);
     }
 
     private void clickOptionMenu(int stringId) {
@@ -350,8 +390,8 @@ public class EditorActivityTest {
     /**
      * Put file to the path
      *
-     * @param filePath
-     * @param data
+     * @param filePath File Path
+     * @param data Data
      */
     private void putFile(String filePath, String data) {
         try {
@@ -370,8 +410,8 @@ public class EditorActivityTest {
     /**
      * Get file content of the file
      *
-     * @param filePath
-     * @return
+     * @param filePath File Path
+     * @return String Loaded
      */
     private String getFile(String filePath) {
         try {
@@ -389,10 +429,15 @@ public class EditorActivityTest {
             return new String(b, 0, length);
             //return new String(Files.readAllBytes(Paths.get(filePath)), "UTF-8");
         } catch (IOException e) {
+            // empty catch block
         }
         return "";
     }
 
+    /**
+     * Some Delay to wait
+     * @param milliseconds Number of milliseconds to wait
+     */
     private void someDelay(int milliseconds) {
         SystemClock.sleep(milliseconds);
     }
@@ -424,6 +469,11 @@ public class EditorActivityTest {
                 .perform(click());
     }
 
+    /**
+     *
+     * @param s Text to search
+     * @return boolean
+     */
     private boolean hasText(String s) {
         final boolean[] isDisplayed = {true};
         onView(withText(s))

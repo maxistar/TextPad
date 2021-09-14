@@ -11,7 +11,7 @@ public class TextConverterTest {
     @Test
     public void getInstance() {
         TextConverter converter = TextConverter.getInstance();
-        assertTrue("Should return instance",converter != null);
+        assertNotNull("Should return instance", converter);
     }
 
     @Test

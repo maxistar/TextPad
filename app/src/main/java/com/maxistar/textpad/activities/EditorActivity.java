@@ -462,7 +462,7 @@ public class EditorActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void newFile() {
+    public void newFile() {
         if (changed) {
             new AlertDialog.Builder(this)
                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -492,7 +492,7 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    protected void clearFile() {
+    public void clearFile() {
         mText.setText(TPStrings.EMPTY);
         urlFilename = TPStrings.EMPTY;
         initEditor();
