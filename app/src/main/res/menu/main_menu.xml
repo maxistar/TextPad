@@ -98,7 +98,8 @@
     <item
         android:id="@+id/menu_dictate"
         android:title="@string/Dictate"
-        android:icon="@drawable/ic_settings"/>
+        android:icon="@drawable/ic_dictate"
+        app:iconTint="@color/colorIcon" />
     <item
         android:id="@+id/menu_document_settings"
         android:title="@string/Settings"
