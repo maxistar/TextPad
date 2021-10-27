@@ -1,0 +1,13 @@
+Este es un simple editor de texto que le puede ayudar con la edición y elaboración de archivos de texto.
+
+Es un editor de texto simple que le puede ayudar con la edición de archivos de texto.
+
+Este editor lo utilizo para las pequeñas notas de texto y escribir las ideas cuando tomo un descanso
+
+Soporta archivos de solo texto sin formato en el momento
+
+El código es abierto para que puedan revisar el código,  nuevas características,  traducciones y otras más en.
+https://github.com/maxistar/TextPad  
+
+Cualquier sugerencia para este proyecto es bienvenida.
+Gracias!

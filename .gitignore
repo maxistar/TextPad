@@ -1,3 +1,9 @@
 .idea
 .gradle
 /local.properties
+/fastlane/Appfile
+/build
+/captures
+/app/build
+/releases
+images/scaled

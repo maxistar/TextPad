@@ -28,6 +28,10 @@ https://github.com/maxistar/TextPad/issues
 
 ./gradlew lint
 
+### Deploy with fastlane
+
+fastline deploy
+
 ### To Do
 
 many many things to do.

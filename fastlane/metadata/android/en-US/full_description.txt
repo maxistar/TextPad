@@ -1,6 +1,6 @@
 This is simple text editor that can help you with editing text files.
 
-This editor mostly used by me for small text notes, write down ideas while I have a break.
+This editor mostly used by me for small text notes, write down ideas while I have a break. 
 
 Supports only plain text files at the moment.
 
