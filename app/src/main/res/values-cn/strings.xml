@@ -27,7 +27,7 @@
     <string name="Settings">设置</string>
     <string name="About">关于</string>
     <string name="Continue">继续</string>
-    <string name="about_message">这是一个Android的简单文本编辑器，想获取更多信息请访问 http://en.maxistar.ru/projects/textpad 。</string>
+    <string name="about_message">这是一个Android的简单文本编辑器，想获取更多信息请访问 https://maxistar.me/projects/textpad 。</string>
     <string name="Choose_Language">选择语言</string>
     <string name="Language">语言</string>
     <string name="Click_to_change_language">更换界面语言</string>

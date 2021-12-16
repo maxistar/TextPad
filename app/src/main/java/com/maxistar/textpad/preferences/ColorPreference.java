@@ -22,10 +22,10 @@ import com.maxistar.textpad.SettingsService;
 public class ColorPreference extends DialogPreference
 {
     private int color;
-    private String attribute;
-    private String title;
+    private final String attribute;
+    private final String title;
 
-    private SettingsService settingsService;
+    private final SettingsService settingsService;
 
     // This is the constructor called by the inflater
     public ColorPreference(Context context, AttributeSet attrs) {
@@ -109,15 +109,19 @@ public class ColorPreference extends DialogPreference
                 int x = (int) ((event.getX() - 15) * bitmap.getWidth() / (colormap.getWidth() - 30));
                 int y = (int) ((event.getY() - 15) * bitmap.getHeight() / (colormap.getHeight() - 30));
 
-                if (x >= bitmap.getWidth())
+                if (x >= bitmap.getWidth()) {
                     x = bitmap.getWidth() - 1;
-                if (x < 0)
+                }
+                if (x < 0) {
                     x = 0;
+                }
 
-                if (y >= bitmap.getHeight())
+                if (y >= bitmap.getHeight()) {
                     y = bitmap.getHeight() - 1;
-                if (y < 0)
+                }
+                if (y < 0) {
                     y = 0;
+                }
 
                 // set the color
                 color = bitmap.getPixel(x, y);

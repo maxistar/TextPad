@@ -133,5 +133,4 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
-
 }
