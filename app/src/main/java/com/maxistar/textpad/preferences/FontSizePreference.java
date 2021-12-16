@@ -18,11 +18,13 @@ import com.maxistar.textpad.R;
 import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
 
+import androidx.annotation.NonNull;
+
 public class FontSizePreference extends DialogPreference
 {
     private int selected;
 
-    private SettingsService settingsService;
+    private final SettingsService settingsService;
 
     // This is the constructor called by the inflater
     public FontSizePreference(Context context, AttributeSet attrs) {
@@ -98,25 +100,26 @@ public class FontSizePreference extends DialogPreference
                 selected = which;
             }
         });
-    } // onPrepareDialogBuilder()
+    }
 
 
-    /********************************************************************
+    /**
      * class FontTypeArrayAdapter
-     * 		Array adapter for font type picker */
-    public class FontTypeArrayAdapter extends ArrayAdapter<String>
+     * Array adapter for font type picker
+     */
+    public static class FontTypeArrayAdapter extends ArrayAdapter<String>
     {
         // just a basic constructor
         public FontTypeArrayAdapter(Context context, int resource, List<String> objects) {
             super(context, resource, objects);
-
-        } // end constructor one
+        }
 
         /**
          * getView
          * the overload getView method
          */
-        public View getView(int position, View convertView, ViewGroup parent)
+        @NonNull
+        public View getView(int position, View convertView, @NonNull ViewGroup parent)
         {
             // get the view that would normally be returned
             View v = super.getView(position, convertView, parent);
@@ -146,8 +149,6 @@ public class FontSizePreference extends DialogPreference
             tv.setPadding(10, 3, 3, 3);
 
             return v;
-        } // end getView()
-
-    } // end class FontTypeArrayAdapter
-
-} // end class ClearListPreference
+        }
+    }
+}

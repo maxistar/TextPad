@@ -26,7 +26,7 @@
     <string name="Settings">Impostazioni</string>
     <string name="About">Informazioni</string>
     <string name="Continue">Continua</string>
-    <string name="about_message">Questo è Simple Text Editor per Android. Per ulteriori informazioni, visitare http://en.maxistar.ru/projects/textpad.</string>
+    <string name="about_message">Questo è Simple Text Editor per Android. Per ulteriori informazioni, visitare https://maxistar.me/projects/textpad.</string>
     <string name="Choose_Language">Scegli la lingua</string>
     <string name="Language">Lingua</string>
     <string name="Click_to_change_language">fare clic per cambiare la lingua dell\'interfaccia</string>

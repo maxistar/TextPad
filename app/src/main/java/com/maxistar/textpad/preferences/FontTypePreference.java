@@ -20,6 +20,8 @@ import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
 import com.maxistar.textpad.TPStrings;
 
+import androidx.annotation.NonNull;
+
 public class FontTypePreference extends DialogPreference
 {
     private int selected;
@@ -75,44 +77,49 @@ public class FontTypePreference extends DialogPreference
                 selected = which;
             }
         });
-    } // onPrepareDialogBuilder()
+    }
 
-
-    /********************************************************************
+    /**
      * class FontTypeArrayAdapter
-     * 		Array adapter for font type picker */
-    public class FontTypeArrayAdapter extends ArrayAdapter<String>
+     * Array adapter for font type picker
+     */
+    public static class FontTypeArrayAdapter extends ArrayAdapter<String>
     {
         // just a basic constructor
         public FontTypeArrayAdapter(Context context, int resource, List<String> objects) {
             super(context, resource, objects);
 
-        } // end constructor one
+        }
 
-        /****************************************************************
+        /**
          * getView
-         * 		the overroad getView method */
-        public View getView(int position, View convertView, ViewGroup parent)
+         * the overroad getView method
+         */
+        @NonNull
+        public View getView(int position, View convertView, @NonNull ViewGroup parent)
         {
             // get the view that would normally be returned
             View v = super.getView(position, convertView, parent);
             final TextView tv = (TextView) v;
 
             final String option = tv.getText().toString();
-            if (option.equals(TPStrings.FONT_SERIF))
-                tv.setTypeface(Typeface.SERIF);
-            else if (option.equals(TPStrings.FONT_SANS_SERIF))
-                tv.setTypeface(Typeface.SANS_SERIF);
-            else if (option.equals(TPStrings.FONT_MONOSPACE))
-                tv.setTypeface(Typeface.MONOSPACE);
+            switch (option) {
+                case TPStrings.FONT_SERIF:
+                    tv.setTypeface(Typeface.SERIF);
+                    break;
+                case TPStrings.FONT_SANS_SERIF:
+                    tv.setTypeface(Typeface.SANS_SERIF);
+                    break;
+                case TPStrings.FONT_MONOSPACE:
+                    tv.setTypeface(Typeface.MONOSPACE);
+                    break;
+            }
 
             // general options
             tv.setTextColor(Color.BLACK);
             tv.setPadding(10, 3, 3, 3);
 
             return v;
-        } // end getView()
-
-    } // end class FontTypeArrayAdapter
-
-} // end class FontTypePreference
+        }
+    }
+}

@@ -25,7 +25,7 @@
     <string name="Settings">Paramètres</string>
     <string name="About">A propos de</string>
     <string name="Continue">Continuer</string>
-    <string name="about_message">Ceci est l\'éditeur de texte simple pour Android. Pour obtenir plus d\'informations, visitez http://en.maxistar.ru/projects/textpad.</string>
+    <string name="about_message">Ceci est l\'éditeur de texte simple pour Android. Pour obtenir plus d\'informations, visitez https://maxistar.me/projects/textpad.</string>
     <string name="Choose_Language">Choisir la langue</string>
     <string name="Language">Langue</string>
     <string name="Click_to_change_language">Cliquez pour changer la langue de l\'interface.</string>
