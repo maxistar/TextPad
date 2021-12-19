@@ -115,6 +115,7 @@ public class EditorActivity extends AppCompatActivity {
 
         setContentView(R.layout.main);
         mText = this.findViewById(R.id.editText1);
+        mText.setBackgroundResource(android.R.color.transparent);
         editTextUndoRedo = new EditTextUndoRedo(mText);
         scrollView = findViewById(R.id.vscroll);
         applyPreferences();
