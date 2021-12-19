@@ -1,0 +1,2 @@
+- the link in the "about..." section now opens in the browser
+- when closing and opening the program, the cursor position is saved
