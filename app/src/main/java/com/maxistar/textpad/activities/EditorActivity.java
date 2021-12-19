@@ -220,6 +220,7 @@ public class EditorActivity extends AppCompatActivity {
 
     protected void onPause() {
         mText.removeTextChangedListener(textWatcher);      // to prevent text
+        selectionStart = mText.getSelectionStart();
         super.onPause();
     }
 

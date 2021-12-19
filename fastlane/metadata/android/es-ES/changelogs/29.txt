@@ -1,0 +1,2 @@
+- el enlace en la sección "acerca del programa" ahora se abre en el navegador
+- al cerrar y abrir el programa, se guarda la posición del cursor

@@ -450,20 +450,6 @@ public class EditorActivityTest {
             onView(withText(TPStrings.FOLDER_UP)).check(matches(isDisplayed())).perform(click());
         }
 
-        //someDelay(3000);
-        //waitFor(3000);
-        //SystemClock.sleep(3000);
-
-        //if (hasText("storage")) {
-        //    onView(withText(("storage")))
-        //            .check(matches(isDisplayed()))
-        //            .perform(click());
-        //}
-
-        //someDelay(3000);
-        //waitFor(3000);
-        //SystemClock.sleep(3000);
-
         onView(withText(("emulated")))
                 .check(matches(isDisplayed()))
                 .perform(click());
