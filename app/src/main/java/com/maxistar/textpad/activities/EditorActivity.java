@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,6 +48,7 @@ import com.maxistar.textpad.SelectionMode;
 import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
 import com.maxistar.textpad.TPStrings;
+import com.maxistar.textpad.service.RecentFilesService;
 import com.maxistar.textpad.utils.EditTextUndoRedo;
 import com.maxistar.textpad.utils.System;
 import com.maxistar.textpad.utils.TextConverter;
@@ -73,6 +75,7 @@ public class EditorActivity extends AppCompatActivity {
     private static final int DO_OPEN = 1;
     private static final int DO_NEW = 2;
     private static final int DO_EXIT = 3;
+    private static final int DO_OPEN_RECENT = 4;
 
     private static final String LOG_TAG = "TextEditor";
 
@@ -96,9 +99,13 @@ public class EditorActivity extends AppCompatActivity {
 
     private int next_action = DO_NOTHING; // to figure out better way
 
+    private String next_action_filename = "";
+
     static int selectionStart = 0;
 
     SettingsService settingsService;
+
+    RecentFilesService recentFilesService;
 
     private MenuItem searchItem;
 
@@ -112,6 +119,7 @@ public class EditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         settingsService = ServiceLocator.getInstance().getSettingsService(this.getApplicationContext());
+        recentFilesService = ServiceLocator.getInstance().getRecentFilesService();
 
         setContentView(R.layout.main);
         mText = this.findViewById(R.id.editText1);
@@ -139,7 +147,7 @@ public class EditorActivity extends AppCompatActivity {
                     }
                 }
             } else { // it this is just created
-                if (this.urlFilename.equals(TPStrings.EMPTY)) {
+                if (isFilenameEmpty()) {
                     if (settingsService.isOpenLastFile()) {
                         openLastFile();
                     }
@@ -150,13 +158,11 @@ public class EditorActivity extends AppCompatActivity {
         textWatcher = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
-                // TODO Auto-generated method stub
             }
 
             @Override
@@ -245,12 +251,9 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void onStop() {
-        //
-        // modification once rotated
         super.onStop();
     }
-
-
+    
     @Override
     public void onBackPressed() {
         if (this.changed && !exitDialogShown) {
@@ -272,7 +275,6 @@ public class EditorActivity extends AppCompatActivity {
                     .setOnCancelListener(new DialogInterface.OnCancelListener(){
                         @Override
                         public void onCancel(DialogInterface arg0) {
-                            // TODO Auto-generated method stub
                             EditorActivity.super.onBackPressed();
                         }
                     })
@@ -302,30 +304,35 @@ public class EditorActivity extends AppCompatActivity {
 
     void openLastFile() {
         if (!settingsService.getLastFilename().equals(TPStrings.EMPTY)) {
-            if (useAndroidManager()) {
-                Uri uri = Uri.parse(settingsService.getLastFilename());
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //dublicated in useAndroidManager
-                    this.openNamedFile(uri);
-                }
-            } else {
-                this.openNamedFileLegacy(settingsService.getLastFilename());
-            }
             showToast(formatString(R.string.opened_last_edited_file, settingsService.getLastFilename()));
         }
     }
 
     void updateTitle() {
         String title;
-        if (urlFilename.equals(TPStrings.EMPTY)) {
+        if (isFilenameEmpty()) {
             title = TPStrings.NEW_FILE_TXT;
         } else {
-            Uri uri = Uri.parse(urlFilename);
+            Uri uri = Uri.parse(getFilename());
             title = getFilenameByUri(uri);
         }
         if (changed) {
             title = title + TPStrings.STAR;
         }
         this.setTitle(title);
+    }
+
+    private String getFilename() {
+        return urlFilename;
+    }
+
+    private boolean isFilenameEmpty() {
+        return urlFilename.equals(TPStrings.EMPTY);
+    }
+
+    String getFilenameByUri(String uri) {
+        Uri uri1 = Uri.parse(uri);
+        return getFilenameByUri(uri1);
     }
 
     String getFilenameByUri(Uri uri) {
@@ -392,7 +399,6 @@ public class EditorActivity extends AppCompatActivity {
 
     private void initSearch(MenuItem searchItem) {
         // Set up search view
-
         SearchView searchView = (SearchView) searchItem.getActionView();
         // Set up search view options and listener
         if (searchView != null) {
@@ -414,8 +420,86 @@ public class EditorActivity extends AppCompatActivity {
 
         MenuItem redoMenu = menu.findItem(R.id.menu_edit_redo);
         redoMenu.setEnabled(editTextUndoRedo.getCanRedo());
+        
+        updateRecentFiles(menu);
 
         return true;
+    }
+
+    private void updateRecentFiles(Menu menu) {
+        ArrayList<String> recentFiles = recentFilesService.getLastFiles(1, this.getApplicationContext());
+        MenuItem recentFilesMenuItem1 = menu.findItem(R.id.menu_document_open_last1);
+        MenuItem recentFilesMenuItem2 = menu.findItem(R.id.menu_document_open_last2);
+        MenuItem recentFilesMenuItem3 = menu.findItem(R.id.menu_document_open_last3);
+        MenuItem recentFilesMenuItem4 = menu.findItem(R.id.menu_document_open_last4);
+        MenuItem recentFilesMenuItem5 = menu.findItem(R.id.menu_document_open_last5);
+        MenuItem recentFilesMenuItem = menu.findItem(R.id.menu_document_open_last);
+        int historySize = recentFiles.size();
+        switch (historySize) {
+            case 0:
+                recentFilesMenuItem.setVisible(false);
+                recentFilesMenuItem1.setVisible(false);
+                recentFilesMenuItem2.setVisible(false);
+                recentFilesMenuItem3.setVisible(false);
+                recentFilesMenuItem4.setVisible(false);
+                recentFilesMenuItem5.setVisible(false);
+                break;
+            case 1:
+                recentFilesMenuItem.setVisible(true);
+                recentFilesMenuItem1.setVisible(true);
+                recentFilesMenuItem1.setTitle(getFilenameByUri(recentFiles.get(0)));
+                recentFilesMenuItem2.setVisible(false);
+                recentFilesMenuItem3.setVisible(false);
+                recentFilesMenuItem4.setVisible(false);
+                recentFilesMenuItem5.setVisible(false);
+                break;
+            case 2:
+                recentFilesMenuItem.setVisible(true);
+                recentFilesMenuItem1.setVisible(true);
+                recentFilesMenuItem1.setTitle(getFilenameByUri(recentFiles.get(0)));
+                recentFilesMenuItem2.setVisible(true);
+                recentFilesMenuItem2.setTitle(getFilenameByUri(recentFiles.get(1)));
+                recentFilesMenuItem3.setVisible(false);
+                recentFilesMenuItem4.setVisible(false);
+                recentFilesMenuItem5.setVisible(false);
+                break;
+            case 3:
+                recentFilesMenuItem.setVisible(true);
+                recentFilesMenuItem1.setVisible(true);
+                recentFilesMenuItem1.setTitle(getFilenameByUri(recentFiles.get(0)));
+                recentFilesMenuItem2.setVisible(true);
+                recentFilesMenuItem2.setTitle(getFilenameByUri(recentFiles.get(1)));
+                recentFilesMenuItem3.setVisible(true);
+                recentFilesMenuItem3.setTitle(getFilenameByUri(recentFiles.get(2)));
+                recentFilesMenuItem4.setVisible(false);
+                recentFilesMenuItem5.setVisible(false);
+                break;
+            case 4:
+                recentFilesMenuItem.setVisible(true);
+                recentFilesMenuItem1.setVisible(true);
+                recentFilesMenuItem1.setTitle(getFilenameByUri(recentFiles.get(0)));
+                recentFilesMenuItem2.setVisible(true);
+                recentFilesMenuItem2.setTitle(getFilenameByUri(recentFiles.get(1)));
+                recentFilesMenuItem3.setVisible(true);
+                recentFilesMenuItem3.setTitle(getFilenameByUri(recentFiles.get(2)));
+                recentFilesMenuItem4.setVisible(true);
+                recentFilesMenuItem4.setTitle(getFilenameByUri(recentFiles.get(3)));
+                recentFilesMenuItem5.setVisible(false);
+                break;
+            default:
+                recentFilesMenuItem.setVisible(true);
+                recentFilesMenuItem1.setVisible(true);
+                recentFilesMenuItem1.setTitle(getFilenameByUri(recentFiles.get(0)));
+                recentFilesMenuItem2.setVisible(true);
+                recentFilesMenuItem2.setTitle(getFilenameByUri(recentFiles.get(1)));
+                recentFilesMenuItem3.setVisible(true);
+                recentFilesMenuItem3.setTitle(getFilenameByUri(recentFiles.get(2)));
+                recentFilesMenuItem4.setVisible(true);
+                recentFilesMenuItem4.setTitle(getFilenameByUri(recentFiles.get(3)));
+                recentFilesMenuItem5.setVisible(true);
+                recentFilesMenuItem5.setTitle(getFilenameByUri(recentFiles.get(4)));
+                break;
+        }
     }
 
     @SuppressLint("RestrictedApi")
@@ -432,7 +516,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Close text search
         if (searchItem != null && searchItem.isActionViewExpanded()) {
             searchItem.collapseActionView();
@@ -443,6 +527,16 @@ public class EditorActivity extends AppCompatActivity {
             openFile();
         } else if (itemId == R.id.menu_document_search) {
             initSearch(item);
+        } else if (itemId == R.id.menu_document_open_last1) {
+            openRecentFile(0);
+        } else if (itemId == R.id.menu_document_open_last2) {
+            openRecentFile(1);
+        } else if (itemId == R.id.menu_document_open_last3) {
+            openRecentFile(2);
+        } else if (itemId == R.id.menu_document_open_last4) {
+            openRecentFile(3);
+        } else if (itemId == R.id.menu_document_open_last5) {
+            openRecentFile(4);
         } else if (itemId == R.id.menu_document_new) {
             newFile();
         } else if (itemId == R.id.menu_document_save) {
@@ -462,6 +556,53 @@ public class EditorActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openRecentFile(int i) {
+        ArrayList<String> lastFiles = recentFilesService.getLastFiles(1, getApplicationContext());
+        if (i >= lastFiles.size()) {
+            return;
+        }
+        final String filename = lastFiles.get(i);
+        if (changed) {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(R.string.File_not_saved)
+                    .setMessage(R.string.Save_current_file)
+                    .setPositiveButton(R.string.Yes,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    // Stop the activity
+                                    next_action = DO_OPEN_RECENT;
+                                    next_action_filename = filename;
+                                    EditorActivity.this.saveFile();
+                                }
+
+                            })
+                    .setNegativeButton(R.string.No,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    openFileByName(filename);
+                                }
+                            }).show();
+        } else {
+            openFileByName(filename);
+        }
+    }
+
+    private void openFileByName(String filename) {
+        if (useAndroidManager()) {
+            Uri uri = Uri.parse(filename);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //dublicated in useAndroidManager
+                this.openNamedFile(uri);
+            }
+        } else {
+            this.openNamedFileLegacy(filename);
+        }
     }
 
     public void newFile() {
@@ -496,9 +637,16 @@ public class EditorActivity extends AppCompatActivity {
 
     public void clearFile() {
         mText.setText(TPStrings.EMPTY);
-        urlFilename = TPStrings.EMPTY;
+        setFilename(TPStrings.EMPTY);
         initEditor();
         updateTitle();
+    }
+
+    private void setFilename(String value) {
+        this.urlFilename = value;
+        if (!isFilenameEmpty()) {
+            recentFilesService.addRecentFile(value, getApplicationContext());
+        }
     }
 
     protected void initEditor() {
@@ -608,7 +756,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void saveFile() {
-        if (urlFilename.equals(TPStrings.EMPTY)) {
+        if (isFilenameEmpty()) {
             saveAs();
         } else {
             if (useAndroidManager()) {
@@ -653,15 +801,18 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected boolean fileAlreadyExists() {
-        File f = new File(urlFilename);
+        File f = new File(getFilename());
         return f.exists();
     }
 
     protected void saveNamedFileLegacy() {
         try {
-            File f = new File(urlFilename);
+            File f = new File(getFilename());
             if (!f.exists()) {
-                f.createNewFile();
+                if (!f.createNewFile()) {
+                    showToast(R.string.Can_not_write_file);
+                    return;
+                }
             }
 
             FileOutputStream fos = new FileOutputStream(f);
@@ -675,17 +826,23 @@ public class EditorActivity extends AppCompatActivity {
             initEditor();
             updateTitle();
 
-            if (next_action == DO_OPEN) {   // because of multithread nature
+            if (next_action == DO_OPEN) {
+                // because of multithread nature
                 // figure out better way to do
                 // it
                 next_action = DO_NOTHING;
                 openNewFile();
             }
-            if (next_action == DO_NEW) { // because of multithread nature
+            if (next_action == DO_NEW) {
+                // because of multithread nature
                 // figure out better way to do
                 // it
                 next_action = DO_NOTHING;
                 clearFile();
+            }
+            if (next_action == DO_OPEN_RECENT) {
+                next_action = DO_NOTHING;
+                openFileByName(next_action_filename);
             }
             if (next_action == DO_EXIT) {
                 exitApplication();
@@ -724,7 +881,7 @@ public class EditorActivity extends AppCompatActivity {
 
     protected void saveNamedFile() {
         try {
-            Uri uri = Uri.parse(urlFilename);
+            Uri uri = Uri.parse(getFilename());
             saveFile(uri);
 
             showToast(R.string.File_Written);
@@ -738,6 +895,10 @@ public class EditorActivity extends AppCompatActivity {
             if (next_action == DO_NEW) { // because of multithread nature
                 next_action = DO_NOTHING;
                 clearFile();
+            }
+            if (next_action == DO_OPEN_RECENT) {
+                next_action = DO_NOTHING;
+                openFileByName(next_action_filename);
             }
             if (next_action == DO_EXIT) {
                 exitApplication();
@@ -773,7 +934,7 @@ public class EditorActivity extends AppCompatActivity {
 
             showToast(getBaseContext().getResources().getString(R.string.File_opened_, filename));
             initEditor();
-            this.urlFilename = filename;
+            this.setFilename(filename);
             if (!settingsService.getLastFilename().equals(filename)) {
                 settingsService.setLastFilename(filename, this.getApplicationContext());
             }
@@ -808,11 +969,11 @@ public class EditorActivity extends AppCompatActivity {
             mText.setText(ttt);
             editTextUndoRedo.clearHistory();
 
-            showToast(getBaseContext().getResources().getString(R.string.File_opened_, urlFilename));
+            showToast(getBaseContext().getResources().getString(R.string.File_opened_, getFilename()));
             initEditor();
-            this.urlFilename = uri.toString();
-            if (!settingsService.getLastFilename().equals(urlFilename)) {
-                settingsService.setLastFilename(urlFilename, this.getApplicationContext());
+            setFilename(uri.toString());
+            if (!settingsService.getLastFilename().equals(getFilename())) {
+                settingsService.setLastFilename(getFilename(), this.getApplicationContext());
             }
             selectionStart = 0;
             updateTitle();
@@ -860,8 +1021,9 @@ public class EditorActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_SAVE) {
             if (resultCode == Activity.RESULT_OK) {
-                urlFilename = data
-                        .getStringExtra(TPStrings.RESULT_PATH);
+                setFilename(
+                    data.getStringExtra(TPStrings.RESULT_PATH)
+                );
                 this.saveFileWithConfirmation();
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 showToast(R.string.Operation_Canceled);
@@ -881,22 +1043,25 @@ public class EditorActivity extends AppCompatActivity {
             Uri uri;
             if (data != null) {
                 uri = data.getData();
+                if (uri != null) {
+                    final int takeFlags = data.getFlags()
+                            & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                final int takeFlags = data.getFlags()
-                        & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-                // Check for the freshest data.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    getContentResolver().takePersistableUriPermission(uri, takeFlags);
-                    openNamedFile(uri);
+                    // Check for the freshest data.
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                        openNamedFile(uri);
+                    }
                 }
             }
         } else if (requestCode == ACTION_OPTION_FILE) {
             if (data != null) {
                 Uri uri = data.getData();
-                urlFilename = uri.toString();
-                this.saveFileWithConfirmation();
+                if (uri != null) {
+                    setFilename(uri.toString());
+                    this.saveFileWithConfirmation();
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -920,11 +1085,11 @@ public class EditorActivity extends AppCompatActivity {
     private class QueryTextListener
             implements SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener
     {
-        private BackgroundColorSpan span = new BackgroundColorSpan(Color.YELLOW);
-        private Editable editable;
+        private final BackgroundColorSpan span = new BackgroundColorSpan(Color.YELLOW);
+        private final Editable editable;
         private Matcher matcher;
         private int index;
-        private int height;
+        private final int height;
 
         public QueryTextListener() {
             // Use regex search and spannable for highlighting

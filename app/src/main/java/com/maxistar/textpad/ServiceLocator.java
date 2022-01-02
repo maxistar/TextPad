@@ -2,12 +2,16 @@ package com.maxistar.textpad;
 
 import android.content.Context;
 
+import com.maxistar.textpad.service.RecentFilesService;
+
 public class ServiceLocator {
     private static ServiceLocator instance = null;
 
     private ServiceLocator() {}
 
     private SettingsService settingsService;
+
+    private RecentFilesService recentFilesService;
 
     public static ServiceLocator getInstance() {
         if (instance == null) {
@@ -24,4 +28,12 @@ public class ServiceLocator {
         }
         return settingsService;
     }
+
+    public RecentFilesService getRecentFilesService() {
+        if (recentFilesService == null) {
+            recentFilesService = new RecentFilesService();
+        }
+        return recentFilesService;
+    }
+
 }

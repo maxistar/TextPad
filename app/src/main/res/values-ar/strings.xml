@@ -69,4 +69,5 @@
     <string name="action_edit">يحرر</string>
     <string name="action_redo">إعادة</string>
     <string name="action_undo">الغاء التحميل</string>
+    <string name="Open_Recent">افتح الملف الأخير</string>
 </resources>

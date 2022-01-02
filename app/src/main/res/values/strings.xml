@@ -3,6 +3,7 @@
     <string name="app_name">Simple Text Editor</string>
     <string name="app_name_settings">Simple Text Editor - Settings</string>
     <string name="Open">Open</string>
+    <string name="Open_Recent">Open Recent</string>
     <string name="New">New</string>
     <string name="Save">Save</string>
     <string name="Save_As">Save As</string>

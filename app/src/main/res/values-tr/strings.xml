@@ -69,4 +69,5 @@
     <string name="action_edit">Düzenle</string>
     <string name="action_undo">Geri alma</string>
     <string name="action_redo">Yeniden yap</string>
+    <string name="Open_Recent">Son dosyayı aç</string>
 </resources>

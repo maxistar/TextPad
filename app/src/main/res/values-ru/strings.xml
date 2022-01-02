@@ -69,4 +69,5 @@
     <string name="action_edit">Редактировать</string>
     <string name="action_undo">Отменить</string>
     <string name="action_redo">Повторить</string>
+    <string name="Open_Recent">Открыть последний файл</string>
 </resources>

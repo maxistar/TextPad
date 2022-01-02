@@ -69,4 +69,5 @@
     <string name="action_edit">Modifica</string>
     <string name="action_undo">Annulla</string>
     <string name="action_redo">Ripeti</string>
+    <string name="Open_Recent">Apri file recente</string>
 </resources>

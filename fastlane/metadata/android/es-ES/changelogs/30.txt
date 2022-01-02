@@ -1,1 +1,2 @@
 - Se eliminó la línea debajo del editor.
+- archivos recientes agregados en el menú de opciones

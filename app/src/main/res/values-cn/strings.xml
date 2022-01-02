@@ -70,4 +70,5 @@
     <string name="action_edit">编辑</string>
     <string name="action_undo">撤销</string>
     <string name="action_redo">重做</string>
+    <string name="Open_Recent">打开最近的文件</string>
 </resources>

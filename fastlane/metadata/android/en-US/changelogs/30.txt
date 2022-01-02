@@ -1,1 +1,2 @@
 - remove line underneath the editor
+- added recent files in options menu

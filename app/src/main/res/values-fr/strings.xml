@@ -68,5 +68,6 @@
     <string name="action_edit">Modifier</string>
     <string name="action_undo">Annuler</string>
     <string name="action_redo">Refaire</string>
+    <string name="Open_Recent">Ouvrir le fichier récent</string>
     <!--string name="translator_credits">Traduction française : smed79</string-->
 </resources>

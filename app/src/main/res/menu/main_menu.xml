@@ -38,6 +38,39 @@
         android:icon="@drawable/ic_folder_open"
         app:iconTint="@color/colorIcon" />
     <item
+        android:id="@+id/menu_document_open_last"
+        android:title="@string/Open_Recent"
+        android:icon="@drawable/ic_open_recent"
+        app:iconTint="@color/colorIcon" >
+        <menu>
+            <item
+                android:id="@+id/menu_document_open_last1"
+                android:title="@string/Open"
+                android:icon="@drawable/ic_file"
+                app:iconTint="@color/colorIcon" />
+            <item
+                android:id="@+id/menu_document_open_last2"
+                android:title="@string/Open"
+                android:icon="@drawable/ic_file"
+                app:iconTint="@color/colorIcon" />
+            <item
+                android:id="@+id/menu_document_open_last3"
+                android:title="@string/Open"
+                android:icon="@drawable/ic_file"
+                app:iconTint="@color/colorIcon" />
+            <item
+                android:id="@+id/menu_document_open_last4"
+                android:title="@string/Open"
+                android:icon="@drawable/ic_file"
+                app:iconTint="@color/colorIcon" />
+            <item
+                android:id="@+id/menu_document_open_last5"
+                android:title="@string/Open"
+                android:icon="@drawable/ic_file"
+                app:iconTint="@color/colorIcon" />
+        </menu>
+    </item>
+    <item
         android:id="@+id/menu_document_save"
         android:title="@string/Save"
         android:icon="@drawable/ic_save"

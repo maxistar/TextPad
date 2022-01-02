@@ -69,4 +69,5 @@
     <string name="action_edit">Editar</string>
     <string name="action_undo">Deshacer</string>
     <string name="action_redo">Rehacer</string>
+    <string name="Open_Recent">Abrir archivo reciente</string>
 </resources>

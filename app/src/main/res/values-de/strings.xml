@@ -69,4 +69,5 @@
     <string name="action_edit">Bearbeiten</string>
     <string name="action_undo">Rückgängig machen</string>
     <string name="action_redo">Wiederholen</string>
+    <string name="Open_Recent">Letzte Datei öffnen</string>
 </resources>
