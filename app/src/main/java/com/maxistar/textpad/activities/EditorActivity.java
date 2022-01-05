@@ -304,6 +304,14 @@ public class EditorActivity extends AppCompatActivity {
 
     void openLastFile() {
         if (!settingsService.getLastFilename().equals(TPStrings.EMPTY)) {
+            if (useAndroidManager()) {
+                Uri uri = Uri.parse(settingsService.getLastFilename());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { // duplicated in useAndroidManager
+                    this.openNamedFile(uri);
+                }
+            } else {
+                this.openNamedFileLegacy(settingsService.getLastFilename());
+            }
             showToast(formatString(R.string.opened_last_edited_file, settingsService.getLastFilename()));
         }
     }

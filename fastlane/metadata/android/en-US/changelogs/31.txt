@@ -1,0 +1,1 @@
+- restored open last file feature, deleted by mistake

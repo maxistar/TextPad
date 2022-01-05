@@ -1,0 +1,1 @@
+- restauró la capacidad de abrir el último archivo, eliminado por error
