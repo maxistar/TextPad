@@ -1,0 +1,3 @@
+- se corrigió un error que provocaba que la aplicación fallara si el archivo no existe o no hay derechos de lectura
+- traducción al japonés agregada - gracias #jarupxx
+- traducción al polaco añadida - gracias a #temp-byte

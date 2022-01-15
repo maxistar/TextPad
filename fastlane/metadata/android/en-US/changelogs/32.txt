@@ -1,0 +1,3 @@
+- fixed a bug with the application crashing if the file does not exist or there are no read rights
+- add Japanese translation - thanks #jarupxx
+- add Polish translation - thanks to #temp-byte

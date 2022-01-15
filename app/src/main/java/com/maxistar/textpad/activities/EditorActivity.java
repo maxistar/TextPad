@@ -971,8 +971,8 @@ public class EditorActivity extends AppCompatActivity {
             }
             int size = inputStream.available();
             DataInputStream dis = new DataInputStream(inputStream);
-            byte[] b = new byte[(int) size];
-            int length = dis.read(b, 0, (int) size);
+            byte[] b = new byte[size];
+            int length = dis.read(b, 0, size);
 
             String ttt = new String(b, 0, length, settingsService.getFileEncoding());
             ttt = toUnixEndings(ttt);
