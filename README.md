@@ -30,7 +30,7 @@ https://github.com/maxistar/TextPad/issues
 
 ### Deploy with fastlane
 
-fastline deploy
+fastlane deploy
 
 ### To Do
 
