@@ -12,6 +12,7 @@
         <item>Italiano</item>
         <item>Türk</item>
         <item>中国人</item>
+        <item>日本語</item>
     </string-array>
 
     <string-array name="language_values" translatable="false">
@@ -26,6 +27,7 @@
         <item>it</item>
         <item>tr</item>
         <item>cn</item>
+        <item>ja</item>
     </string-array>
 
     <string-array name="line_delimiter_names" translatable="false">
