@@ -859,6 +859,8 @@ public class EditorActivity extends AppCompatActivity {
             this.showToast(R.string.File_not_found);
         } catch (IOException e) {
             this.showToast(R.string.Can_not_write_file);
+        } catch (Exception e) {
+            this.showToast(R.string.Can_not_write_file);
         }
     }
 
@@ -915,8 +917,9 @@ public class EditorActivity extends AppCompatActivity {
             this.showToast(R.string.File_not_found);
         } catch (IOException e) {
             this.showToast(R.string.Can_not_write_file);
+        } catch (Exception e) {
+            this.showToast(R.string.Can_not_write_file);
         }
-
     }
 
     protected void openNamedFileLegacy(String filename) {
@@ -952,7 +955,10 @@ public class EditorActivity extends AppCompatActivity {
             this.showToast(R.string.File_not_found);
         } catch (IOException e) {
             this.showToast(R.string.Can_not_read_file);
+        } catch (Exception e) {
+            this.showToast(R.string.Can_not_read_file);
         }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -988,6 +994,8 @@ public class EditorActivity extends AppCompatActivity {
         } catch (FileNotFoundException e) {
             this.showToast(R.string.File_not_found);
         } catch (IOException e) {
+            this.showToast(R.string.Can_not_read_file);
+        } catch (Exception e) {
             this.showToast(R.string.Can_not_read_file);
         }
     }
