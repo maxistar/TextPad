@@ -1,0 +1,1 @@
+Dodano tryb zaawansowany do ekranu wyboru plików, aby wyświetlić pamięć wewnętrzną
