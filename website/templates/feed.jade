@@ -1,0 +1,22 @@
+doctype xml
+rss(version='2.0',
+    xmlns:content='http://purl.org/rss/1.0/modules/content/',
+    xmlns:wfw='http://wellformedweb.org/CommentAPI/',
+    xmlns:dc='http://purl.org/dc/elements/1.1/'
+    xmlns:atom='http://www.w3.org/2005/Atom')
+  channel
+    title= blog.title
+    atom:link(href=blog.url + '/feed.xml', rel='self', type='application/rss+xml')
+    link= blog.url
+    description= blog.description
+    pubDate= moment(date).format('ddd, DD MMM YYYY HH:mm:ss ZZ')
+    language en
+    for article in collections.articles
+      - var permalink = blog.url + '/' + article.path
+      item
+        title= article.title
+        link= permalink
+        pubDate= moment(article.date).format('ddd, DD MMM YYYY HH:mm:ss ZZ')
+        guid(isPermaLink='true')= permalink
+        author= article.author
+        description= article.snippet

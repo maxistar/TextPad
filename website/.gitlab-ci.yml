@@ -1,0 +1,10 @@
+stages:
+  - build
+build:
+  stage: build
+  script:
+    - echo "Building"
+    - npm install
+    - npm run import
+    - npm run build
+    - npm run upload
