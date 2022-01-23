@@ -30,7 +30,7 @@
     <string name="about_message">Oto Prosty edytor tekstu na Androida. Aby uzyskać więcej informacji, odwiedź https://maxistar.me/projects/textpad</string>
     <string name="Choose_Language">Wybierz język</string>
     <string name="Language">Język</string>
-    <string name="Click_to_change_language">naciśnij, aby zmienić język interfejsu</string>
+    <string name="Click_to_change_language">Naciśnij, aby zmienić język interfejsu</string>
     <string name="searchLabel">Szukaj</string> 
     <string name="searchHint">Tekst</string>
     <string name="s_not_found">Nie znaleziono "%s"</string>
@@ -43,7 +43,7 @@
     <string name="Encoding">Kodowanie</string>
     <string name="Line_endings">Zakończenia wierszy</string>
     <string name="Line_Delimiters">Separatory</string>
-    <string name="Font_Size">Romziar czcionki</string>
+    <string name="Font_Size">Rozmiar czcionki</string>
     <string name="Choose_a_font_size">Wybierz rozmiar czcionki</string>
     <string name="Font_Color">Kolor czcionki</string>
     <string name="Choose_a_font_color">Wybierz kolor czcionki</string>
