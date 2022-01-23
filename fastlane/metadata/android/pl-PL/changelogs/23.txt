@@ -1,2 +1,2 @@
-- zaktualizowano tłumaczenie (hiszpański)
+- zaktualizowano język hiszpański
 - naprawiono błąd wyszukiwania
