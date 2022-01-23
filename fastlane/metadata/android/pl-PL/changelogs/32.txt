@@ -1,0 +1,3 @@
+- naprawiono awarię aplikacji, jeśli plik nie istnieje lub brak uprawnień do jego odczytu
+- dodano język japoński - dziękuję #jarupxx
+- dodano język polski - dziękuję #temp-byte
