@@ -32,9 +32,9 @@ public class FontSizePreference extends DialogPreference
 
         settingsService = ServiceLocator.getInstance().getSettingsService(context);
         // figure out the current size.
-        String font = settingsService.getFont();
+        String fontSize = settingsService.getFontSize();
 
-        switch (font) {
+        switch (fontSize) {
             case SettingsService.SETTING_EXTRA_SMALL:
                 selected = 0;
                 break;
