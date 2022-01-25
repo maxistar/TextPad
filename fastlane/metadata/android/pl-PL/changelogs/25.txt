@@ -1,0 +1,1 @@
+- dodano funkcje Cofnij oraz Ponów

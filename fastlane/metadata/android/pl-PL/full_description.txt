@@ -1,0 +1,9 @@
+Ten prosty edytor tekstu umożliwia edytowanie plików tekstowych.
+
+Osobiście, używam tego edytora do krótkich notatek i zapisywania pomysłów, gdy mam przerwę. 
+
+Obecnie wspiera tylko proste pliki tekstowe.
+
+Kod źródłowy jest otwarty więc możesz go przejrzeć, zgłaszać błędy, sugerować funkcje, dodawać tłumaczenia itd. https://github.com/maxistar/TextPad.
+
+Doceniam każdą sugestię. Dziękuję!

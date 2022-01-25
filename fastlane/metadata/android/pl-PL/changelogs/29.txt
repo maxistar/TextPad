@@ -1,0 +1,2 @@
+- odnośnik w sekcji "Informacje" jest teraz otwierany w przeglądarce
+- pozycja kursora jest zapisywania po zamknięciu aplikacji

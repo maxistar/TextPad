@@ -1,0 +1,2 @@
+- zaktualizowano język hiszpański
+- naprawiono błąd wyszukiwania

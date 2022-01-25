@@ -1,0 +1,1 @@
+Ten prosty edytor tekstu umożliwia edytowanie plików tekstowych.
