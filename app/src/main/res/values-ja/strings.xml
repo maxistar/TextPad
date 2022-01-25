@@ -67,7 +67,7 @@
     <string name="Type_Something_Here">入力してみてください</string>
     <string name="Legacy_file_picker">Legacy file picker</string>
     <string name="Use_legacy_file_picker">Use legacy file picker</string>
-    <string name="action_edit">コマンド</string>
+    <string name="action_edit">編集</string>
     <string name="action_undo">やり直し</string>
     <string name="action_redo">やり直しのやり直し</string>
 </resources>
