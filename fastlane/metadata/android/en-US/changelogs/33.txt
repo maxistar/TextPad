@@ -1,0 +1,2 @@
+- updated Japanese translation, thanks to #jarupxx
+- updated Polish translation, thanks to #temp-byte
