@@ -1,2 +1,3 @@
 - zaktualizowane tłumaczenie japońskie, dzięki #jarupxx
 - zaktualizowane polskie tłumaczenie, dzięki #temp-byte
+- poprawione błędy #27 i #29

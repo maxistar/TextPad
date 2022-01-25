@@ -1,2 +1,3 @@
 - traducción japonesa actualizada, gracias a #jarupxx
 - traducción al polaco actualizada, gracias a #temp-byte
+- errores corregidos #27 y #29

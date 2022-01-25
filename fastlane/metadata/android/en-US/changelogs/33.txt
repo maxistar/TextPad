@@ -1,2 +1,3 @@
 - updated Japanese translation, thanks to #jarupxx
 - updated Polish translation, thanks to #temp-byte
+- fixed bugs #27 and #29
