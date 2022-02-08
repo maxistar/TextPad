@@ -1,6 +1,7 @@
 ---
 title: Simple Text Editor
 template: textpage.jade
+layout: layout.hbs
 ---
 
 # About

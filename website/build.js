@@ -8,6 +8,7 @@ const define      = require('metalsmith-define');
 const pagination  = require('metalsmith-pagination');
 const snippet     = require('metalsmith-snippet');
 const date        = require('metalsmith-build-date');
+const layouts     = require('metalsmith-layouts')
 
 metalsmith(__dirname)
     .source("src")
@@ -53,6 +54,17 @@ metalsmith(__dirname)
         directory: 'templates'
     }))
     .destination("build")
+    .use(
+        layouts({
+            engineOptions: {
+                helpers: {
+                    formattedDate: function (date) {
+                        return new Date(date).toLocaleDateString()
+                    }
+                }
+            }
+        })
+    )
     .build(function (err) {
         if (err) {
             throw err;
