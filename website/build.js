@@ -1,8 +1,8 @@
 const metalsmith  = require("metalsmith");
-const markdown    = require('metalsmith-markdown');
+const markdown    = require('@metalsmith/markdown');
 const highlighter = require('highlighter');
-const templates   = require('metalsmith-templates');
-const permalinks  = require('metalsmith-permalinks');
+const templates   = require('metalsmith-pug');
+const permalinks  = require('@metalsmith/permalinks');
 const collections = require('metalsmith-collections');
 const define      = require('metalsmith-define');
 const pagination  = require('metalsmith-pagination');
@@ -49,7 +49,7 @@ metalsmith(__dirname)
     .use(date())
     .use(permalinks())
     .use(templates({
-        engine: 'jade',
+        engine: 'pug',
         directory: 'templates'
     }))
     .destination("build")
