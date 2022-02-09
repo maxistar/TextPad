@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def signingKeystorePassword = properties.getProperty('signing_keystore_password')
-def signingKeystoreFile = properties.getProperty('signing_keystore_file')
-def signingKeyAlias = properties.getProperty('signing_key_alias')
-def signingKeyPassword = properties.getProperty('signing_key_password')
+//Properties properties = new Properties()
+//properties.load(project.rootProject.file('local.properties').newDataInputStream())
+//def signingKeystorePassword = properties.getProperty('signing_keystore_password')
+//def signingKeystoreFile = properties.getProperty('signing_keystore_file')
+//def signingKeyAlias = properties.getProperty('signing_key_alias')
+//def signingKeyPassword = properties.getProperty('signing_key_password')
 
 
 android {
@@ -20,10 +20,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("${signingKeystoreFile}")
-            storePassword "${signingKeystorePassword}"
-            keyAlias "${signingKeyAlias}"
-            keyPassword "${signingKeyPassword}"
+  //          storeFile file("${signingKeystoreFile}")
+  //          storePassword "${signingKeystorePassword}"
+  //          keyAlias "${signingKeyAlias}"
+  //          keyPassword "${signingKeyPassword}"
         }
     }
 
