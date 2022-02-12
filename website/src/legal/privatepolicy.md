@@ -1,6 +1,5 @@
 ---
 title: About Application
-template: textpage.jade
 layout: layout.hbs
 ---
 

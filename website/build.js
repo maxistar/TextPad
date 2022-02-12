@@ -1,7 +1,6 @@
 const metalsmith  = require("metalsmith");
 const markdown    = require('@metalsmith/markdown');
 const highlighter = require('highlighter');
-const templates   = require('metalsmith-pug');
 const permalinks  = require('@metalsmith/permalinks');
 const collections = require('metalsmith-collections');
 const define      = require('metalsmith-define');
@@ -49,10 +48,6 @@ metalsmith(__dirname)
     }))
     .use(date())
     .use(permalinks())
-    .use(templates({
-        engine: 'pug',
-        directory: 'templates'
-    }))
     .destination("build")
     .use(
         layouts({
