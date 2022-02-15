@@ -38,7 +38,7 @@ public class AboutBox extends DialogPreference
 
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
-        builder.setTitle(R.string.About);
+        builder.setTitle("About Textpad");
         builder.setPositiveButton(R.string.Continue, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 
