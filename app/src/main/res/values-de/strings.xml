@@ -70,4 +70,8 @@
     <string name="action_undo">Rückgängig machen</string>
     <string name="action_redo">Wiederholen</string>
     <string name="Open_Recent">Letzte Datei öffnen</string>
+
+    <string name="FileSystemAccess">File System Access</string>
+    <string name="FileSystemAccessTitle">File System Access</string>
+    <string name="FileSystemAccessDescription">Try to ope files using alternative location</string>
 </resources>

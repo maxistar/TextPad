@@ -70,4 +70,8 @@
     <string name="action_edit">Edit</string>
     <string name="action_undo">Undo</string>
     <string name="action_redo">Redo</string>
+    <string name="FileSystemAccess">File System Access</string>
+    <string name="FileSystemAccessTitle">File System Access</string>
+    <string name="FileSystemAccessDescription">Try to ope files using alternative location</string>
+
 </resources>

@@ -70,4 +70,8 @@
     <string name="action_undo">Desfazer</string>
     <string name="action_redo">Refazer</string>
     <string name="Open_Recent">Abrir arquivo recente</string>
+
+    <string name="FileSystemAccess">File System Access</string>
+    <string name="FileSystemAccessTitle">File System Access</string>
+    <string name="FileSystemAccessDescription">Try to ope files using alternative location</string>
 </resources>

@@ -1032,7 +1032,38 @@ public class EditorActivity extends AppCompatActivity {
             selectionStart = 0;
             updateTitle();
         } catch (FileNotFoundException e) {
-            this.showToast(R.string.File_not_found);
+            if (true) {
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.FileSystemAccessTitle)
+                        .setMessage(R.string.FileSystemAccess)
+                        .setNegativeButton(R.string.Yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                // EditorActivity.super.onBackPressed();
+                                // exitDialogShown = false;
+                                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                                //intent.addCategory(Intent.CATEGORY_OPENABLE);
+                                //intent.setType("*/*");
+                                startActivityForResult(intent, 100);
+
+                            }
+                        })
+                        .setPositiveButton(R.string.No, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                //do nothing
+                                // exitDialogShown = false;
+                            }
+                        })
+                        .setOnCancelListener(new DialogInterface.OnCancelListener(){
+                            @Override
+                            public void onCancel(DialogInterface arg0) {
+                                EditorActivity.super.onBackPressed();
+                            }
+                        })
+                        .create()
+                        .show();
+            } else {
+                this.showToast(R.string.File_not_found);
+            }
         } catch (IOException e) {
             this.showToast(R.string.Can_not_read_file);
         } catch (Exception e) {

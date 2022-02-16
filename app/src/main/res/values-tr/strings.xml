@@ -70,4 +70,8 @@
     <string name="action_undo">Geri alma</string>
     <string name="action_redo">Yeniden yap</string>
     <string name="Open_Recent">Son dosyayı aç</string>
+
+    <string name="FileSystemAccess">File System Access</string>
+    <string name="FileSystemAccessTitle">File System Access</string>
+    <string name="FileSystemAccessDescription">Try to ope files using alternative location</string>
 </resources>

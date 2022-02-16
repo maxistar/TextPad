@@ -71,4 +71,8 @@
     <string name="action_undo">撤销</string>
     <string name="action_redo">重做</string>
     <string name="Open_Recent">打开最近的文件</string>
+
+    <string name="FileSystemAccess">File System Access</string>
+    <string name="FileSystemAccessTitle">File System Access</string>
+    <string name="FileSystemAccessDescription">Try to ope files using alternative location</string>
 </resources>

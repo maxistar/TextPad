@@ -70,4 +70,8 @@
     <string name="action_edit">編集</string>
     <string name="action_undo">やり直し</string>
     <string name="action_redo">やり直しのやり直し</string>
+
+    <string name="FileSystemAccess">File System Access</string>
+    <string name="FileSystemAccessTitle">File System Access</string>
+    <string name="FileSystemAccessDescription">Try to ope files using alternative location</string>
 </resources>

@@ -70,4 +70,8 @@
     <string name="action_redo">Refaire</string>
     <string name="Open_Recent">Ouvrir le fichier récent</string>
     <!--string name="translator_credits">Traduction française : smed79</string-->
+
+    <string name="FileSystemAccess">File System Access</string>
+    <string name="FileSystemAccessTitle">File System Access</string>
+    <string name="FileSystemAccessDescription">Try to ope files using alternative location</string>
 </resources>
