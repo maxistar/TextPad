@@ -73,5 +73,8 @@
     <string name="FileSystemAccess">File System Access</string>
     <string name="FileSystemAccessTitle">File System Access</string>
     <string name="FileSystemAccessDescription">Try to ope files using alternative location</string>
+    <string name="ResetAlternativeFilePaths" translatable="false">Reset Alternative File Paths</string>
+
+
 
 </resources>

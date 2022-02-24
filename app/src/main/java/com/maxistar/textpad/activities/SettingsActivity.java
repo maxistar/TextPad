@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -22,6 +25,7 @@ import com.maxistar.textpad.R;
 import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
 import com.maxistar.textpad.TPStrings;
+import com.maxistar.textpad.service.AlternativeUrlsService;
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
@@ -29,10 +33,13 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
     SettingsService settingsService;
 
+    AlternativeUrlsService alternativeUrlsService;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         settingsService = ServiceLocator.getInstance().getSettingsService(getApplicationContext());
+        alternativeUrlsService = ServiceLocator.getInstance().getAlternativeUrlsService();
         addPreferencesFromResource(R.xml.preferences);
 
         if (hideLegacyPicker()) {
@@ -68,6 +75,46 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
         encoding.setEntries(entries.toArray(entries_arr));
         encoding.setEntryValues(entry_values.toArray(entry_values_arr));
+        
+        initAlternativeLocations();
+    }
+
+    private void initAlternativeLocations() {
+        Preference resetAlternativeLocations = this.findPreference("reset_alternative_file_paths");
+        resetAlternativeLocations.setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        resetAlternativeLocations();
+                        return false;
+                    }
+                }
+        );
+
+    }
+
+    void resetAlternativeLocations() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.You_have_made_some_changes)
+                .setMessage(R.string.Are_you_sure_to_quit)
+                .setNegativeButton(R.string.Yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        alternativeUrlsService.clearAlternativeUrls(getApplicationContext());
+                    }
+                })
+                .setPositiveButton(R.string.No, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        //
+                    }
+                })
+                .setOnCancelListener(new DialogInterface.OnCancelListener(){
+                    @Override
+                    public void onCancel(DialogInterface arg0) {
+                        //
+                    }
+                })
+                .create()
+                .show();
     }
 
     boolean hideLegacyPicker() {

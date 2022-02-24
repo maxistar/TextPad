@@ -65,15 +65,19 @@
     <PreferenceCategory
         android:title="@string/FileSystemAccess">
         <CheckBoxPreference
-            android:key="use_alternative_file_access"
-            android:title="@string/FileSystemAccessTitle"
-            android:summary="@string/FileSystemAccessDescription"
-            android:defaultValue="false" />
-        <CheckBoxPreference
             android:key="use_legacy_file_picker"
             android:title="@string/Legacy_file_picker"
             android:summary="@string/Use_legacy_file_picker"
             android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="use_alternative_file_access"
+            android:title="@string/FileSystemAccessTitle"
+            android:summary="@string/FileSystemAccessDescription"
+            android:defaultValue="true" />
+        <Preference
+            android:key="reset_alternative_file_paths"
+            android:summary=""
+            android:title="@string/ResetAlternativeFilePaths" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/About">
