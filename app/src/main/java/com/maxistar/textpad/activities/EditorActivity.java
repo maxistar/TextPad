@@ -1057,7 +1057,7 @@ public class EditorActivity extends AppCompatActivity {
             if (true) { //todo add chek for access denied
                 //mText.setText(e.getMessage());
                 new AlertDialog.Builder(this)
-                        .setTitle(R.string.FileSystemAccessTitle)
+                        .setTitle(R.string.AlternativeFileAccessTitle)
                         .setMessage(R.string.FileSystemAccess)
                         .setNegativeButton(R.string.Yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {

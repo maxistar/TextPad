@@ -72,8 +72,8 @@
     <string name="action_redo">Redo</string>
 
     <string name="FileSystemAccess">File System Access</string>
-    <string name="FileSystemAccessTitle">File System Access</string>
-    <string name="FileSystemAccessDescription">Allow assigning alternative addresses for files without application access.</string>
+    <string name="AlternativeFileAccessTitle">File System Access</string>
+    <string name="AlternativeFileAccessDescription">Allow assigning alternative addresses for files without application access.</string>
     <string name="ResetAlternativeFilePaths" translatable="false">Reset alternative file paths</string>
     <string name="ResetAlternativeFilePathsSummary" translatable="false">Click here to reset stored alternative file paths</string>
 
