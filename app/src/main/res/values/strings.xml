@@ -70,11 +70,12 @@
     <string name="action_edit">Edit</string>
     <string name="action_undo">Undo</string>
     <string name="action_redo">Redo</string>
+
     <string name="FileSystemAccess">File System Access</string>
     <string name="FileSystemAccessTitle">File System Access</string>
-    <string name="FileSystemAccessDescription">Try to ope files using alternative location</string>
-    <string name="ResetAlternativeFilePaths" translatable="false">Reset Alternative File Paths</string>
-
+    <string name="FileSystemAccessDescription">Allow assigning alternative addresses for files without application access.</string>
+    <string name="ResetAlternativeFilePaths" translatable="false">Reset alternative file paths</string>
+    <string name="ResetAlternativeFilePathsSummary" translatable="false">Click here to reset stored alternative file paths</string>
 
 
 </resources>

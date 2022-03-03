@@ -76,7 +76,7 @@
             android:defaultValue="true" />
         <Preference
             android:key="reset_alternative_file_paths"
-            android:summary=""
+            android:summary="@string/ResetAlternativeFilePathsSummary"
             android:title="@string/ResetAlternativeFilePaths" />
     </PreferenceCategory>
     <PreferenceCategory
