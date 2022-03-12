@@ -1,0 +1,1 @@
+- powiązać ścieżki systemu plików ze ścieżkami multimediów dla plików

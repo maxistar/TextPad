@@ -70,4 +70,12 @@
     <string name="action_redo">إعادة</string>
     <string name="action_undo">الغاء التحميل</string>
     <string name="Open_Recent">افتح الملف الأخير</string>
+
+    <string name="FileSystemAccess">الوصول إلى نظام الملفات</string>
+    <string name="AlternativeFileAccessTitle">مسارات الملفات البديلة</string>
+    <string name="AlternativeFileAccessDescription">السماح بتعيين عناوين بديلة للملفات إذا لم يتم منح أذونات نظام الملفات.</string>
+    <string name="ResetAlternativeFilePaths">إعادة تعيين مسارات الملفات البديلة</string>
+    <string name="ResetAlternativeFilePathsSummary">انقر هنا لإعادة تعيين مسارات الملفات البديلة المخزنة</string>
+    <string name="SelectAlternativeLocationForFile">لا يمكن فتح الملف باستخدام اسم نظام الملفات ، هل تريد تحديد هذا الملف باستخدام مدير الوسائط؟</string>
+    <string name="ResetAlternativeFileLocations">هل أنت متأكد أنك تريد حذف مسارات الملفات البديلة المخزنة؟</string>
 </resources>

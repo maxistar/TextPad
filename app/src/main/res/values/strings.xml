@@ -70,4 +70,14 @@
     <string name="action_edit">Edit</string>
     <string name="action_undo">Undo</string>
     <string name="action_redo">Redo</string>
+
+    <string name="FileSystemAccess">File System Access</string>
+    <string name="AlternativeFileAccessTitle">Alternative File Paths</string>
+    <string name="AlternativeFileAccessDescription">Allow assigning alternative addresses for files if no file system permissions granted.</string>
+    <string name="ResetAlternativeFilePaths">Reset alternative file paths</string>
+    <string name="ResetAlternativeFilePathsSummary">Click here to reset stored alternative file paths</string>
+    <string name="SelectAlternativeLocationForFile">The file can not be opened using file system name, do you want to select this file using media manager?</string>
+    <string name="ResetAlternativeFileLocations">Are you sure that you want to delete stored alternative file paths?</string>
+
+
 </resources>

@@ -50,6 +50,7 @@ import com.maxistar.textpad.SelectionMode;
 import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
 import com.maxistar.textpad.TPStrings;
+import com.maxistar.textpad.service.AlternativeUrlsService;
 import com.maxistar.textpad.service.RecentFilesService;
 import com.maxistar.textpad.utils.EditTextUndoRedo;
 import com.maxistar.textpad.utils.System;
@@ -70,8 +71,8 @@ public class EditorActivity extends AppCompatActivity {
     private static final int REQUEST_SAVE = 2;
     private static final int REQUEST_SETTINGS = 3;
 
-    private static final int ACTION_OPTION_FILE = 4;
-    private static final int ACTION_SAVE_FILE = 5;
+    private static final int ACTION_CREATE_FILE = 4;
+    private static final int ACTION_OPEN_FILE = 5;
 
     private static final int DO_NOTHING = 0;
     private static final int DO_OPEN = 1;
@@ -96,6 +97,9 @@ public class EditorActivity extends AppCompatActivity {
     private ScrollView scrollView;
     
     String urlFilename = TPStrings.EMPTY;
+
+    Uri lastTriedSystemUri = null;
+
     
     boolean changed = false;
     boolean exitDialogShown = false;
@@ -110,11 +114,15 @@ public class EditorActivity extends AppCompatActivity {
 
     RecentFilesService recentFilesService;
 
+    AlternativeUrlsService alternativeUrlsService;
+
     private MenuItem searchItem;
 
     private TextWatcher textWatcher;
 
     EditTextUndoRedo editTextUndoRedo;
+
+
 
     /** Called when the activity is first created. */
     @Override
@@ -123,6 +131,7 @@ public class EditorActivity extends AppCompatActivity {
 
         settingsService = ServiceLocator.getInstance().getSettingsService(this.getApplicationContext());
         recentFilesService = ServiceLocator.getInstance().getRecentFilesService();
+        alternativeUrlsService = ServiceLocator.getInstance().getAlternativeUrlsService();
 
         setContentView(R.layout.main);
         mText = this.findViewById(R.id.editText1);
@@ -130,6 +139,7 @@ public class EditorActivity extends AppCompatActivity {
         editTextUndoRedo = new EditTextUndoRedo(mText);
         scrollView = findViewById(R.id.vscroll);
         applyPreferences();
+        // lastTriedSystemUri = null;
 
         if (savedInstanceState != null) {
             restoreState(savedInstanceState);
@@ -140,14 +150,8 @@ public class EditorActivity extends AppCompatActivity {
             Intent i = this.getIntent();
             if (TPStrings.ACTION_VIEW.equals(i.getAction())) {
                 Uri u = i.getData();
-                if (useAndroidManager()) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        openNamedFile(u);
-                    }
-                } else {
-                    if (u != null) {
-                        openNamedFileLegacy(u.getPath());
-                    }
+                if (u != null) {
+                    openFileByUri(u);
                 }
             } else { // it this is just created
                 if (isFilenameEmpty()) {
@@ -158,6 +162,29 @@ public class EditorActivity extends AppCompatActivity {
             }
         }
 
+        setTextWatcher();
+        updateTitle();
+        mText.requestFocus();
+
+        settingsService.applyLocale(this.getBaseContext());
+    }
+
+    private void openFileByUri(Uri u) {
+        if (useAndroidManager()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                if (settingsService.isAlternativeFileAccess() &&
+                    alternativeUrlsService.hasAlternativeUrl(u, getApplicationContext())) {
+                    openNamedFile(alternativeUrlsService.getAlternativeUrl(u, getApplicationContext()));
+                } else {
+                    openNamedFile(u);
+                }
+            }
+        } else {
+            openNamedFileLegacy(u.getPath());
+        }
+    }
+
+    private void setTextWatcher() {
         textWatcher = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -178,11 +205,6 @@ public class EditorActivity extends AppCompatActivity {
                 }
             }
         };
-
-        updateTitle();
-        mText.requestFocus();
-
-        settingsService.applyLocale(this.getBaseContext());
     }
 
     /**
@@ -347,7 +369,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     /**
-     * @todo Tove to external class and cover with test
+     * @todo Move to external class and cover with test
      * @param uri File Url
      * @return Readable File Name
      */
@@ -720,7 +742,7 @@ public class EditorActivity extends AppCompatActivity {
             intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
             intent.putExtra(Intent.EXTRA_TITLE, TPStrings.NEW_FILE_TXT);
             intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
-            startActivityForResult(intent, ACTION_OPTION_FILE);
+            startActivityForResult(intent, ACTION_CREATE_FILE);
         } else {
             Intent intent = new Intent(this.getBaseContext(), FileDialog.class);
             this.startActivityForResult(intent, REQUEST_SAVE);
@@ -786,16 +808,20 @@ public class EditorActivity extends AppCompatActivity {
             System.exitFromApp(EditorActivity.this);
         }
     }
+    
+    protected void selectFileUsingAndroidSystemPicker() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        intent.putExtra(Intent.EXTRA_TITLE, TPStrings.NEW_FILE_TXT);
+        intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
+        startActivityForResult(intent, ACTION_OPEN_FILE);
+    }
 
     protected void openNewFile() {
         if (useAndroidManager()) {
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-            intent.putExtra(Intent.EXTRA_TITLE, TPStrings.NEW_FILE_TXT);
-            intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
-            startActivityForResult(intent, ACTION_SAVE_FILE);
+            selectFileUsingAndroidSystemPicker();
         } else {
             Intent intent = new Intent(this.getBaseContext(), FileDialog.class);
             intent.putExtra(TPStrings.SELECTION_MODE, SelectionMode.MODE_OPEN);
@@ -1002,7 +1028,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    protected void openNamedFile(Uri uri) {
+    protected void openNamedFile(final Uri uri) {
         try {
             ContentResolver contentResolver = getContentResolver();
             InputStream inputStream = contentResolver.openInputStream(uri);
@@ -1030,14 +1056,59 @@ public class EditorActivity extends AppCompatActivity {
                 settingsService.setLastFilename(getFilename(), this.getApplicationContext());
             }
             selectionStart = 0;
+            if (lastTriedSystemUri != null) {
+                alternativeUrlsService.addAlternativeUrl(lastTriedSystemUri, uri, getApplicationContext());
+                lastTriedSystemUri = null;
+            }
             updateTitle();
         } catch (FileNotFoundException e) {
-            this.showToast(R.string.File_not_found);
+            if (isAccessDeniedException(e)) { //todo add chek for access denied
+                showAlternativeFileDialog(uri);
+            } else {
+                this.showToast(R.string.File_not_found);
+            }
         } catch (IOException e) {
             this.showToast(R.string.Can_not_read_file);
         } catch (Exception e) {
             this.showToast(R.string.Can_not_read_file);
         }
+    }
+
+    private void showAlternativeFileDialog(final Uri uri) {
+        new AlertDialog.Builder(this)
+            .setTitle(R.string.AlternativeFileAccessTitle)
+            .setMessage(R.string.SelectAlternativeLocationForFile)
+            .setNegativeButton(R.string.Yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface arg0, int arg1) {
+                    lastTriedSystemUri = uri;
+                    selectFileUsingAndroidSystemPicker();
+                }
+            })
+            .setPositiveButton(R.string.No, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface arg0, int arg1) {
+                        lastTriedSystemUri = null;
+                }
+            })
+            .setOnCancelListener(new DialogInterface.OnCancelListener(){
+                    @Override
+                    public void onCancel(DialogInterface arg0) {
+                        lastTriedSystemUri = null;
+                        EditorActivity.super.onBackPressed();
+                }
+                })
+            .create()
+            .show();
+    }
+
+    private boolean isAccessDeniedException(FileNotFoundException e) {
+        if (!settingsService.isAlternativeFileAccess()) {
+            return false;
+        }
+        String message = e.getMessage();
+        if (message == null) {
+            return false;
+        }
+        return (message.contains("EACCES"));
     }
 
     /**
@@ -1092,7 +1163,7 @@ public class EditorActivity extends AppCompatActivity {
             }
         } else if (requestCode == REQUEST_SETTINGS) {
             applyPreferences();
-        } else if (requestCode == ACTION_SAVE_FILE
+        } else if (requestCode == ACTION_OPEN_FILE
                 && resultCode == Activity.RESULT_OK) {
             // The result data contains a URI for the document or directory that
             // the user selected.
@@ -1111,7 +1182,7 @@ public class EditorActivity extends AppCompatActivity {
                     }
                 }
             }
-        } else if (requestCode == ACTION_OPTION_FILE) {
+        } else if (requestCode == ACTION_CREATE_FILE) {
             if (data != null) {
                 Uri uri = data.getData();
                 if (uri != null) {
@@ -1175,9 +1246,9 @@ public class EditorActivity extends AppCompatActivity {
             // Find text
             if (matcher.find(index)) {
                 // Check layout
-                if (mText.getLayout() == null)
+                if (mText.getLayout() == null) {
                     return false;
-
+                }
                 doSearch();
             } else {
                 index = 0;
@@ -1192,9 +1263,9 @@ public class EditorActivity extends AppCompatActivity {
             // Find next text
             if (matcher.find()) {
                 // Check layout
-                if (mText.getLayout() == null)
+                if (mText.getLayout() == null) {
                     return false;
-
+                }
                 doSearch();
             } else {
                 Toast.makeText(

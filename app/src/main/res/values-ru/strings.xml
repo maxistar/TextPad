@@ -70,4 +70,12 @@
     <string name="action_undo">Отменить</string>
     <string name="action_redo">Повторить</string>
     <string name="Open_Recent">Открыть последний файл</string>
+
+    <string name="FileSystemAccess">Доступ к файловой системе</string>
+    <string name="AlternativeFileAccessTitle">Альтернативные пути к файлам</string>
+    <string name="AlternativeFileAccessDescription">Разрешить назначать альтернативные адреса для файлов, если разрешения файловой системы не предоставлены.</string>
+    <string name="ResetAlternativeFilePaths">Сбросить альтернативные пути к файлам</string>
+    <string name="ResetAlternativeFilePathsSummary">Нажмите здесь, чтобы сбросить сохраненные альтернативные пути к файлам</string>
+    <string name="SelectAlternativeLocationForFile">Файл не может быть открыт с использованием имени файловой системы, вы хотите выбрать этот файл с помощью медиа-менеджера?</string>
+    <string name="ResetAlternativeFileLocations">Вы уверены, что хотите удалить сохраненные альтернативные пути к файлам?</string>
 </resources>

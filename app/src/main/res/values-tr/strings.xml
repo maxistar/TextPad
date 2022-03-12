@@ -70,4 +70,12 @@
     <string name="action_undo">Geri alma</string>
     <string name="action_redo">Yeniden yap</string>
     <string name="Open_Recent">Son dosyayı aç</string>
+
+    <string name="FileSystemAccess">Dosya Sistemi Erişimi</string>
+    <string name="AlternativeFileAccessTitle">Alternatif Dosya Yolları</string>
+    <string name="AlternativeFileAccessDescription">Dosya sistemi izni verilmemişse, dosyalar için alternatif adres atamaya izin verin.</string>
+    <string name="ResetAlternativeFilePaths">Alternatif dosya yollarını sıfırla</string>
+    <string name="ResetAlternativeFilePathsSummary">Saklanan alternatif dosya yollarını sıfırlamak için burayı tıklayın</string>
+    <string name="SelectAlternativeLocationForFile">Dosya, dosya sistemi adı kullanılarak açılamıyor, bu dosyayı medya yöneticisini kullanarak seçmek istiyor musunuz?</string>
+    <string name="ResetAlternativeFileLocations">Saklanan alternatif dosya yollarını silmek istediğinizden emin misiniz?</string>
 </resources>

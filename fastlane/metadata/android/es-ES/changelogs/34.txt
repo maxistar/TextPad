@@ -1,0 +1,1 @@
+- asociar las rutas del sistema de archivos con las rutas de los medios para los archivos

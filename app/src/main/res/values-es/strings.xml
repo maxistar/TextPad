@@ -70,4 +70,12 @@
     <string name="action_undo">Deshacer</string>
     <string name="action_redo">Rehacer</string>
     <string name="Open_Recent">Abrir archivo reciente</string>
+
+    <string name="FileSystemAccess">Acceso al sistema de archivos</string>
+    <string name="AlternativeFileAccessTitle">Rutas de archivo alternativas</string>
+    <string name="AlternativeFileAccessDescription">Permitir la asignación de direcciones alternativas para archivos si no se otorgan permisos para el sistema de archivos.</string>
+    <string name="ResetAlternativeFilePaths">Restablecer rutas de archivo alternativas</string>
+    <string name="ResetAlternativeFilePathsSummary">Haga clic aquí para restablecer las rutas de archivo alternativas almacenadas</string>
+    <string name="SelectAlternativeLocationForFile">El archivo no se puede abrir usando el nombre del sistema de archivos, ¿desea seleccionar este archivo usando el administrador de medios?</string>
+    <string name="ResetAlternativeFileLocations">¿Está seguro de que desea eliminar las rutas de archivo alternativas almacenadas?</string>
 </resources>
