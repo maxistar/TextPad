@@ -150,18 +150,8 @@ public class EditorActivity extends AppCompatActivity {
             Intent i = this.getIntent();
             if (TPStrings.ACTION_VIEW.equals(i.getAction())) {
                 Uri u = i.getData();
-                if (useAndroidManager()) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        if (alternativeUrlsService.hasAlternativeUrl(u, getApplicationContext())) {
-                            openNamedFile(alternativeUrlsService.getAlternativeUrl(u, getApplicationContext()));
-                        } else {
-                            openNamedFile(u);
-                        }
-                    }
-                } else {
-                    if (u != null) {
-                        openNamedFileLegacy(u.getPath());
-                    }
+                if (u != null) {
+                    openFileByUri(u);
                 }
             } else { // it this is just created
                 if (isFilenameEmpty()) {
@@ -172,6 +162,29 @@ public class EditorActivity extends AppCompatActivity {
             }
         }
 
+        setTextWatcher();
+        updateTitle();
+        mText.requestFocus();
+
+        settingsService.applyLocale(this.getBaseContext());
+    }
+
+    private void openFileByUri(Uri u) {
+        if (useAndroidManager()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                if (settingsService.isAlternativeFileAccess() &&
+                    alternativeUrlsService.hasAlternativeUrl(u, getApplicationContext())) {
+                    openNamedFile(alternativeUrlsService.getAlternativeUrl(u, getApplicationContext()));
+                } else {
+                    openNamedFile(u);
+                }
+            }
+        } else {
+            openNamedFileLegacy(u.getPath());
+        }
+    }
+
+    private void setTextWatcher() {
         textWatcher = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -192,11 +205,6 @@ public class EditorActivity extends AppCompatActivity {
                 }
             }
         };
-
-        updateTitle();
-        mText.requestFocus();
-
-        settingsService.applyLocale(this.getBaseContext());
     }
 
     /**
@@ -800,7 +808,7 @@ public class EditorActivity extends AppCompatActivity {
             System.exitFromApp(EditorActivity.this);
         }
     }
-
+    
     protected void selectFileUsingAndroidSystemPicker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -1054,33 +1062,8 @@ public class EditorActivity extends AppCompatActivity {
             }
             updateTitle();
         } catch (FileNotFoundException e) {
-            if (true) { //todo add chek for access denied
-                //mText.setText(e.getMessage());
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.AlternativeFileAccessTitle)
-                        .setMessage(R.string.FileSystemAccess)
-                        .setNegativeButton(R.string.Yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                lastTriedSystemUri = uri;
-                                selectFileUsingAndroidSystemPicker();
-                            }
-                        })
-                        .setPositiveButton(R.string.No, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                lastTriedSystemUri = null;
-                                //do nothing
-                                // exitDialogShown = false;
-                            }
-                        })
-                        .setOnCancelListener(new DialogInterface.OnCancelListener(){
-                            @Override
-                            public void onCancel(DialogInterface arg0) {
-                                lastTriedSystemUri = null;
-                                EditorActivity.super.onBackPressed();
-                            }
-                        })
-                        .create()
-                        .show();
+            if (isAccessDeniedException(e)) { //todo add chek for access denied
+                showAlternativeFileDialog(uri);
             } else {
                 this.showToast(R.string.File_not_found);
             }
@@ -1089,6 +1072,43 @@ public class EditorActivity extends AppCompatActivity {
         } catch (Exception e) {
             this.showToast(R.string.Can_not_read_file);
         }
+    }
+
+    private void showAlternativeFileDialog(final Uri uri) {
+        new AlertDialog.Builder(this)
+            .setTitle(R.string.AlternativeFileAccessTitle)
+            .setMessage(R.string.SelectAlternativeLocationForFile)
+            .setNegativeButton(R.string.Yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface arg0, int arg1) {
+                    lastTriedSystemUri = uri;
+                    selectFileUsingAndroidSystemPicker();
+                }
+            })
+            .setPositiveButton(R.string.No, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface arg0, int arg1) {
+                        lastTriedSystemUri = null;
+                }
+            })
+            .setOnCancelListener(new DialogInterface.OnCancelListener(){
+                    @Override
+                    public void onCancel(DialogInterface arg0) {
+                        lastTriedSystemUri = null;
+                        EditorActivity.super.onBackPressed();
+                }
+                })
+            .create()
+            .show();
+    }
+
+    private boolean isAccessDeniedException(FileNotFoundException e) {
+        if (!settingsService.isAlternativeFileAccess()) {
+            return false;
+        }
+        String message = e.getMessage();
+        if (message == null) {
+            return false;
+        }
+        return (message.contains("EACCES"));
     }
 
     /**
@@ -1226,9 +1246,9 @@ public class EditorActivity extends AppCompatActivity {
             // Find text
             if (matcher.find(index)) {
                 // Check layout
-                if (mText.getLayout() == null)
+                if (mText.getLayout() == null) {
                     return false;
-
+                }
                 doSearch();
             } else {
                 index = 0;
@@ -1243,9 +1263,9 @@ public class EditorActivity extends AppCompatActivity {
             // Find next text
             if (matcher.find()) {
                 // Check layout
-                if (mText.getLayout() == null)
+                if (mText.getLayout() == null) {
                     return false;
-
+                }
                 doSearch();
             } else {
                 Toast.makeText(

@@ -72,7 +72,7 @@
         <CheckBoxPreference
             android:key="use_alternative_file_access"
             android:title="@string/AlternativeFileAccessTitle"
-            android:summary="@string/AlternativeFileAccessTitleDescription"
+            android:summary="@string/AlternativeFileAccessDescription"
             android:defaultValue="true" />
         <Preference
             android:key="reset_alternative_file_paths"

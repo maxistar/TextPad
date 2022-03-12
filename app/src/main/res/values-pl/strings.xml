@@ -71,7 +71,11 @@
     <string name="action_undo">Cofnij</string>
     <string name="action_redo">Ponów</string>
 
-    <string name="FileSystemAccess">File System Access</string>
-    <string name="AlternativeFileAccessTitle">File System Access</string>
-    <string name="AlternativeFileAccessDescription">Try to ope files using alternative location</string>
+    <string name="FileSystemAccess">Dostęp do systemu plików</string>
+    <string name="AlternativeFileAccessTitle">Alternatywne ścieżki plików</string>
+    <string name="AlternativeFileAccessDescription">Zezwalaj na przypisywanie alternatywnych adresów dla plików, jeśli nie przyznano żadnych uprawnień systemu plików.</string>
+    <string name="ResetAlternativeFilePaths">Zresetuj alternatywne ścieżki plików</string>
+    <string name="ResetAlternativeFilePathsSummary">Kliknij tutaj, aby zresetować zapisane alternatywne ścieżki plików</string>
+    <string name="SelectAlternativeLocationForFile">Nie można otworzyć pliku przy użyciu nazwy systemu plików, czy chcesz wybrać ten plik za pomocą menedżera multimediów?</string>
+    <string name="ResetAlternativeFileLocations">Czy na pewno chcesz usunąć zapisane alternatywne ścieżki plików?</string>
 </resources>

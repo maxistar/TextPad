@@ -71,7 +71,11 @@
     <string name="Open_Recent">Ouvrir le fichier récent</string>
     <!--string name="translator_credits">Traduction française : smed79</string-->
 
-    <string name="FileSystemAccess">File System Access</string>
-    <string name="AlternativeFileAccessTitle">File System Access</string>
-    <string name="AlternativeFileAccessDescription">Try to ope files using alternative location</string>
+    <string name="FileSystemAccess">Accès au système de fichiers</string>
+    <string name="AlternativeFileAccessTitle">Chemins de fichiers alternatifs</string>
+    <string name="AlternativeFileAccessDescription">Autoriser l\'attribution d\'adresses alternatives pour les fichiers si aucune autorisation de système de fichiers n\'est accordée.</string>
+    <string name="ResetAlternativeFilePaths">Réinitialiser les chemins de fichiers alternatifs</string>
+    <string name="ResetAlternativeFilePathsSummary">Cliquez ici pour réinitialiser les chemins de fichiers alternatifs stockés</string>
+    <string name="SelectAlternativeLocationForFile">Le fichier ne peut pas être ouvert à l\'aide du nom du système de fichiers, voulez-vous sélectionner ce fichier à l\'aide du gestionnaire de médias ?</string>
+    <string name="ResetAlternativeFileLocations">Êtes-vous sûr de vouloir supprimer les chemins de fichiers alternatifs stockés ?</string>
 </resources>

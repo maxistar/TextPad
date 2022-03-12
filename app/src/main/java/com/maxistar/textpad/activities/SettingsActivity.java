@@ -80,7 +80,15 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
     }
 
     private void initAlternativeLocations() {
-        Preference resetAlternativeLocations = this.findPreference("reset_alternative_file_paths");
+        final Preference resetAlternativeLocations = this.findPreference("reset_alternative_file_paths");
+        final Preference useAlternativeLocations = this.findPreference("use_alternative_file_access");
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            resetAlternativeLocations.setEnabled(false);
+            useAlternativeLocations.setEnabled(false);
+        }
+
+        resetAlternativeLocations.setEnabled(settingsService.isAlternativeFileAccess());
         resetAlternativeLocations.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
@@ -91,12 +99,21 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
                 }
         );
 
+        useAlternativeLocations.setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        resetAlternativeLocations.setEnabled(settingsService.isAlternativeFileAccess());
+                        return true;
+                    }
+                }
+        );
     }
 
     void resetAlternativeLocations() {
         new AlertDialog.Builder(this)
-                .setTitle(R.string.You_have_made_some_changes)
-                .setMessage(R.string.Are_you_sure_to_quit)
+                .setTitle(R.string.AlternativeFileAccessTitle)
+                .setMessage(R.string.ResetAlternativeFileLocations)
                 .setNegativeButton(R.string.Yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
                         alternativeUrlsService.clearAlternativeUrls(getApplicationContext());

@@ -71,7 +71,11 @@
     <string name="action_redo">Ripeti</string>
     <string name="Open_Recent">Apri file recente</string>
 
-    <string name="FileSystemAccess">File System Access</string>
-    <string name="AlternativeFileAccessTitle">File System Access</string>
-    <string name="AlternativeFileAccessDescription">Try to ope files using alternative location</string>
+    <string name="FileSystemAccess">Accesso al file system</string>
+    <string name="AlternativeFileAccessTitle">Percorsi file alternativi</string>
+    <string name="AlternativeFileAccessDescription">Consenti l\'assegnazione di indirizzi alternativi per i file se non sono state concesse autorizzazioni del file system.</string>
+    <string name="ResetAlternativeFilePaths">Reimposta percorsi file alternativi</string>
+    <string name="ResetAlternativeFilePathsSummary">Fare clic qui per ripristinare i percorsi dei file alternativi archiviati</string>
+    <string name="SelectAlternativeLocationForFile">Il file non può essere aperto usando il nome del file system, vuoi selezionare questo file usando media manager?</string>
+    <string name="ResetAlternativeFileLocations">Sei sicuro di voler eliminare i percorsi di file alternativi archiviati?</string>
 </resources>

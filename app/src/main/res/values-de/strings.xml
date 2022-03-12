@@ -71,7 +71,11 @@
     <string name="action_redo">Wiederholen</string>
     <string name="Open_Recent">Letzte Datei öffnen</string>
 
-    <string name="FileSystemAccess">File System Access</string>
-    <string name="AlternativeFileAccessTitle">File System Access</string>
-    <string name="AlternativeFileAccessDescription">Try to ope files using alternative location</string>
+    <string name="FileSystemAccess">Dateisystemzugriff</string>
+    <string name="AlternativeFileAccessTitle">Alternative Dateipfade</string>
+    <string name="AlternativeFileAccessDescription">Zuweisung alternativer Adressen für Dateien zulassen, wenn keine Dateisystemberechtigungen erteilt wurden.</string>
+    <string name="ResetAlternativeFilePaths">Alternative Dateipfade zurücksetzen</string>
+    <string name="ResetAlternativeFilePathsSummary">Klicken Sie hier, um gespeicherte alternative Dateipfade zurückzusetzen</string>
+    <string name="SelectAlternativeLocationForFile">Die Datei kann nicht mit dem Dateisystemnamen geöffnet werden. Möchten Sie diese Datei mit dem Medienmanager auswählen?</string>
+    <string name="ResetAlternativeFileLocations">Möchten Sie gespeicherte alternative Dateipfade wirklich löschen?</string>
 </resources>
