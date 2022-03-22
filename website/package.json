@@ -8,7 +8,7 @@
   "dependencies": {
     "@metalsmith/markdown": "^1.4.0",
     "@metalsmith/permalinks": "^2.4.0",
-    "highlighter": "^0.0.3",
+    "highlighter": "^0.1.0",
     "jstransformer-handlebars": "^1.2.0",
     "metalsmith": "^2.4.1",
     "metalsmith-build-date": "^0.2.0",
