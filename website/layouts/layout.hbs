@@ -10,31 +10,34 @@
   <meta name="generator" content="metalsmith">
 </head>
 <body>
-  <div class="top-bar">
-    <div class="top-bar-left">
-      <ul class="menu">
-        <li class="menu-text">Simple Text Editor</li>
-        <li><a href="/about/">About</a></li>
-      </ul>
-    </div>
+  <div class="content">
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <ul class="menu">
+            <li class="menu-text">Simple Text Editor</li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/donate/">Donate</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <article class="main-content grid-container">
+        {{{ contents }}}
+      </article>
   </div>
-  <article class="grid-container">
-    {{{ contents }}}
-
-    <div class="grid-x align-justify align-middle">
-        <div class="small-12 medium-shrink cell">
-            <ul class="menu">
-                <li class="align-self-middle">Simple Text Editor</li>
-                <li><a href="/">Home</a></li>
-                <li><a href="/about/">About</a></li>
-                <li><a href="/legal/privatepolicy/">Privacy Policy</a></li>
-            </ul>
-        </div>
-        <div class="small-12 medium-shrink cell">
-            Copyright 2021
-        </div>
-    </div>
-
-  </article>
+  <div class="footer grid-x align-justify align-middle">
+      <div class="small-12 medium-shrink cell">
+          <ul class="menu">
+              <li class="align-self-middle">Simple Text Editor</li>
+              <li><a href="/">Home</a></li>
+              <li><a href="/about/">About</a></li>
+              <li><a href="/donate/">Donate</a></li>
+              <li><a href="/legal/privatepolicy/">Privacy Policy</a></li>
+          </ul>
+      </div>
+      <div class="small-12 medium-shrink cell">
+          Copyright 2022
+      </div>
+  </div>
 </body>
 </html>
