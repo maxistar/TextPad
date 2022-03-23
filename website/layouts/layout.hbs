@@ -22,11 +22,20 @@
   <div class="content">
       <div class="top-bar">
         <div class="top-bar-left">
+        {{#ifEquals locale "en"}}
           <ul class="menu">
             <li class="menu-text">Simple Text Editor</li>
             <li><a href="/about/">About</a></li>
             <li><a href="/donate/">Donate</a></li>
           </ul>
+        {{/ifEquals}}
+        {{#ifEquals locale "ru"}}
+          <ul class="menu">
+            <li class="menu-text">Простой Текстовый Редактор</li>
+            <li><a href="/{{ locale }}/about/">О Программе</a></li>
+            <li><a href="/{{ locale }}/donate/">Поддержать</a></li>
+          </ul>
+        {{/ifEquals}}
         </div>
       </div>
 
@@ -36,13 +45,24 @@
   </div>
   <div class="footer grid-x align-justify align-middle">
       <div class="small-12 medium-shrink cell">
-          <ul class="menu">
-              <li class="align-self-middle">Simple Text Editor</li>
-              <li><a href="/">Home</a></li>
-              <li><a href="/about/">About</a></li>
-              <li><a href="/donate/">Donate</a></li>
-              <li><a href="/legal/privatepolicy/">Privacy Policy</a></li>
-          </ul>
+          {{#ifEquals locale "en"}}
+               <ul class="menu">
+                   <li><a href="/">Home</a></li>
+                   <li><a href="/about/">About</a></li>
+                   <li><a href="/donate/">Donate</a></li>
+                   <li><a href="/legal/privatepolicy/">Privacy Policy</a></li>
+                   <li><a href="/ru/">RU</a></li>
+               </ul>
+          {{/ifEquals}}
+          {{#ifEquals locale "ru"}}
+               <ul class="menu">
+                   <li><a href="/{{ locale }}/">Домой</a></li>
+                   <li><a href="/{{ locale }}/about/">О Программе</a></li>
+                   <li><a href="/{{ locale }}/donate/">Поддержать</a></li>
+                   <li><a href="/{{ locale }}/legal/privatepolicy/">Политика конфиденциальности</a></li>
+                   <li><a href="/">EN</a></li>
+               </ul>
+          {{/ifEquals}}
       </div>
       <div class="small-12 medium-shrink cell">
           Copyright 2022

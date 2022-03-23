@@ -7,10 +7,17 @@ const define      = require('metalsmith-define');
 const pagination  = require('metalsmith-pagination');
 const snippet     = require('metalsmith-snippet');
 const date        = require('metalsmith-build-date');
-const layouts     = require('metalsmith-layouts')
+const layouts     = require('@metalsmith/layouts');
+const multiLanguage = require('metalsmith-multi-language');
+const handlebars  = require('handlebars');
+
+handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+});
 
 metalsmith(__dirname)
     .source("src")
+    .use(multiLanguage({ default: 'en', locales: ['en', 'ru'] }))
     .use(define({
         blog: {
             url: 'https://texteditor.maxistar.me',
@@ -55,6 +62,9 @@ metalsmith(__dirname)
                 helpers: {
                     formattedDate: function (date) {
                         return new Date(date).toLocaleDateString()
+                    },
+                    isDefaultLocale: function (locale) {
+                        return locale === 'en'
                     }
                 }
             }
