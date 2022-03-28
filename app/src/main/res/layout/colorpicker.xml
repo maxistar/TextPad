@@ -1,12 +1,44 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/colormap"
-    android:adjustViewBounds="true"
-    android:contentDescription="@string/Choose_a_color"
-    android:scaleType="fitXY"
-    android:src="@drawable/colors"
+<RelativeLayout android:id="@+id/relativeLayout01"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_gravity="center_vertical|center_horizontal"
-    android:padding="15dp"
-    />
+    >
+
+    <ImageView
+        android:id="@+id/colormap"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/Choose_a_color"
+        android:scaleType="fitXY"
+        android:src="@drawable/colors"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/textColor"
+        android:padding="15dp"
+        />
+
+    <EditText
+        android:id="@+id/textColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_above="@id/checkBox"
+        android:inputType="textPersonName"
+        android:text="Name"
+        />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Default"
+        android:layout_alignParentBottom="true"
+        />
+</RelativeLayout>

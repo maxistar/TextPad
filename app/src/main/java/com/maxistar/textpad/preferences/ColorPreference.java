@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
@@ -13,11 +14,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
+
+import java.util.Locale;
 
 public class ColorPreference extends DialogPreference
 {
@@ -27,12 +31,13 @@ public class ColorPreference extends DialogPreference
 
     private final SettingsService settingsService;
 
+
+
     // This is the constructor called by the inflater
     public ColorPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         settingsService = ServiceLocator.getInstance().getSettingsService(context);
-
         attribute = attrs.getAttributeValue(1);
 
         // set the layout so we can see the preview color
@@ -52,7 +57,7 @@ public class ColorPreference extends DialogPreference
         super.onBindView(view);
         
         // Set our custom views inside the layout
-        final View myView = view.findViewById(R.id.currentcolor);
+        View myView = view.findViewById(R.id.currentcolor);
         if (myView != null) {
             myView.setBackgroundColor(color);
         }
@@ -76,6 +81,7 @@ public class ColorPreference extends DialogPreference
                 notifyChanged();
             }
         });
+
         builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // set it back to original
@@ -84,7 +90,6 @@ public class ColorPreference extends DialogPreference
                 } else {
                     color = settingsService.getFontColor();
                 }
-
             }
         });
 
@@ -93,9 +98,10 @@ public class ColorPreference extends DialogPreference
         final ViewGroup nullParent = null;
         final View colorView = factory.inflate(R.layout.colorpicker, nullParent);
         final ImageView colormap = colorView.findViewById(R.id.colormap);
-
+        final EditText editText = colorView.findViewById(R.id.textColor);
         // set the background to the current color
-        colorView.setBackgroundColor(color);
+        colormap.setBackgroundColor(color);
+        editText.setText(colorToText(color));
 
         // setup the click listener
         colormap.setOnTouchListener(new OnTouchListener() {
@@ -125,11 +131,25 @@ public class ColorPreference extends DialogPreference
 
                 // set the color
                 color = bitmap.getPixel(x, y);
-                colorView.setBackgroundColor(color);
+                colormap.setBackgroundColor(color);
+                editText.setText(colorToText(color));
                 v.performClick();
                 return true;
             }
         });
         builder.setView(colorView);
+    }
+
+    private String colorToText(int color) {
+        String red = Integer.toString(Color.red(color), 16);
+        String green = Integer.toString(Color.green(color), 16);
+        String blue = Integer.toString(Color.blue(color), 16);
+        return String.format(
+            Locale.getDefault(),
+            "%s%s%s" ,
+            red.length() < 2 ? "0" + red : red,
+            green.length() < 2 ? "0" + green : green,
+            blue.length() < 2 ? "0" + blue : blue
+        );
     }
 }
