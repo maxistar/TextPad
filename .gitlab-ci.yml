@@ -34,6 +34,8 @@ execute:
     - altair
   script:
     - echo "Execute Compliled Tests"
+    - adb -s ZY223NB8FP uninstall com.maxistar.textpad.test
+    - adb -s ZY223NB8FP uninstall com.maxistar.textpad
     - adb -s ZY223NB8FP install -r -t -g -d /home/pi/tests/texteditor/app-debug-androidTest.apk
     - adb -s ZY223NB8FP install -r -t -g -d /home/pi/tests/texteditor/app-debug.apk
     - echo "Run tests"
