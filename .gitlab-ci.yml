@@ -1,12 +1,20 @@
 image: maxistar/android:latest
 
+before_script:
+  - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+
 stages:
   - build
+  - execute
 
 build:
   stage: build
   tags:
-    - docker
+    - fomalgaut
 
   script:
     - echo "Building"
@@ -15,4 +23,14 @@ build:
     - gradle compileDebugSources
     - gradle compileDebugAndroidTestSources
     - gradle assembleAndroidTest
+    - echo "Upload compiled binaries"
+    - scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk pi@arcturus-int.maxistar.ru:/home/pi/tests/texteditor/app-debug-androidTest.apk
+    - scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r app/build/outputs/apk/debug/app-debug.apk pi@arcturus-int.maxistar.ru:/home/pi/tests/texteditor/app-debug.apk
+    - echo "Done stage Fomalgaut"
 
+execute:
+  stage: execute
+  tags:
+    - fomalgaut
+  script:
+    - echo "Execute Compliled Tests"
