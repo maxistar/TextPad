@@ -39,5 +39,6 @@ execute:
     - adb -s $ADB_DEVICE_NAME install -r -t -g -d $APK_LOCATION/app-debug-androidTest.apk
     - adb -s $ADB_DEVICE_NAME install -r -t -g -d $APK_LOCATION/app-debug.apk
     - echo "Run tests"
+    - adb -s $ADB_DEVICE_NAME shell input keyevent 82
     - adb -s $ADB_DEVICE_NAME shell am instrument -w -e debug false com.maxistar.textpad.test/androidx.test.runner.AndroidJUnitRunner
-    - exit 1
+    - exit 0
