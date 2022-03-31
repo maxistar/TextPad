@@ -42,4 +42,4 @@ execute:
     - adb -s $ADB_DEVICE_NAME shell input keyevent 82
     - sleep 1
     - adb -s $ADB_DEVICE_NAME shell am instrument -w -e debug false com.maxistar.textpad.test/androidx.test.runner.AndroidJUnitRunner
-    - exit 0
+    - exit $?
