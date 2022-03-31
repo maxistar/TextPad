@@ -10,4 +10,4 @@ build:
 
   script:
     - echo "Building"
-    - grunt build
+    - gradle build
