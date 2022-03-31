@@ -11,4 +11,8 @@ build:
   script:
     - echo "Building"
     - cp local.properties.dist local.properties
-    - gradle build
+    - gradle assembleDebug
+    - gradle compileDebugSources
+    - gradle compileDebugAndroidTestSources
+    - gradle assembleAndroidTest
+
