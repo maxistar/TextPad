@@ -10,4 +10,5 @@ build:
 
   script:
     - echo "Building"
+    - cp local.properties.dist local.properties
     - gradle build
