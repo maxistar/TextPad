@@ -2,11 +2,12 @@ image: maxistar/android:latest
 
 stages:
   - build
-  tags:
-  - docker
 
 build:
   stage: build
+  tags:
+    - docker
+
   script:
     - echo "Building"
     - grunt build
