@@ -2,6 +2,9 @@ image: maxistar/android:latest
 
 stages:
   - build
+  tags:
+  - docker
+
 build:
   stage: build
   script:
