@@ -24,8 +24,8 @@ build:
     - gradle compileDebugAndroidTestSources
     - gradle assembleAndroidTest
     - echo "Upload compiled binaries"
-    - scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk pi@arcturus-int.maxistar.ru:/home/pi/tests/texteditor/app-debug-androidTest.apk
-    - scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null app/build/outputs/apk/debug/app-debug.apk pi@arcturus-int.maxistar.ru:/home/pi/tests/texteditor/app-debug.apk
+    - scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk pi@altair-int.maxistar.ru:/home/pi/tests/texteditor/app-debug-androidTest.apk
+    - scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null app/build/outputs/apk/debug/app-debug.apk pi@altair-int.maxistar.ru:/home/pi/tests/texteditor/app-debug.apk
     - echo "Done stage Fomalgaut"
 
 execute:
