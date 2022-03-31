@@ -31,6 +31,13 @@ build:
 execute:
   stage: execute
   tags:
-    - fomalgaut
+    - altair
   script:
     - echo "Execute Compliled Tests"
+    - adb -s ZY223NB8FP uninstall com.maxistar.textpad.test
+    - adb -s ZY223NB8FP uninstall com.maxistar.textpad
+    - adb -s ZY223NB8FP install -r -t /home/pi/tests/texteditor/app-debug-androidTest.apk
+    - adb -s ZY223NB8FP install -r -t /home/pi/tests/texteditor/app-debug.apk
+    - echo "Run tests"
+    - adb -s ZY223NB8FP shell am instrument -w -e debug false com.maxistar.textpad.test/androidx.test.runner.AndroidJUnitRunner
+
