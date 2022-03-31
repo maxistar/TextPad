@@ -1,6 +1,9 @@
+image: maxistar/android:latest
+
 stages:
   - build
 build:
   stage: build
   script:
     - echo "Building"
+    - grunt build
