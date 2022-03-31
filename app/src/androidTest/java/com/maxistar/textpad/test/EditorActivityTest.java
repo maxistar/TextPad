@@ -302,7 +302,7 @@ public class EditorActivityTest {
         onView(withId(R.id.editText1)).check(TextViewAssertions.hasInsertionPointerAtIndex(13));
     }
 
-    @Test
+    // Test does not work in hardware device test
     public void testUndoRedo() throws Throwable {
         testUndoRedoFunctions();
 
