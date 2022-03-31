@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.channels.FileChannel;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -28,7 +28,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputType;
@@ -930,29 +929,22 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * https://stackoverflow.com/questions/56902845/how-to-properly-overwrite-content-of-file-using-android-storage-access-framework
-     * @param uri File Url
-     * @throws IOException Error Exception
-     */
     protected void saveFile(Uri uri) throws IOException {
         ContentResolver contentResolver = getContentResolver();
-        ParcelFileDescriptor pfd = contentResolver.openFileDescriptor(uri, "w");
-        if (pfd == null) {
+        OutputStream outputStream = contentResolver.openOutputStream(uri, "wt");
+        if (outputStream == null) {
             throw new IOException();
         }
-        FileOutputStream fos = new FileOutputStream(pfd.getFileDescriptor());
-        // Use this code to ensure that the file is 'emptied'
-        FileChannel fChan = fos.getChannel();
-        fChan.truncate(0);
 
-        String s = this.mText.getText().toString();
+        try {
+            String s = this.mText.getText().toString();
 
-        s = applyEndings(s);
+            s = applyEndings(s);
 
-        fos.write(s.getBytes(settingsService.getFileEncoding()));
-        fos.close();
-        pfd.close();
+            outputStream.write(s.getBytes(settingsService.getFileEncoding()));
+        } finally {
+            outputStream.close();
+        }
     }
 
     protected void saveNamedFile() {
