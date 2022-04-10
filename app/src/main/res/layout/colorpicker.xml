@@ -29,12 +29,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
+        android:inputType="none"
+        android:textIsSelectable="true"
+        android:text=""
         />
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/defaultColorCheckBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Default"

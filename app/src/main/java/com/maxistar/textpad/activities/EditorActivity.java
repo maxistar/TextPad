@@ -452,11 +452,9 @@ public class EditorActivity extends AppCompatActivity {
             mText.setTextSize(20.0f);
         }
 
-        int bgcolor = settingsService.getBgColor();
-        scrollView.setBackgroundColor(bgcolor);
-
-        int fontcolor = settingsService.getFontColor();//
-        mText.setTextColor(fontcolor);
+        scrollView.setBackgroundColor(settingsService.getBgColor());
+        mText.setTextColor(settingsService.getFontColor());
+        mText.setHighlightColor(settingsService.getTextSelectionColor());
     }
 
     private QueryTextListener getQueryTextListener() {
@@ -1129,6 +1127,10 @@ public class EditorActivity extends AppCompatActivity {
         return TextConverter.getInstance().applyEndings(value, TextConverter.UNIX);
     }
 
+    int getSearchSelectionColor() {
+        return settingsService.getSearchSelectionColor();
+    }
+
     /**
      *
      */
@@ -1204,7 +1206,7 @@ public class EditorActivity extends AppCompatActivity {
     private class QueryTextListener
             implements SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener
     {
-        private final BackgroundColorSpan span = new BackgroundColorSpan(Color.YELLOW);
+        private final BackgroundColorSpan span = new BackgroundColorSpan(getSearchSelectionColor());
         private final Editable editable;
         private Matcher matcher;
         private int index;

@@ -3,6 +3,7 @@ package com.maxistar.textpad;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 
 import java.util.Locale;
@@ -17,6 +18,10 @@ public class SettingsService {
     public static final String SETTING_FONT_SIZE = "fontsize";
     public static final String SETTING_BG_COLOR = "bgcolor";
     public static final String SETTING_FONT_COLOR = "fontcolor";
+
+    public static final String SETTING_SEARCH_SELECTION_COLOR = "search_selection_color";
+    public static final String SETTING_TEXT_SELECTION_COLOR = "text_selection_color";
+
     public static final String SETTING_LANGUAGE = "language";
     public static final String SETTING_LEGASY_FILE_PICKER = "use_legacy_file_picker";
     public static final String SETTING_ALTERNATIVE_FILE_ACCESS = "use_alternative_file_access";
@@ -26,6 +31,11 @@ public class SettingsService {
     public static final String SETTING_SMALL = "Small";
     public static final String SETTING_LARGE = "Large";
     public static final String SETTING_HUGE = "Huge";
+
+    public static final int DEFAULT_BACKGROUND_COLOR = 0xFFCCCCCC;
+    public static final int DEFAULT_TEXT_COLOR = 0xFF000000;
+    public static final int DEFAULT_SEARCH_SELECTION_COLOR = 0xFFFFFF00;
+    public static final int DEFAULT_TEXT_SELECTION_COLOR = 0xFF00FF00;
 
     private boolean open_last_file = true;
     private boolean legacy_file_picker = false;
@@ -39,6 +49,9 @@ public class SettingsService {
     private String language;
     private int bgcolor;
     private int fontcolor;
+    private int searchSelectionColor;
+    private int textSelectionColor;
+
 
     private static boolean languageWasChanged = false;
 
@@ -57,8 +70,10 @@ public class SettingsService {
         delimiters = sharedPref.getString(SETTING_DELIMITERS, TPStrings.EMPTY);
         font = sharedPref.getString(SETTING_FONT, TPStrings.FONT_SANS_SERIF);
         font_size = sharedPref.getString(SETTING_FONT_SIZE, SETTING_MEDIUM);
-        bgcolor = sharedPref.getInt(SETTING_BG_COLOR, 0xFFCCCCCC);
-        fontcolor = sharedPref.getInt(SETTING_FONT_COLOR, 0xFF000000);
+        bgcolor = sharedPref.getInt(SETTING_BG_COLOR, DEFAULT_BACKGROUND_COLOR);
+        fontcolor = sharedPref.getInt(SETTING_FONT_COLOR, DEFAULT_TEXT_COLOR);
+        searchSelectionColor = sharedPref.getInt(SETTING_SEARCH_SELECTION_COLOR, DEFAULT_SEARCH_SELECTION_COLOR);
+        textSelectionColor = sharedPref.getInt(SETTING_TEXT_SELECTION_COLOR, DEFAULT_TEXT_SELECTION_COLOR);
         language = sharedPref.getString(SETTING_LANGUAGE, TPStrings.EMPTY);
     }
 
@@ -111,6 +126,14 @@ public class SettingsService {
         return bgcolor;
     }
 
+    public int getSearchSelectionColor() {
+        return searchSelectionColor;
+    }
+
+    public int getTextSelectionColor() {
+        return textSelectionColor;
+    }
+
     public int getFontColor() {
         return fontcolor;
     }
@@ -151,6 +174,17 @@ public class SettingsService {
         this.setSettingValue(SETTING_FONT_COLOR, fontcolor, context);
         this.fontcolor = fontcolor;
     }
+
+    public void setTextSelectionColor(int color, Context context) {
+        this.setSettingValue(SETTING_TEXT_SELECTION_COLOR, color, context);
+        this.textSelectionColor = color;
+    }
+
+    public void setSearchSelectionColor(int color, Context context) {
+        this.setSettingValue(SETTING_SEARCH_SELECTION_COLOR, color, context);
+        this.searchSelectionColor = color;
+    }
+
 
     public void setLastFilename(String value, Context context) {
         this.setSettingValue(SETTING_LAST_FILENAME, value, context);

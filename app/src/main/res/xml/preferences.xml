@@ -49,17 +49,29 @@
             android:summary="@string/Choose_a_font_size"
             android:defaultValue="Medium"
             android:dialogTitle="@string/Choose_a_font_size" />
-        <com.maxistar.textpad.preferences.ColorPreference
+        <com.maxistar.textpad.preferences.TextColorPreference
             android:key="fontcolor"
             android:title="@string/Font_Color"
             android:summary="@string/Choose_a_font_color"
             android:defaultValue="0xFF000000"
             android:dialogTitle="@string/Choose_a_font_color" />
-        <com.maxistar.textpad.preferences.ColorPreference
+        <com.maxistar.textpad.preferences.BackgroundColorPreference
             android:key="bgcolor"
             android:title="@string/Background_Color"
             android:summary="@string/Choose_a_background_color"
             android:defaultValue="0xFFCCCCCC"
+            android:dialogTitle="@string/Choose_a_background_color" />
+        <com.maxistar.textpad.preferences.TextSelectionColorPreference
+            android:key="text_selection_color"
+            android:title="@string/Background_Color"
+            android:summary="@string/Choose_a_background_color"
+            android:defaultValue="0xFF00FF00"
+            android:dialogTitle="@string/Choose_a_background_color" />
+        <com.maxistar.textpad.preferences.SearchSelectionColorPreference
+            android:key="search_selection_color"
+            android:title="@string/Background_Color"
+            android:summary="@string/Choose_a_background_color"
+            android:defaultValue="0xFFFFFF00"
             android:dialogTitle="@string/Choose_a_background_color" />
     </PreferenceCategory>
     <PreferenceCategory
