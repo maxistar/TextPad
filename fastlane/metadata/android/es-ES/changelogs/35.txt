@@ -1,0 +1,2 @@
+- Se agregó la capacidad de personalizar el color para resaltar el texto.
+- edición mejorada de la configuración de color

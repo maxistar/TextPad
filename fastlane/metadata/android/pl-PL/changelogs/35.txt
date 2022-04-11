@@ -1,0 +1,2 @@
+- Dodano możliwość dostosowania koloru podświetlania tekstu
+- ulepszona edycja ustawień kolorów

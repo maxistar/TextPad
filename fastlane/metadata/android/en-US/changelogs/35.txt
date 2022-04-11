@@ -1,0 +1,2 @@
+- added feature to setup color for text selection
+- improved color properties control
