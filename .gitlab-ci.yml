@@ -1,6 +1,45 @@
+image: maxistar/android:latest
+
+before_script:
+  - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+
 stages:
   - build
+  - execute
+
 build:
   stage: build
+  tags:
+    - fomalgaut
+
   script:
     - echo "Building"
+    - cp local.properties.dist local.properties
+    - gradle assembleDebug
+    - gradle compileDebugSources
+    - gradle compileDebugAndroidTestSources
+    - gradle assembleAndroidTest
+    - echo "Upload compiled binaries"
+    - scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk $PHYSICAL_DEVICE_RUNNER:$APK_LOCATION/app-debug-androidTest.apk
+    - scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null app/build/outputs/apk/debug/app-debug.apk $PHYSICAL_DEVICE_RUNNER:$APK_LOCATION/app-debug.apk
+    - echo "Done stage Fomalgaut"
+
+execute:
+  stage: execute
+  tags:
+    - altair
+  script:
+    - echo "Execute Compliled Tests"
+    - adb -s $ADB_DEVICE_NAME uninstall com.maxistar.textpad.test
+    - adb -s $ADB_DEVICE_NAME uninstall com.maxistar.textpad
+    - adb -s $ADB_DEVICE_NAME install -r -t -g -d $APK_LOCATION/app-debug-androidTest.apk
+    - adb -s $ADB_DEVICE_NAME install -r -t -g -d $APK_LOCATION/app-debug.apk
+    - echo "Run tests"
+    - adb -s $ADB_DEVICE_NAME shell input keyevent 82
+    - sleep 1
+    - adb -s $ADB_DEVICE_NAME shell am instrument -w -e debug false com.maxistar.textpad.test/androidx.test.runner.AndroidJUnitRunner
+    - exit $?

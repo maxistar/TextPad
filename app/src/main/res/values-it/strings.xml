@@ -70,4 +70,18 @@
     <string name="action_undo">Annulla</string>
     <string name="action_redo">Ripeti</string>
     <string name="Open_Recent">Apri file recente</string>
+
+    <string name="FileSystemAccess">Accesso al file system</string>
+    <string name="AlternativeFileAccessTitle">Percorsi file alternativi</string>
+    <string name="AlternativeFileAccessDescription">Consenti l\'assegnazione di indirizzi alternativi per i file se non sono state concesse autorizzazioni del file system.</string>
+    <string name="ResetAlternativeFilePaths">Reimposta percorsi file alternativi</string>
+    <string name="ResetAlternativeFilePathsSummary">Fare clic qui per ripristinare i percorsi dei file alternativi archiviati</string>
+    <string name="SelectAlternativeLocationForFile">Il file non può essere aperto usando il nome del file system, vuoi selezionare questo file usando media manager?</string>
+    <string name="ResetAlternativeFileLocations">Sei sicuro di voler eliminare i percorsi di file alternativi archiviati?</string>
+
+    <string name="preferenceDefaultColor">Colore predefinito</string>
+    <string name="preferenceChooseTextSelectionColor">Scegli un colore di evidenziazione del testo</string>
+    <string name="preferenceTextSelectionColor">Colore evidenziazione testo</string>
+    <string name="preferenceChooseSearchSelectionColor">Scegli un colore di evidenziazione dei risultati di ricerca</string>
+    <string name="preferenceSearchSelectionColor">Colore evidenziazione dei risultati della ricerca</string>
 </resources>

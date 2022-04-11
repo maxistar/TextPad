@@ -70,4 +70,19 @@
     <string name="action_undo">Rückgängig machen</string>
     <string name="action_redo">Wiederholen</string>
     <string name="Open_Recent">Letzte Datei öffnen</string>
+
+    <string name="FileSystemAccess">Dateisystemzugriff</string>
+    <string name="AlternativeFileAccessTitle">Alternative Dateipfade</string>
+    <string name="AlternativeFileAccessDescription">Zuweisung alternativer Adressen für Dateien zulassen, wenn keine Dateisystemberechtigungen erteilt wurden.</string>
+    <string name="ResetAlternativeFilePaths">Alternative Dateipfade zurücksetzen</string>
+    <string name="ResetAlternativeFilePathsSummary">Klicken Sie hier, um gespeicherte alternative Dateipfade zurückzusetzen</string>
+    <string name="SelectAlternativeLocationForFile">Die Datei kann nicht mit dem Dateisystemnamen geöffnet werden. Möchten Sie diese Datei mit dem Medienmanager auswählen?</string>
+    <string name="ResetAlternativeFileLocations">Möchten Sie gespeicherte alternative Dateipfade wirklich löschen?</string>
+
+    <string name="preferenceDefaultColor">Standardfarbe</string>
+    <string name="preferenceChooseTextSelectionColor">Wählen Sie eine Texthervorhebungsfarbe</string>
+    <string name="preferenceTextSelectionColor">Texthervorhebungsfarbe</string>
+    <string name="preferenceChooseSearchSelectionColor">Wählen Sie eine Hervorhebungsfarbe für Suchergebnisse aus</string>
+    <string name="preferenceSearchSelectionColor">Hervorhebungsfarbe für Suchergebnisse</string>
+
 </resources>

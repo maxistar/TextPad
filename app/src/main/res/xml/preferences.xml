@@ -8,12 +8,6 @@
             android:summary="@string/To_open_last_edited_file"
             android:defaultValue="false" />
 
-        <CheckBoxPreference
-            android:key="use_legacy_file_picker"
-            android:title="@string/Legacy_file_picker"
-            android:summary="@string/Use_legacy_file_picker"
-            android:defaultValue="false" />
-
         <ListPreference
             android:key="encoding"
             android:summary="@string/Click_to_change_encoding"
@@ -55,18 +49,47 @@
             android:summary="@string/Choose_a_font_size"
             android:defaultValue="Medium"
             android:dialogTitle="@string/Choose_a_font_size" />
-        <com.maxistar.textpad.preferences.ColorPreference
+        <com.maxistar.textpad.preferences.TextColorPreference
             android:key="fontcolor"
             android:title="@string/Font_Color"
             android:summary="@string/Choose_a_font_color"
             android:defaultValue="0xFF000000"
             android:dialogTitle="@string/Choose_a_font_color" />
-        <com.maxistar.textpad.preferences.ColorPreference
+        <com.maxistar.textpad.preferences.BackgroundColorPreference
             android:key="bgcolor"
             android:title="@string/Background_Color"
             android:summary="@string/Choose_a_background_color"
             android:defaultValue="0xFFCCCCCC"
             android:dialogTitle="@string/Choose_a_background_color" />
+        <com.maxistar.textpad.preferences.TextSelectionColorPreference
+            android:key="text_selection_color"
+            android:title="@string/preferenceTextSelectionColor"
+            android:summary="@string/preferenceChooseSearchSelectionColor"
+            android:defaultValue="0xFF83A5AE"
+            android:dialogTitle="@string/preferenceChooseSearchSelectionColor" />
+        <com.maxistar.textpad.preferences.SearchSelectionColorPreference
+            android:key="search_selection_color"
+            android:title="@string/preferenceSearchSelectionColor"
+            android:summary="@string/preferenceChooseTextSelectionColor"
+            android:defaultValue="0xFFFFFF00"
+            android:dialogTitle="@string/preferenceChooseTextSelectionColor" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/FileSystemAccess">
+        <CheckBoxPreference
+            android:key="use_legacy_file_picker"
+            android:title="@string/Legacy_file_picker"
+            android:summary="@string/Use_legacy_file_picker"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="use_alternative_file_access"
+            android:title="@string/AlternativeFileAccessTitle"
+            android:summary="@string/AlternativeFileAccessDescription"
+            android:defaultValue="true" />
+        <Preference
+            android:key="reset_alternative_file_paths"
+            android:summary="@string/ResetAlternativeFilePathsSummary"
+            android:title="@string/ResetAlternativeFilePaths" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/About">

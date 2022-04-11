@@ -71,4 +71,19 @@
     <string name="action_undo">撤销</string>
     <string name="action_redo">重做</string>
     <string name="Open_Recent">打开最近的文件</string>
+
+    <string name="FileSystemAccess">文件系统访问</string>
+    <string name="AlternativeFileAccessTitle">替代文件路径</string>
+    <string name="AlternativeFileAccessDescription">如果未授予文件系统权限，则允许为文件分配备用地址。</string>
+    <string name="ResetAlternativeFilePaths">重置替代文件路径</string>
+    <string name="ResetAlternativeFilePathsSummary">单击此处重置存储的替代文件路径</string>
+    <string name="SelectAlternativeLocationForFile">无法使用文件系统名称打开文件，您要使用媒体管理器选择此文件吗？</string>
+    <string name="ResetAlternativeFileLocations">您确定要删除存储的替代文件路径吗？</string>
+
+    <string name="preferenceDefaultColor">默认颜色</string>
+    <string name="preferenceChooseTextSelectionColor">选择文本突出显示颜色</string>
+    <string name="preferenceTextSelectionColor">文本高亮颜色</string>
+    <string name="preferenceChooseSearchSelectionColor">选择搜索结果突出显示颜色</string>
+    <string name="preferenceSearchSelectionColor">搜索结果突出显示颜色</string>
+
 </resources>

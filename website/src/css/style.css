@@ -1,4 +1,19 @@
-#map {
-    height: 400px;
-    width: 600px;
+html, body {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+.content {
+    flex: 1 0 auto;
+}
+
+.main-content {
+    padding-top: 3rem;
+}
+
+.footer {
+    flex-shrink: 0;
+    padding: 1rem;
 }

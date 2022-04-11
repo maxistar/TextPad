@@ -2,6 +2,7 @@ package com.maxistar.textpad;
 
 import android.content.Context;
 
+import com.maxistar.textpad.service.AlternativeUrlsService;
 import com.maxistar.textpad.service.RecentFilesService;
 
 public class ServiceLocator {
@@ -12,6 +13,8 @@ public class ServiceLocator {
     private SettingsService settingsService;
 
     private RecentFilesService recentFilesService;
+
+    private AlternativeUrlsService alternativeUrlsService;
 
     public static ServiceLocator getInstance() {
         if (instance == null) {
@@ -34,6 +37,13 @@ public class ServiceLocator {
             recentFilesService = new RecentFilesService();
         }
         return recentFilesService;
+    }
+
+    public AlternativeUrlsService getAlternativeUrlsService() {
+        if (alternativeUrlsService == null) {
+            alternativeUrlsService = new AlternativeUrlsService();
+        }
+        return alternativeUrlsService;
     }
 
 }

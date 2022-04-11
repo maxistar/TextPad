@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" >
+  <title>{{ sitename }} &mdash; {{ title }}</title>
+  <meta name="description" content="{{ description }}">
+  <meta name="viewport" content="device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/css/foundation.min.css" integrity="sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I=" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/style.css">
+  <meta name="generator" content="metalsmith">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CQPG8QPYVQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-CQPG8QPYVQ');
+  </script>
+</head>
+<body>
+  <div class="content">
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <ul class="menu">
+            <li class="menu-text">Simple Text Editor</li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/donate/">Donate</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <article class="main-content grid-container">
+        {{{ contents }}}
+      </article>
+  </div>
+  <div class="footer grid-x align-justify align-middle">
+      <div class="small-12 medium-shrink cell">
+          <ul class="menu">
+              <li class="align-self-middle">Simple Text Editor</li>
+              <li><a href="/">Home</a></li>
+              <li><a href="/about/">About</a></li>
+              <li><a href="/donate/">Donate</a></li>
+              <li><a href="/legal/privatepolicy/">Privacy Policy</a></li>
+          </ul>
+      </div>
+      <div class="small-12 medium-shrink cell">
+          Copyright 2022
+      </div>
+  </div>
+</body>
+</html>

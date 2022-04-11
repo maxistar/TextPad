@@ -1,13 +1,13 @@
 const metalsmith  = require("metalsmith");
-const markdown    = require('metalsmith-markdown');
+const markdown    = require('@metalsmith/markdown');
 const highlighter = require('highlighter');
-const templates   = require('metalsmith-templates');
-const permalinks  = require('metalsmith-permalinks');
+const permalinks  = require('@metalsmith/permalinks');
 const collections = require('metalsmith-collections');
 const define      = require('metalsmith-define');
 const pagination  = require('metalsmith-pagination');
 const snippet     = require('metalsmith-snippet');
 const date        = require('metalsmith-build-date');
+const layouts     = require('metalsmith-layouts')
 
 metalsmith(__dirname)
     .source("src")
@@ -48,11 +48,18 @@ metalsmith(__dirname)
     }))
     .use(date())
     .use(permalinks())
-    .use(templates({
-        engine: 'jade',
-        directory: 'templates'
-    }))
     .destination("build")
+    .use(
+        layouts({
+            engineOptions: {
+                helpers: {
+                    formattedDate: function (date) {
+                        return new Date(date).toLocaleDateString()
+                    }
+                }
+            }
+        })
+    )
     .build(function (err) {
         if (err) {
             throw err;
