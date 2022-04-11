@@ -78,4 +78,11 @@
     <string name="ResetAlternativeFilePathsSummary">保存されている代替ファイルパスをリセットするには、ここをクリックしてください</string>
     <string name="SelectAlternativeLocationForFile">ファイルシステム名を使用してファイルを開くことができません。メディアマネージャーを使用してこのファイルを選択しますか？</string>
     <string name="ResetAlternativeFileLocations">保存されている代替ファイルパスを削除してもよろしいですか？</string>
+
+    <string name="preferenceDefaultColor">デフォルトの色</string>
+    <string name="preferenceChooseTextSelectionColor">テキストのハイライト色を選択してください</string>
+    <string name="preferenceTextSelectionColor">テキストのハイライト色</string>
+    <string name="preferenceChooseSearchSelectionColor">検索結果のハイライト色を選択</string>
+    <string name="preferenceSearchSelectionColor">検索結果のハイライトカラー</string>
+
 </resources>

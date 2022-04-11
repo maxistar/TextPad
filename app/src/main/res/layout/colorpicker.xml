@@ -23,22 +23,19 @@
         android:padding="15dp"
         />
 
-    <EditText
+    <TextView
         android:id="@+id/textColor"
         android:layout_below="@id/colormap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="none"
-        android:textIsSelectable="true"
-        android:text=""
+        android:padding="5dp"
         />
 
     <CheckBox
         android:id="@+id/defaultColorCheckBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Default"
+        android:text="@string/preferenceDefaultColor"
         android:layout_below="@id/textColor"
         />
 </RelativeLayout>

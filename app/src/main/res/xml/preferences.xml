@@ -63,16 +63,16 @@
             android:dialogTitle="@string/Choose_a_background_color" />
         <com.maxistar.textpad.preferences.TextSelectionColorPreference
             android:key="text_selection_color"
-            android:title="@string/Background_Color"
-            android:summary="@string/Choose_a_background_color"
-            android:defaultValue="0xFF00FF00"
-            android:dialogTitle="@string/Choose_a_background_color" />
+            android:title="@string/preferenceTextSelectionColor"
+            android:summary="@string/preferenceChooseSearchSelectionColor"
+            android:defaultValue="0xFF83A5AE"
+            android:dialogTitle="@string/preferenceChooseSearchSelectionColor" />
         <com.maxistar.textpad.preferences.SearchSelectionColorPreference
             android:key="search_selection_color"
-            android:title="@string/Background_Color"
-            android:summary="@string/Choose_a_background_color"
+            android:title="@string/preferenceSearchSelectionColor"
+            android:summary="@string/preferenceChooseTextSelectionColor"
             android:defaultValue="0xFFFFFF00"
-            android:dialogTitle="@string/Choose_a_background_color" />
+            android:dialogTitle="@string/preferenceChooseTextSelectionColor" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/FileSystemAccess">

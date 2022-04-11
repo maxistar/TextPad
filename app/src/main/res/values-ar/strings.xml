@@ -78,4 +78,11 @@
     <string name="ResetAlternativeFilePathsSummary">انقر هنا لإعادة تعيين مسارات الملفات البديلة المخزنة</string>
     <string name="SelectAlternativeLocationForFile">لا يمكن فتح الملف باستخدام اسم نظام الملفات ، هل تريد تحديد هذا الملف باستخدام مدير الوسائط؟</string>
     <string name="ResetAlternativeFileLocations">هل أنت متأكد أنك تريد حذف مسارات الملفات البديلة المخزنة؟</string>
+
+    <string name="preferenceDefaultColor">اللون الافتراضي</string>
+    <string name="preferenceChooseTextSelectionColor">اختر لون تمييز النص</string>
+    <string name="preferenceTextSelectionColor">لون تمييز النص</string>
+    <string name="preferenceChooseSearchSelectionColor">اختر لون تظليل نتيجة البحث</string>
+    <string name="preferenceSearchSelectionColor">نتيجة البحث لون تظليل</string>
+
 </resources>

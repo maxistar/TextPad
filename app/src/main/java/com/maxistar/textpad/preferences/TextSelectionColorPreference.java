@@ -10,7 +10,7 @@ public class TextSelectionColorPreference extends ColorPreference {
     public TextSelectionColorPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        title = context.getResources().getString(R.string.Choose_a_background_color);
+        title = context.getResources().getString(R.string.preferenceChooseTextSelectionColor);
     }
 
     protected void saveColor(int color) {

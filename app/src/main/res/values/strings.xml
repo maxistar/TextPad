@@ -79,5 +79,10 @@
     <string name="SelectAlternativeLocationForFile">The file can not be opened using file system name, do you want to select this file using media manager?</string>
     <string name="ResetAlternativeFileLocations">Are you sure that you want to delete stored alternative file paths?</string>
 
+    <string name="preferenceDefaultColor">Default Color</string>
+    <string name="preferenceChooseTextSelectionColor">Choose a text highlight color</string>
+    <string name="preferenceTextSelectionColor">Text Highlight Color</string>
+    <string name="preferenceChooseSearchSelectionColor">Choose a search result highlight color</string>
+    <string name="preferenceSearchSelectionColor">Search Result Highlight Color</string>
 
 </resources>

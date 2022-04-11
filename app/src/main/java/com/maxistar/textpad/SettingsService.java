@@ -35,7 +35,7 @@ public class SettingsService {
     public static final int DEFAULT_BACKGROUND_COLOR = 0xFFCCCCCC;
     public static final int DEFAULT_TEXT_COLOR = 0xFF000000;
     public static final int DEFAULT_SEARCH_SELECTION_COLOR = 0xFFFFFF00;
-    public static final int DEFAULT_TEXT_SELECTION_COLOR = 0xFF00FF00;
+    public static final int DEFAULT_TEXT_SELECTION_COLOR = 0xFF83A5AE;
 
     private boolean open_last_file = true;
     private boolean legacy_file_picker = false;

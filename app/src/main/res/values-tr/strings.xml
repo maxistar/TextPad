@@ -78,4 +78,11 @@
     <string name="ResetAlternativeFilePathsSummary">Saklanan alternatif dosya yollarını sıfırlamak için burayı tıklayın</string>
     <string name="SelectAlternativeLocationForFile">Dosya, dosya sistemi adı kullanılarak açılamıyor, bu dosyayı medya yöneticisini kullanarak seçmek istiyor musunuz?</string>
     <string name="ResetAlternativeFileLocations">Saklanan alternatif dosya yollarını silmek istediğinizden emin misiniz?</string>
+
+    <string name="preferenceDefaultColor">Varsayılan Renk</string>
+    <string name="preferenceChooseTextSelectionColor">Bir metin vurgulama rengi seçin</string>
+    <string name="preferenceTextSelectionColor">Metin Vurgu Rengi</string>
+    <string name="preferenceChooseSearchSelectionColor">Bir arama sonucu vurgu rengi seçin</string>
+    <string name="preferenceSearchSelectionColor">Arama Sonucu Vurgu Rengi</string>
+
 </resources>

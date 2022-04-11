@@ -78,4 +78,11 @@
     <string name="ResetAlternativeFilePathsSummary">Cliquez ici pour réinitialiser les chemins de fichiers alternatifs stockés</string>
     <string name="SelectAlternativeLocationForFile">Le fichier ne peut pas être ouvert à l\'aide du nom du système de fichiers, voulez-vous sélectionner ce fichier à l\'aide du gestionnaire de médias ?</string>
     <string name="ResetAlternativeFileLocations">Êtes-vous sûr de vouloir supprimer les chemins de fichiers alternatifs stockés ?</string>
+
+    <string name="preferenceDefaultColor">Couleur par défaut</string>
+    <string name="preferenceChooseTextSelectionColor">Choisissez une couleur de surbrillance du texte</string>
+    <string name="preferenceTextSelectionColor">Couleur de surbrillance du texte</string>
+    <string name="preferenceChooseSearchSelectionColor">Choisir une couleur de surbrillance des résultats de recherche</string>
+    <string name="preferenceSearchSelectionColor">Couleur de surbrillance des résultats de la recherche</string>
+
 </resources>

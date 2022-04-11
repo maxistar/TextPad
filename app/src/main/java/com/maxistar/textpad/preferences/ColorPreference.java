@@ -19,6 +19,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
@@ -80,7 +82,7 @@ public class ColorPreference extends DialogPreference
         final ViewGroup nullParent = null;
         final View colorView = factory.inflate(R.layout.colorpicker, nullParent);
         final ImageView colormap = colorView.findViewById(R.id.colormap);
-        final EditText editText = colorView.findViewById(R.id.textColor);
+        final TextView editText = colorView.findViewById(R.id.textColor);
         final CheckBox checkBox = colorView.findViewById(R.id.defaultColorCheckBox);
 
         checkBox.setChecked(color == getDefaultColor());
@@ -166,7 +168,7 @@ public class ColorPreference extends DialogPreference
         String blue = Integer.toString(Color.blue(color), 16);
         return String.format(
             Locale.getDefault(),
-            "%s%s%s" ,
+            "#%s%s%s" ,
             red.length() < 2 ? "0" + red : red,
             green.length() < 2 ? "0" + green : green,
             blue.length() < 2 ? "0" + blue : blue

@@ -78,4 +78,11 @@
     <string name="ResetAlternativeFilePathsSummary">Haga clic aquí para restablecer las rutas de archivo alternativas almacenadas</string>
     <string name="SelectAlternativeLocationForFile">El archivo no se puede abrir usando el nombre del sistema de archivos, ¿desea seleccionar este archivo usando el administrador de medios?</string>
     <string name="ResetAlternativeFileLocations">¿Está seguro de que desea eliminar las rutas de archivo alternativas almacenadas?</string>
+
+    <string name="preferenceDefaultColor">Color predeterminado</string>
+    <string name="preferenceChooseTextSelectionColor">Elija un color de resaltado de texto</string>
+    <string name="preferenceTextSelectionColor">Color de resaltado de texto</string>
+    <string name="preferenceChooseSearchSelectionColor">Elija un color de resaltado de resultados de búsqueda</string>
+    <string name="preferenceSearchSelectionColor">Color de resaltado del resultado de la búsqueda</string>
+
 </resources>

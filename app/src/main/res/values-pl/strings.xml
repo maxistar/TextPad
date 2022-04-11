@@ -78,4 +78,11 @@
     <string name="ResetAlternativeFilePathsSummary">Kliknij tutaj, aby zresetować zapisane alternatywne ścieżki plików</string>
     <string name="SelectAlternativeLocationForFile">Nie można otworzyć pliku przy użyciu nazwy systemu plików, czy chcesz wybrać ten plik za pomocą menedżera multimediów?</string>
     <string name="ResetAlternativeFileLocations">Czy na pewno chcesz usunąć zapisane alternatywne ścieżki plików?</string>
+
+    <string name="preferenceDefaultColor">Domyślny kolor</string>
+    <string name="preferenceChooseTextSelectionColor">Wybierz kolor podświetlenia tekstu</string>
+    <string name="preferenceTextSelectionColor">Kolor podświetlenia tekstu</string>
+    <string name="preferenceChooseSearchSelectionColor">Wybierz kolor podświetlenia wyników wyszukiwania</string>
+    <string name="preferenceSearchSelectionColor">Kolor podświetlenia wyniku wyszukiwania</string>
+
 </resources>

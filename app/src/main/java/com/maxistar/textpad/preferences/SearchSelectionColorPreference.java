@@ -10,7 +10,7 @@ public class SearchSelectionColorPreference extends ColorPreference {
     public SearchSelectionColorPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        title = context.getResources().getString(R.string.Choose_a_background_color);
+        title = context.getResources().getString(R.string.preferenceChooseSearchSelectionColor);
     }
 
     protected void saveColor(int color) {
