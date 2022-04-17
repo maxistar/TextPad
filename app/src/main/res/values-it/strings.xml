@@ -84,4 +84,7 @@
     <string name="preferenceTextSelectionColor">Colore evidenziazione testo</string>
     <string name="preferenceChooseSearchSelectionColor">Scegli un colore di evidenziazione dei risultati di ricerca</string>
     <string name="preferenceSearchSelectionColor">Colore evidenziazione dei risultati della ricerca</string>
+    <string name="preferenceShowLastEditedFilesTitle">Mostra gli ultimi file modificati</string>
+    <string name="preferenceShowLastEditedFilesDescription">Mostra gli ultimi file modificati nel menu delle opzioni</string>
+
 </resources>

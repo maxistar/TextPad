@@ -84,5 +84,7 @@
     <string name="preferenceTextSelectionColor">Цвет выделения текста</string>
     <string name="preferenceChooseSearchSelectionColor">Выберите цвет выделения результатов поиска</string>
     <string name="preferenceSearchSelectionColor">Цвет выделения результатов поиска</string>
+    <string name="preferenceShowLastEditedFilesTitle">Показывать последние отредактированные файлы</string>
+    <string name="preferenceShowLastEditedFilesDescription">Показывать последние отредактированные файлы в меню параметров</string>
 
 </resources>

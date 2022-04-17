@@ -85,5 +85,7 @@
     <string name="preferenceTextSelectionColor">文本高亮颜色</string>
     <string name="preferenceChooseSearchSelectionColor">选择搜索结果突出显示颜色</string>
     <string name="preferenceSearchSelectionColor">搜索结果突出显示颜色</string>
+    <string name="preferenceShowLastEditedFilesTitle">显示上次编辑的文件</string>
+    <string name="preferenceShowLastEditedFilesDescription">在选项菜单中显示最后编辑的文件</string>
 
 </resources>

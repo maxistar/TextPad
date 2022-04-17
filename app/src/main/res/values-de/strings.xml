@@ -84,5 +84,7 @@
     <string name="preferenceTextSelectionColor">Texthervorhebungsfarbe</string>
     <string name="preferenceChooseSearchSelectionColor">Wählen Sie eine Hervorhebungsfarbe für Suchergebnisse aus</string>
     <string name="preferenceSearchSelectionColor">Hervorhebungsfarbe für Suchergebnisse</string>
+    <string name="preferenceShowLastEditedFilesTitle">Zuletzt bearbeitete Dateien anzeigen</string>
+    <string name="preferenceShowLastEditedFilesDescription">Zuletzt bearbeitete Dateien im Optionsmenü anzeigen</string>
 
 </resources>

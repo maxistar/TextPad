@@ -84,5 +84,7 @@
     <string name="preferenceTextSelectionColor">Cor de destaque do texto</string>
     <string name="preferenceChooseSearchSelectionColor">Escolha uma cor de destaque do resultado da pesquisa</string>
     <string name="preferenceSearchSelectionColor">Cor de destaque do resultado da pesquisa</string>
+    <string name="preferenceShowLastEditedFilesTitle">Mostrar últimos arquivos editados</string>
+    <string name="preferenceShowLastEditedFilesDescription">Mostrar os últimos arquivos editados no menu de opções</string>
 
 </resources>

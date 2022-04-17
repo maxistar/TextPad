@@ -85,4 +85,7 @@
     <string name="preferenceChooseSearchSelectionColor">Choose a search result highlight color</string>
     <string name="preferenceSearchSelectionColor">Search Result Highlight Color</string>
 
+    <string name="preferenceShowLastEditedFilesTitle">Show Last Edited Files</string>
+    <string name="preferenceShowLastEditedFilesDescription">Show last edited files in options menu</string>
+
 </resources>

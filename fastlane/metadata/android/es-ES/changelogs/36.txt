@@ -1,0 +1,2 @@
+- configuración agregada para abrir archivos recientes
+- compatibilidad agregada con el administrador de archivos heredado

@@ -1,0 +1,2 @@
+- dodano ustawienie otwierania ostatnich plików
+- dodano kompatybilność ze starszym menedżerem plików

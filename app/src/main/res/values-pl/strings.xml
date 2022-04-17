@@ -84,5 +84,7 @@
     <string name="preferenceTextSelectionColor">Kolor podświetlenia tekstu</string>
     <string name="preferenceChooseSearchSelectionColor">Wybierz kolor podświetlenia wyników wyszukiwania</string>
     <string name="preferenceSearchSelectionColor">Kolor podświetlenia wyniku wyszukiwania</string>
+    <string name="preferenceShowLastEditedFilesTitle">Pokaż ostatnio edytowane pliki</string>
+    <string name="preferenceShowLastEditedFilesDescription">Pokaż ostatnio edytowane pliki w menu opcji</string>
 
 </resources>

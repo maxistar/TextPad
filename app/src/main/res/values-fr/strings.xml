@@ -84,5 +84,7 @@
     <string name="preferenceTextSelectionColor">Couleur de surbrillance du texte</string>
     <string name="preferenceChooseSearchSelectionColor">Choisir une couleur de surbrillance des résultats de recherche</string>
     <string name="preferenceSearchSelectionColor">Couleur de surbrillance des résultats de la recherche</string>
+    <string name="preferenceShowLastEditedFilesTitle">Afficher les derniers fichiers modifiés</string>
+    <string name="preferenceShowLastEditedFilesDescription">Afficher les derniers fichiers modifiés dans le menu des options</string>
 
 </resources>

@@ -84,5 +84,8 @@
     <string name="preferenceTextSelectionColor">Metin Vurgu Rengi</string>
     <string name="preferenceChooseSearchSelectionColor">Bir arama sonucu vurgu rengi seçin</string>
     <string name="preferenceSearchSelectionColor">Arama Sonucu Vurgu Rengi</string>
+    <string name="preferenceShowLastEditedFilesTitle">Son Düzenlenen Dosyaları Göster</string>
+    <string name="preferenceShowLastEditedFilesDescription">Seçenekler menüsünde son düzenlenen dosyaları göster</string>
+
 
 </resources>

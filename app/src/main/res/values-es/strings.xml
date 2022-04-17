@@ -84,5 +84,7 @@
     <string name="preferenceTextSelectionColor">Color de resaltado de texto</string>
     <string name="preferenceChooseSearchSelectionColor">Elija un color de resaltado de resultados de búsqueda</string>
     <string name="preferenceSearchSelectionColor">Color de resaltado del resultado de la búsqueda</string>
+    <string name="preferenceShowLastEditedFilesTitle">Mostrar los últimos archivos editados</string>
+    <string name="preferenceShowLastEditedFilesDescription">Mostrar los últimos archivos editados en el menú de opciones</string>
 
 </resources>

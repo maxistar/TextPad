@@ -1,0 +1,2 @@
+- added feature to hide last opened files
+- fixed bug with legacy file title

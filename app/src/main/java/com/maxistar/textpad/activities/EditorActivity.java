@@ -23,7 +23,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -413,7 +412,16 @@ public class EditorActivity extends AppCompatActivity {
                 cursor.close();
             }
         }
-        return "";
+        return getLegacyFilenameByUri(uri);
+    }
+
+    String getLegacyFilenameByUri(Uri uri) {
+        String path = uri.getPath();
+        String[] paths = path.split("/");
+        if (paths.length == 0) {
+            return "";
+        }
+        return paths[paths.length -1];
     }
 
     void applyPreferences() {
@@ -494,13 +502,20 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void updateRecentFiles(Menu menu) {
+        MenuItem recentFilesMenuItem = menu.findItem(R.id.menu_document_open_last);
+        if (settingsService.isShowLastEditedFiles()) {
+            recentFilesMenuItem.setVisible(true);
+        } else {
+            recentFilesMenuItem.setVisible(false);
+            return;
+        }
         ArrayList<String> recentFiles = recentFilesService.getLastFiles(1, this.getApplicationContext());
         MenuItem recentFilesMenuItem1 = menu.findItem(R.id.menu_document_open_last1);
         MenuItem recentFilesMenuItem2 = menu.findItem(R.id.menu_document_open_last2);
         MenuItem recentFilesMenuItem3 = menu.findItem(R.id.menu_document_open_last3);
         MenuItem recentFilesMenuItem4 = menu.findItem(R.id.menu_document_open_last4);
         MenuItem recentFilesMenuItem5 = menu.findItem(R.id.menu_document_open_last5);
-        MenuItem recentFilesMenuItem = menu.findItem(R.id.menu_document_open_last);
+
         int historySize = recentFiles.size();
         switch (historySize) {
             case 0:
@@ -711,9 +726,17 @@ public class EditorActivity extends AppCompatActivity {
 
     private void setFilename(String value) {
         this.urlFilename = value;
-        if (!isFilenameEmpty()) {
-            recentFilesService.addRecentFile(value, getApplicationContext());
+        storeLastFileName(value);
+    }
+
+    private void storeLastFileName(String value) {
+        if (isFilenameEmpty()) {
+            return;
         }
+        if (!settingsService.isShowLastEditedFiles()) {
+            return;
+        }
+        recentFilesService.addRecentFile(value, getApplicationContext());
     }
 
     protected void initEditor() {

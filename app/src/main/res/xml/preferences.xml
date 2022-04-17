@@ -8,6 +8,12 @@
             android:summary="@string/To_open_last_edited_file"
             android:defaultValue="false" />
 
+        <CheckBoxPreference
+            android:key="show_last_edited_files"
+            android:title="@string/preferenceShowLastEditedFilesTitle"
+            android:summary="@string/preferenceShowLastEditedFilesDescription"
+            android:defaultValue="true" />
+
         <ListPreference
             android:key="encoding"
             android:summary="@string/Click_to_change_encoding"

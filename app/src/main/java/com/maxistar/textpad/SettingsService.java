@@ -25,6 +25,7 @@ public class SettingsService {
     public static final String SETTING_LANGUAGE = "language";
     public static final String SETTING_LEGASY_FILE_PICKER = "use_legacy_file_picker";
     public static final String SETTING_ALTERNATIVE_FILE_ACCESS = "use_alternative_file_access";
+    public static final String SETTING_SHOW_LAST_EDITED_FILES = "show_last_edited_files";
 
     public static final String SETTING_MEDIUM = "Medium";
     public static final String SETTING_EXTRA_SMALL = "Extra Small";
@@ -38,6 +39,7 @@ public class SettingsService {
     public static final int DEFAULT_TEXT_SELECTION_COLOR = 0xFF83A5AE;
 
     private boolean open_last_file = true;
+    private boolean show_last_edited_files = true;
     private boolean legacy_file_picker = false;
     private boolean alternative_file_access = true;
 
@@ -63,6 +65,7 @@ public class SettingsService {
     private void loadSettings(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         open_last_file = sharedPref.getBoolean(SETTING_OPEN_LAST_FILE, false);
+        show_last_edited_files = sharedPref.getBoolean(SETTING_SHOW_LAST_EDITED_FILES, true);
         legacy_file_picker = sharedPref.getBoolean(SETTING_LEGASY_FILE_PICKER, false);
         alternative_file_access = sharedPref.getBoolean(SETTING_ALTERNATIVE_FILE_ACCESS, true);
         last_filename = sharedPref.getString(SETTING_LAST_FILENAME, TPStrings.EMPTY);
@@ -105,6 +108,8 @@ public class SettingsService {
     public boolean isOpenLastFile() {
         return open_last_file;
     }
+
+    public boolean isShowLastEditedFiles() { return show_last_edited_files; }
 
     public boolean isLegacyFilePicker() {
         return legacy_file_picker;

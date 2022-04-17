@@ -84,5 +84,7 @@
     <string name="preferenceTextSelectionColor">テキストのハイライト色</string>
     <string name="preferenceChooseSearchSelectionColor">検索結果のハイライト色を選択</string>
     <string name="preferenceSearchSelectionColor">検索結果のハイライトカラー</string>
+    <string name="preferenceShowLastEditedFilesTitle">最後に編集したファイルを表示する</string>
+    <string name="preferenceShowLastEditedFilesDescription">オプションメニューに最後に編集したファイルを表示する</string>
 
 </resources>
