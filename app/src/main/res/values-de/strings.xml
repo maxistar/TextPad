@@ -5,11 +5,11 @@
     <string name="Open">Öffnen</string>
     <string name="New">Neu</string>
     <string name="Save">Speichern</string>
-    <string name="Save_As">Speichern Als</string>
+    <string name="Save_As">Speichern unter</string>
     <string name="Location">Lage: %s</string>
     <string name="Select">Wählen</string>
     <string name="File_Name">Dateiname:</string>
-    <string name="Cancel">Stornieren</string>
+    <string name="Cancel">Abbrechen</string>
     <string name="Create">Speichern</string>
     <string name="No_Data">No Data</string>
     <string name="File_not_saved">Datei nicht gespeichert:</string>
@@ -46,7 +46,7 @@
     <string name="Choose_a_font_size">Wählen Sie eine Schriftgröße</string>
     <string name="Font_Color">Schriftfarbe</string>
     <string name="Choose_a_font_color">Wählen Sie eine Schriftfarbe</string>
-    <string name="Background_Color">Background Color</string>
+    <string name="Background_Color">Hintergrundfarbe</string>
     <string name="Choose_a_background_color">Wählen Sie eine Hintergrundfarbe</string>
     <string name="Version">Version</string>
     <string name="Just_a_little_FYI">Nur ein wenig FYI</string>
@@ -62,7 +62,7 @@
     <string name="Are_you_sure_to_quit">Möchten Sie die Anwendung wirklich beenden?</string>
     <string name="File_already_exists">Die Datei existiert bereits</string>
     <string name="Existing_file_will_be_overwritten">Bestehende Datei wird überschrieben. Möchten Sie fortfahren?</string>
-    <string name="Exit">Ausgang</string>
+    <string name="Exit">Verlassen</string>
     <string name="Type_Something_Here">Geben Sie hier etwas ein</string>
     <string name="Legacy_file_picker">Legacy-Dateiselektor</string>
     <string name="Use_legacy_file_picker">Verwenden die Legacy-Dateiauswahl</string>
