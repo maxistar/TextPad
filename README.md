@@ -1,3 +1,5 @@
+[![Android CI](https://github.com/csonuryilmaz/TextPad/actions/workflows/android.yml/badge.svg?branch=master)](https://github.com/csonuryilmaz/TextPad/actions/workflows/android.yml)
+
 # Simple Text Editor for Android
 
 This is very simple text editor that can help you with editing text files. 
