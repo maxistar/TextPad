@@ -1,0 +1,11 @@
+workflows:
+  simple-workflow:
+    name: Native Android
+    max_build_duration: 60
+    scripts:
+      - name: Run tests
+        script: ./gradlew test
+      - name: Build debug apk
+        script: ./gradlew assembleDebug
+    artifacts:
+      - app/build/**/outputs/**/*.apk
