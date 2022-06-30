@@ -3,7 +3,7 @@
 This is very simple text editor that can help you with editing simple text files. 
 
 The application is made for fun and supported by its author at his free time. If some of features are missing
-the reason of it either the author did not have enough time to implement it or nobody helped him to do it.
+the reason of it either the author did not have enough time to implement it or nobody helped him to do so.
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
      alt="Get it on F-Droid"
@@ -12,11 +12,11 @@ the reason of it either the author did not have enough time to implement it or n
      alt="Get it on Google Play"
      height="80">](https://play.google.com/store/apps/details?id=com.maxistar.textpad)
 
-This editor can be useful for editing of small texts, write down small notes etc.
+This editor can be useful for editing of small texts, write down small notes etc...
 
 The application supports only plain text files.
 
-The code is open so can review code, send pull requests, new features, translations and so on. 
+The code is open so anyone can review code, send pull requests, new features, translations and so on. 
 
 Github repo: https://github.com/maxistar/TextPad.
 
