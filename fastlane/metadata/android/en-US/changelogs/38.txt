@@ -1,0 +1,2 @@
+- confirmation dialog before the settings menu is clicked
+- fix open with functionality
