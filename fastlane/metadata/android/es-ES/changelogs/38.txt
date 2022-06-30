@@ -1,0 +1,2 @@
+- cuadro de diálogo de confirmación antes de hacer clic en el menú de configuración
+- arreglo abierto con funcionalidad

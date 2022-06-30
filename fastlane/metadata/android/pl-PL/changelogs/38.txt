@@ -1,0 +1,2 @@
+- okno dialogowe potwierdzenia przed kliknięciem menu ustawień
+- napraw otwarte z funkcjonalnością
