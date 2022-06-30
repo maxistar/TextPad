@@ -18,7 +18,7 @@
             android:name=".activities.EditorActivity"
             android:launchMode="singleTop"
             android:configChanges="locale"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -31,24 +31,12 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.EDIT" />
+                <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file" />
-                <data android:mimeType="*/*" />
-                <data android:host="*" />
-                <data android:pathPattern=".*\\.txt" />
-                <data android:pathPattern=".*\\.html" />
-                <data android:pathPattern=".*\\.css" />
-                <data android:pathPattern=".*\\.js" />
-                <data android:pathPattern=".*\\.md"/>
-                <data android:pathPattern=".*\\.php" />
-                <data android:pathPattern=".*\\.py" />
-                <data android:pathPattern=".*\\.org" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <data android:mimeType="text/plain" />
+                <data android:scheme="content" />
+                <data android:mimeType="text/*" />
             </intent-filter>
 
             <meta-data android:name="android.app.searchable"

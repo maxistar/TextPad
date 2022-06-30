@@ -77,6 +77,7 @@ public class EditorActivity extends AppCompatActivity {
     private static final int DO_NEW = 2;
     private static final int DO_EXIT = 3;
     private static final int DO_OPEN_RECENT = 4;
+    private static final int DO_SHOW_SETTINGS = 5;
 
     private static final String LOG_TAG = "TextEditor";
 
@@ -630,14 +631,48 @@ public class EditorActivity extends AppCompatActivity {
         } else if (itemId == R.id.menu_edit_redo) {
             editRedo();
         } else if (itemId == R.id.menu_document_settings) {
-            Intent intent = new Intent(this.getBaseContext(),
-                    SettingsActivity.class);
-            this.startActivityForResult(intent, REQUEST_SETTINGS);
+            showSettings();
         } else if (itemId == R.id.menu_exit) {
             exitApplication();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showSettings() {
+        if (changed) {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(R.string.File_not_saved)
+                    .setMessage(R.string.Save_current_file)
+                    .setPositiveButton(R.string.Yes,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    // Stop the activity
+                                    next_action = DO_SHOW_SETTINGS;
+                                    saveFile();
+                                }
+
+                            })
+                    .setNegativeButton(R.string.No,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    showSettingsActivity();
+                                }
+                            }).show();
+        } else {
+            showSettingsActivity();
+        }
+    }
+
+    private void showSettingsActivity() {
+        Intent intent = new Intent(this.getBaseContext(),
+                SettingsActivity.class);
+        this.startActivityForResult(intent, REQUEST_SETTINGS);
     }
 
     private void openRecentFile(int i) {
@@ -782,7 +817,7 @@ public class EditorActivity extends AppCompatActivity {
                                                     int which) {
                                     // Stop the activity
                                     next_action = DO_OPEN;
-                                    EditorActivity.this.saveFile();
+                                    saveFile();
                                 }
 
                             })
@@ -934,6 +969,10 @@ public class EditorActivity extends AppCompatActivity {
                 next_action = DO_NOTHING;
                 clearFile();
             }
+            if (next_action == DO_SHOW_SETTINGS) { // because of multithread nature
+                next_action = DO_NOTHING;
+                showSettingsActivity();
+            }
             if (next_action == DO_OPEN_RECENT) {
                 next_action = DO_NOTHING;
                 openFileByName(next_action_filename);
@@ -984,6 +1023,10 @@ public class EditorActivity extends AppCompatActivity {
             if (next_action == DO_NEW) { // because of multithread nature
                 next_action = DO_NOTHING;
                 clearFile();
+            }
+            if (next_action == DO_SHOW_SETTINGS) { // because of multithread nature
+                next_action = DO_NOTHING;
+                showSettingsActivity();
             }
             if (next_action == DO_OPEN_RECENT) {
                 next_action = DO_NOTHING;
@@ -1044,6 +1087,7 @@ public class EditorActivity extends AppCompatActivity {
     protected void openNamedFile(final Uri uri) {
         try {
             ContentResolver contentResolver = getContentResolver();
+            //contentResolver.
             InputStream inputStream = contentResolver.openInputStream(uri);
             if (inputStream == null) {
                 throw new IOException();

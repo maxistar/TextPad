@@ -186,8 +186,6 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         Configuration config2 = new Configuration();
         config2.locale = locale2;
 
-        // updating locale
-        //getApplicationContext().getResources().updateConfiguration(config2, null);
         getBaseContext().getResources().updateConfiguration(config2, null);
         showPreferences();
     }
