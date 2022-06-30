@@ -1200,6 +1200,7 @@ public class EditorActivity extends AppCompatActivity {
     /**
      *
      */
+    @SuppressLint("WrongConstant")
     public synchronized void onActivityResult(
         final int requestCode,
         int resultCode,
