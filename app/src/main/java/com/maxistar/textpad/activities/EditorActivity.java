@@ -1087,7 +1087,6 @@ public class EditorActivity extends AppCompatActivity {
     protected void openNamedFile(final Uri uri) {
         try {
             ContentResolver contentResolver = getContentResolver();
-            //contentResolver.
             InputStream inputStream = contentResolver.openInputStream(uri);
             if (inputStream == null) {
                 throw new IOException();
