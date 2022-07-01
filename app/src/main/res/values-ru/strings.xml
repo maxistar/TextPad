@@ -26,7 +26,7 @@
     <string name="Settings">Настройки</string>
     <string name="About">О Программе</string>
     <string name="Continue">Продолжить</string>
-    <string name="about_message">Это Простой Текстовый Редактор под Android. Посетите http://maxistar.ru/projects/textpad/ для более подробной информации.</string>
+    <string name="about_message">Это Простой Текстовый Редактор под Android. Посетите https://texteditor.maxistar.me для более подробной информации.</string>
     <string name="Choose_Language">Выберите язык</string>
     <string name="Language">Язык</string>
     <string name="Click_to_change_language">нажмите чтобы сменить язык</string>

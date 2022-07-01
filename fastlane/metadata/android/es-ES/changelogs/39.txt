@@ -1,0 +1,2 @@
+- URL actualizada del sitio web de la aplicación
+- información de licencia agregada

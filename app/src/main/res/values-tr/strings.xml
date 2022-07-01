@@ -26,7 +26,7 @@
     <string name="Settings">Tercihler</string>
     <string name="About">Hakkında</string>
     <string name="Continue">Devam</string>
-    <string name="about_message">Android cihazlar için metin düzenleyici uygulamadır. Daha fazla bilgi için: https://maxistar.me/projects/textpad.</string>
+    <string name="about_message">Android cihazlar için metin düzenleyici uygulamadır. Daha fazla bilgi için: https://texteditor.maxistar.me.</string>
     <string name="Choose_Language">Dil Seçin</string>
     <string name="Language">Dil</string>
     <string name="Click_to_change_language">Arayüz dilini değiştirmek için tıklayın</string>

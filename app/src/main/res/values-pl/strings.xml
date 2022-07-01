@@ -27,7 +27,7 @@
     <string name="Settings">Ustawienia</string>
     <string name="About">Informacje</string>
     <string name="Continue">Kontynuuj</string>
-    <string name="about_message">Oto Prosty edytor tekstu na Androida. Aby uzyskać więcej informacji, odwiedź https://maxistar.me/projects/textpad</string>
+    <string name="about_message">Oto Prosty edytor tekstu na Androida. Aby uzyskać więcej informacji, odwiedź https://texteditor.maxistar.me</string>
     <string name="Choose_Language">Wybierz język</string>
     <string name="Language">Język</string>
     <string name="Click_to_change_language">Naciśnij, aby zmienić język interfejsu</string>

@@ -26,7 +26,7 @@
     <string name="Settings">الإعدادات</string>
     <string name="About">حول</string>
     <string name="Continue">متابعة</string>
-    <string name="about_message">هذا هو محرر النص البسيط للأندرويد. للحصول على المزيد من المعلومات ، تفضل بزيارة https://maxistar.me/projects/textpad.</string>
+    <string name="about_message">هذا هو محرر النص البسيط للأندرويد. للحصول على المزيد من المعلومات ، تفضل بزيارة https://texteditor.maxistar.me.</string>
     <string name="Choose_Language">إختار اللغة</string>
     <string name="Language">اللغة</string>
     <string name="Click_to_change_language">أنقر لتغيير لغة الواجهة</string>

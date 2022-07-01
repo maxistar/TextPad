@@ -27,7 +27,7 @@
     <string name="Settings">設定</string>
     <string name="About">情報</string>
     <string name="Continue">続ける</string>
-    <string name="about_message">Simple Text Editor for Android. 公式サイトはこちら https://maxistar.me/projects/textpad</string>
+    <string name="about_message">Simple Text Editor for Android. 公式サイトはこちら https://texteditor.maxistar.me</string>
     <string name="Choose_Language">言語を選択</string>
     <string name="Language">言語</string>
     <string name="Click_to_change_language">インターフェースの言語を変更します</string>
