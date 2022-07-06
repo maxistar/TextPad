@@ -363,12 +363,7 @@ public class Dictator implements RecognitionListener  {
 
         void startHearingDelay() {
             final Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startHearing(context);
-                }
-            }, 100);
+            handler.postDelayed(() -> startHearing(context), 100);
         }
 
         private void speak(String phrase, String id, Locale locale) {
