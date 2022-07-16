@@ -19,21 +19,19 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
@@ -51,6 +49,7 @@ import com.maxistar.textpad.TPStrings;
 import com.maxistar.textpad.service.AlternativeUrlsService;
 import com.maxistar.textpad.service.RecentFilesService;
 import com.maxistar.textpad.utils.EditTextUndoRedo;
+import com.maxistar.textpad.utils.FileNameHelper;
 import com.maxistar.textpad.utils.System;
 import com.maxistar.textpad.utils.TextConverter;
 
@@ -233,6 +232,18 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.isCtrlPressed()) {
+            if (keyCode == KeyEvent.KEYCODE_S) {
+                saveFile();
+                return true;
+            }
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
 
     protected void onResume() {
         super.onResume();
@@ -284,24 +295,15 @@ public class EditorActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.You_have_made_some_changes)
                     .setMessage(R.string.Are_you_sure_to_quit)
-                    .setNegativeButton(R.string.Yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            EditorActivity.super.onBackPressed();
-                            exitDialogShown = false;
-                        }
+                    .setNegativeButton(R.string.Yes, (arg0, arg1) -> {
+                        EditorActivity.super.onBackPressed();
+                        exitDialogShown = false;
                     })
-                    .setPositiveButton(R.string.No, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            //do nothing
-                            exitDialogShown = false;
-                        }
+                    .setPositiveButton(R.string.No, (arg0, arg1) -> {
+                        //do nothing
+                        exitDialogShown = false;
                     })
-                    .setOnCancelListener(new DialogInterface.OnCancelListener(){
-                        @Override
-                        public void onCancel(DialogInterface arg0) {
-                            EditorActivity.super.onBackPressed();
-                        }
-                    })
+                    .setOnCancelListener(arg0 -> EditorActivity.super.onBackPressed())
                     .create()
                     .show();
             exitDialogShown = true;
@@ -346,7 +348,7 @@ public class EditorActivity extends AppCompatActivity {
             title = TPStrings.NEW_FILE_TXT;
         } else {
             Uri uri = Uri.parse(getFilename());
-            title = getFilenameByUri(uri);
+            title = FileNameHelper.getFilenameByUri(getApplicationContext(), uri);
         }
         if (changed) {
             title = title + TPStrings.STAR;
@@ -360,69 +362,6 @@ public class EditorActivity extends AppCompatActivity {
 
     private boolean isFilenameEmpty() {
         return urlFilename.equals(TPStrings.EMPTY);
-    }
-
-    String getFilenameByUri(String uri) {
-        Uri uri1 = Uri.parse(uri);
-        return getFilenameByUri(uri1);
-    }
-
-    /**
-     * @todo Move to external class and cover with test
-     * @param uri File Url
-     * @return Readable File Name
-     */
-    String getFilenameByUriFallback(@NonNull Uri uri) {
-        String path = uri.getPath();
-        if (path == null) {
-            return "";
-        }
-        String[] paths = path.split("/");
-        if (paths.length == 0) {
-            return "";
-        }
-        return paths[paths.length -1];
-    }
-
-    /**
-     * found solution here
-     * https://stackoverflow.com/questions/64224012/xamarin-plugin-filepicker-content-com-android-providers-downloads-documents-p
-     * @param uri Url
-     * @return Parsed String
-     */
-    String getFilenameByUri(@NonNull Uri uri) {
-        Cursor cursor = null;
-        try {
-            cursor = getApplicationContext().getContentResolver().query(
-                uri,
-                new String[] {
-                    MediaStore.MediaColumns.DISPLAY_NAME
-                },
-                null,
-                null,
-                null
-            );
-            if (cursor != null && cursor.moveToFirst()) {
-                int index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME);
-                return cursor.getString(index);
-            }
-        } catch (Exception e) {
-            return getFilenameByUriFallback(uri);
-        } finally {
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-        }
-        return getLegacyFilenameByUri(uri);
-    }
-
-    String getLegacyFilenameByUri(Uri uri) {
-        String path = uri.getPath();
-        String[] paths = path.split("/");
-        if (paths.length == 0) {
-            return "";
-        }
-        return paths[paths.length -1];
     }
 
     void applyPreferences() {
@@ -530,7 +469,7 @@ public class EditorActivity extends AppCompatActivity {
             case 1:
                 recentFilesMenuItem.setVisible(true);
                 recentFilesMenuItem1.setVisible(true);
-                recentFilesMenuItem1.setTitle(getFilenameByUri(recentFiles.get(0)));
+                recentFilesMenuItem1.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(0)));
                 recentFilesMenuItem2.setVisible(false);
                 recentFilesMenuItem3.setVisible(false);
                 recentFilesMenuItem4.setVisible(false);
@@ -539,9 +478,9 @@ public class EditorActivity extends AppCompatActivity {
             case 2:
                 recentFilesMenuItem.setVisible(true);
                 recentFilesMenuItem1.setVisible(true);
-                recentFilesMenuItem1.setTitle(getFilenameByUri(recentFiles.get(0)));
+                recentFilesMenuItem1.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(0)));
                 recentFilesMenuItem2.setVisible(true);
-                recentFilesMenuItem2.setTitle(getFilenameByUri(recentFiles.get(1)));
+                recentFilesMenuItem2.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(1)));
                 recentFilesMenuItem3.setVisible(false);
                 recentFilesMenuItem4.setVisible(false);
                 recentFilesMenuItem5.setVisible(false);
@@ -549,38 +488,38 @@ public class EditorActivity extends AppCompatActivity {
             case 3:
                 recentFilesMenuItem.setVisible(true);
                 recentFilesMenuItem1.setVisible(true);
-                recentFilesMenuItem1.setTitle(getFilenameByUri(recentFiles.get(0)));
+                recentFilesMenuItem1.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(0)));
                 recentFilesMenuItem2.setVisible(true);
-                recentFilesMenuItem2.setTitle(getFilenameByUri(recentFiles.get(1)));
+                recentFilesMenuItem2.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(1)));
                 recentFilesMenuItem3.setVisible(true);
-                recentFilesMenuItem3.setTitle(getFilenameByUri(recentFiles.get(2)));
+                recentFilesMenuItem3.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(2)));
                 recentFilesMenuItem4.setVisible(false);
                 recentFilesMenuItem5.setVisible(false);
                 break;
             case 4:
                 recentFilesMenuItem.setVisible(true);
                 recentFilesMenuItem1.setVisible(true);
-                recentFilesMenuItem1.setTitle(getFilenameByUri(recentFiles.get(0)));
+                recentFilesMenuItem1.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(0)));
                 recentFilesMenuItem2.setVisible(true);
-                recentFilesMenuItem2.setTitle(getFilenameByUri(recentFiles.get(1)));
+                recentFilesMenuItem2.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(1)));
                 recentFilesMenuItem3.setVisible(true);
-                recentFilesMenuItem3.setTitle(getFilenameByUri(recentFiles.get(2)));
+                recentFilesMenuItem3.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(2)));
                 recentFilesMenuItem4.setVisible(true);
-                recentFilesMenuItem4.setTitle(getFilenameByUri(recentFiles.get(3)));
+                recentFilesMenuItem4.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(3)));
                 recentFilesMenuItem5.setVisible(false);
                 break;
             default:
                 recentFilesMenuItem.setVisible(true);
                 recentFilesMenuItem1.setVisible(true);
-                recentFilesMenuItem1.setTitle(getFilenameByUri(recentFiles.get(0)));
+                recentFilesMenuItem1.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(0)));
                 recentFilesMenuItem2.setVisible(true);
-                recentFilesMenuItem2.setTitle(getFilenameByUri(recentFiles.get(1)));
+                recentFilesMenuItem2.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(1)));
                 recentFilesMenuItem3.setVisible(true);
-                recentFilesMenuItem3.setTitle(getFilenameByUri(recentFiles.get(2)));
+                recentFilesMenuItem3.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(2)));
                 recentFilesMenuItem4.setVisible(true);
-                recentFilesMenuItem4.setTitle(getFilenameByUri(recentFiles.get(3)));
+                recentFilesMenuItem4.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(3)));
                 recentFilesMenuItem5.setVisible(true);
-                recentFilesMenuItem5.setTitle(getFilenameByUri(recentFiles.get(4)));
+                recentFilesMenuItem5.setTitle(FileNameHelper.getFilenameByUri(getApplicationContext(), recentFiles.get(4)));
                 break;
         }
     }
@@ -646,24 +585,13 @@ public class EditorActivity extends AppCompatActivity {
                     .setTitle(R.string.File_not_saved)
                     .setMessage(R.string.Save_current_file)
                     .setPositiveButton(R.string.Yes,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // Stop the activity
-                                    next_action = DO_SHOW_SETTINGS;
-                                    saveFile();
-                                }
-
+                            (dialog, which) -> {
+                                // Stop the activity
+                                next_action = DO_SHOW_SETTINGS;
+                                saveFile();
                             })
                     .setNegativeButton(R.string.No,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    showSettingsActivity();
-                                }
-                            }).show();
+                            (dialog, which) -> showSettingsActivity()).show();
         } else {
             showSettingsActivity();
         }
@@ -687,25 +615,14 @@ public class EditorActivity extends AppCompatActivity {
                     .setTitle(R.string.File_not_saved)
                     .setMessage(R.string.Save_current_file)
                     .setPositiveButton(R.string.Yes,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // Stop the activity
-                                    next_action = DO_OPEN_RECENT;
-                                    next_action_filename = filename;
-                                    EditorActivity.this.saveFile();
-                                }
-
+                            (dialog, which) -> {
+                                // Stop the activity
+                                next_action = DO_OPEN_RECENT;
+                                next_action_filename = filename;
+                                EditorActivity.this.saveFile();
                             })
                     .setNegativeButton(R.string.No,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    openFileByName(filename);
-                                }
-                            }).show();
+                            (dialog, which) -> openFileByName(filename)).show();
         } else {
             openFileByName(filename);
         }
@@ -714,7 +631,7 @@ public class EditorActivity extends AppCompatActivity {
     private void openFileByName(String filename) {
         if (useAndroidManager()) {
             Uri uri = Uri.parse(filename);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //dublicated in useAndroidManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //duplicated in useAndroidManager
                 this.openNamedFile(uri);
             }
         } else {
@@ -729,24 +646,13 @@ public class EditorActivity extends AppCompatActivity {
                     .setTitle(R.string.File_not_saved)
                     .setMessage(R.string.Save_current_file)
                     .setPositiveButton(R.string.Yes,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // Stop the activity
-                                    next_action = DO_NEW;
-                                    EditorActivity.this.saveFile();
-                                }
-
+                            (dialog, which) -> {
+                                // Stop the activity
+                                next_action = DO_NEW;
+                                EditorActivity.this.saveFile();
                             })
                     .setNegativeButton(R.string.No,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    clearFile();
-                                }
-                            }).show();
+                            (dialog, which) -> clearFile()).show();
         } else {
             clearFile();
         }
@@ -811,24 +717,13 @@ public class EditorActivity extends AppCompatActivity {
                     .setTitle(R.string.File_not_saved)
                     .setMessage(R.string.Save_current_file)
                     .setPositiveButton(R.string.Yes,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // Stop the activity
-                                    next_action = DO_OPEN;
-                                    saveFile();
-                                }
-
+                            (dialog, which) -> {
+                                // Stop the activity
+                                next_action = DO_OPEN;
+                                saveFile();
                             })
                     .setNegativeButton(R.string.No,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    openNewFile();
-                                }
-                            }).show();
+                            (dialog, which) -> openNewFile()).show();
         } else {
             openNewFile();
         }
@@ -841,24 +736,13 @@ public class EditorActivity extends AppCompatActivity {
                     .setTitle(R.string.File_not_saved)
                     .setMessage(R.string.Save_current_file)
                     .setPositiveButton(R.string.Yes,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // Stop the activity
-                                    next_action = DO_EXIT;
-                                    EditorActivity.this.saveFile();
-                                }
-
+                            (dialog, which) -> {
+                                // Stop the activity
+                                next_action = DO_EXIT;
+                                EditorActivity.this.saveFile();
                             })
                     .setNegativeButton(R.string.No,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    System.exitFromApp(EditorActivity.this);
-                                }
-                            }).show();
+                            (dialog, which) -> System.exitFromApp(EditorActivity.this)).show();
         } else {
             System.exitFromApp(EditorActivity.this);
         }
@@ -903,22 +787,13 @@ public class EditorActivity extends AppCompatActivity {
                     .setTitle(R.string.File_already_exists)
                     .setMessage(R.string.Existing_file_will_be_overwritten)
                     .setPositiveButton(R.string.Yes,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // Stop the activity
-                                    next_action = DO_OPEN;
-                                    EditorActivity.this.saveFile();
-                                }
-
+                            (dialog, which) -> {
+                                // Stop the activity
+                                next_action = DO_OPEN;
+                                EditorActivity.this.saveFile();
                             }).setNegativeButton(R.string.No,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog,
-                                            int which) {
-                            //do nothing!!
-                        }
+                    (dialog, which) -> {
+                        //do nothing!!
                     }).show();
         } else {
             if (useAndroidManager()) {
@@ -1134,24 +1009,15 @@ public class EditorActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
             .setTitle(R.string.AlternativeFileAccessTitle)
             .setMessage(R.string.SelectAlternativeLocationForFile)
-            .setNegativeButton(R.string.Yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface arg0, int arg1) {
-                    lastTriedSystemUri = uri;
-                    selectFileUsingAndroidSystemPicker();
-                }
+            .setNegativeButton(R.string.Yes, (arg0, arg1) -> {
+                lastTriedSystemUri = uri;
+                selectFileUsingAndroidSystemPicker();
             })
-            .setPositiveButton(R.string.No, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface arg0, int arg1) {
-                        lastTriedSystemUri = null;
-                }
-            })
-            .setOnCancelListener(new DialogInterface.OnCancelListener(){
-                    @Override
-                    public void onCancel(DialogInterface arg0) {
-                        lastTriedSystemUri = null;
-                        EditorActivity.super.onBackPressed();
-                }
-                })
+            .setPositiveButton(R.string.No, (arg0, arg1) -> lastTriedSystemUri = null)
+            .setOnCancelListener(arg0 -> {
+                lastTriedSystemUri = null;
+                EditorActivity.super.onBackPressed();
+        })
             .create()
             .show();
     }
