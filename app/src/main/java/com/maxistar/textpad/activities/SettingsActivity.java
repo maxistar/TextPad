@@ -53,7 +53,6 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             mVersion.setSummary(pInfo.versionName);
         } catch (NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

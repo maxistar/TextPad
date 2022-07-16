@@ -100,6 +100,7 @@ public class EditorActivity extends AppCompatActivity {
 
     
     boolean changed = false;
+
     boolean exitDialogShown = false;
 
     private int next_action = DO_NOTHING; // to figure out better way
@@ -120,8 +121,6 @@ public class EditorActivity extends AppCompatActivity {
 
     EditTextUndoRedo editTextUndoRedo;
 
-
-
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,7 +136,6 @@ public class EditorActivity extends AppCompatActivity {
         editTextUndoRedo = new EditTextUndoRedo(mText);
         scrollView = findViewById(R.id.vscroll);
         applyPreferences();
-        // lastTriedSystemUri = null;
 
         if (savedInstanceState != null) {
             restoreState(savedInstanceState);
@@ -185,22 +183,18 @@ public class EditorActivity extends AppCompatActivity {
     private void setTextWatcher() {
         textWatcher = new TextWatcher() {
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                if (!changed) {
-                    changed = true;
-                    updateTitle();
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (changed) {
+                    return;
                 }
+                changed = true;
+                updateTitle();
             }
         };
     }
@@ -993,7 +987,7 @@ public class EditorActivity extends AppCompatActivity {
             }
             updateTitle();
         } catch (FileNotFoundException e) {
-            if (isAccessDeniedException(e)) { //todo add chek for access denied
+            if (isAccessDeniedException(e)) {
                 showAlternativeFileDialog(uri);
             } else {
                 this.showToast(R.string.File_not_found);
@@ -1054,7 +1048,7 @@ public class EditorActivity extends AppCompatActivity {
             return value; //this way we spare memory but will be unable to fix delimiters
         }
 
-        //we should anyway fix any line delimenters
+        //we should anyway fix any line delimiters
         //replace \r\n first, then \r into \n this way we will get pure unix ending used in android
         return TextConverter.getInstance().applyEndings(value, TextConverter.UNIX);
     }
