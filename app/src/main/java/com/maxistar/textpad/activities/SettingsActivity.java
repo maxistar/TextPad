@@ -6,14 +6,12 @@ import java.util.Locale;
 import java.util.Map;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -55,7 +53,6 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             mVersion.setSummary(pInfo.versionName);
         } catch (NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -90,22 +87,16 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
         resetAlternativeLocations.setEnabled(settingsService.isAlternativeFileAccess());
         resetAlternativeLocations.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        resetAlternativeLocations();
-                        return false;
-                    }
+                preference -> {
+                    resetAlternativeLocations();
+                    return false;
                 }
         );
 
         useAlternativeLocations.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        resetAlternativeLocations.setEnabled(settingsService.isAlternativeFileAccess());
-                        return true;
-                    }
+                preference -> {
+                    resetAlternativeLocations.setEnabled(settingsService.isAlternativeFileAccess());
+                    return true;
                 }
         );
     }
@@ -114,22 +105,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         new AlertDialog.Builder(this)
                 .setTitle(R.string.AlternativeFileAccessTitle)
                 .setMessage(R.string.ResetAlternativeFileLocations)
-                .setNegativeButton(R.string.Yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        alternativeUrlsService.clearAlternativeUrls(getApplicationContext());
-                    }
-                })
-                .setPositiveButton(R.string.No, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        //
-                    }
-                })
-                .setOnCancelListener(new DialogInterface.OnCancelListener(){
-                    @Override
-                    public void onCancel(DialogInterface arg0) {
-                        //
-                    }
-                })
+                .setPositiveButton(R.string.Yes, (arg0, arg1) -> alternativeUrlsService.clearAlternativeUrls(getApplicationContext()))
                 .create()
                 .show();
     }
@@ -139,11 +115,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             return true;
         }
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            return true;
-        }
-
-        return false;
+        return Build.VERSION.SDK_INT > Build.VERSION_CODES.P;
     }
 
     @Override
