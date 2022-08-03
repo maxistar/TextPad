@@ -59,5 +59,9 @@
             android:authorities="com.maxistar.authority"
             android:exported="false" />
     </application>
-
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
 </manifest>
