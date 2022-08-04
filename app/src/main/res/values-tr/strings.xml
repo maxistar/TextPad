@@ -87,5 +87,6 @@
     <string name="preferenceShowLastEditedFilesTitle">Son Düzenlenen Dosyaları Göster</string>
     <string name="preferenceShowLastEditedFilesDescription">Seçenekler menüsünde son düzenlenen dosyaları göster</string>
 
-
+    <string name="preferenceAutoSaveCurrentFileTitle">Otomatik kaydetme</string>
+    <string name="preferenceAutoSaveCurrentFileDescription">Pencere kapatıldığında, o anda düzenlenen dosyayı otomatik olarak kaydet</string>
 </resources>

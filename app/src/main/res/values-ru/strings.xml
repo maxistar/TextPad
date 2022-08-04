@@ -86,5 +86,6 @@
     <string name="preferenceSearchSelectionColor">Цвет выделения результатов поиска</string>
     <string name="preferenceShowLastEditedFilesTitle">Показывать последние отредактированные файлы</string>
     <string name="preferenceShowLastEditedFilesDescription">Показывать последние отредактированные файлы в меню параметров</string>
-
+    <string name="preferenceAutoSaveCurrentFileTitle">Автосохранение</string>
+    <string name="preferenceAutoSaveCurrentFileDescription">Автоматически сохранять текущий редактируемый файл при закрытии окна</string>
 </resources>

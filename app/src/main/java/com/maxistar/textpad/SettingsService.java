@@ -42,6 +42,7 @@ public class SettingsService {
     private boolean show_last_edited_files = true;
     private boolean legacy_file_picker = false;
     private boolean alternative_file_access = true;
+    private boolean auto_save_current_file = false;
 
     private String file_encoding = "";
     private String last_filename = "";
@@ -78,6 +79,7 @@ public class SettingsService {
         searchSelectionColor = sharedPref.getInt(SETTING_SEARCH_SELECTION_COLOR, DEFAULT_SEARCH_SELECTION_COLOR);
         textSelectionColor = sharedPref.getInt(SETTING_TEXT_SELECTION_COLOR, DEFAULT_TEXT_SELECTION_COLOR);
         language = sharedPref.getString(SETTING_LANGUAGE, TPStrings.EMPTY);
+        auto_save_current_file = sharedPref.getBoolean(SETTING_AUTO_SAVE_CURRENT_FILE, false);
     }
 
     public void reloadSettings(Context context) {
@@ -113,6 +115,10 @@ public class SettingsService {
 
     public boolean isLegacyFilePicker() {
         return legacy_file_picker;
+    }
+
+    public boolean isAutosavingActive() {
+        return auto_save_current_file;
     }
 
     public String getFileEncoding() {

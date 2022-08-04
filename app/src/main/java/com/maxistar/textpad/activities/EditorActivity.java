@@ -233,6 +233,14 @@ public class EditorActivity extends AppCompatActivity {
                 saveFile();
                 return true;
             }
+            else if (keyCode == KeyEvent.KEYCODE_Z) {
+                editUndo();
+                return true;
+            }
+            else if (keyCode == KeyEvent.KEYCODE_Y) {
+                editRedo();
+                return true;
+            }
         }
 
         return super.onKeyDown(keyCode, event);
@@ -255,9 +263,17 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void onPause() {
-        mText.removeTextChangedListener(textWatcher);      // to prevent text
+        if (settingsService.isAutosavingActive() && !isFilenameEmpty() && isChanged()) {
+            this.saveFileIfNamed();
+        }
+
+        mText.removeTextChangedListener(textWatcher);
         selectionStart = mText.getSelectionStart();
         super.onPause();
+    }
+
+    private boolean isChanged() {
+        return changed;
     }
 
     /**
@@ -766,11 +782,15 @@ public class EditorActivity extends AppCompatActivity {
         if (isFilenameEmpty()) {
             saveAs();
         } else {
-            if (useAndroidManager()) {
-                saveNamedFile();
-            } else {
-                saveNamedFileLegacy();
-            }
+            saveFileIfNamed();
+        }
+    }
+
+    protected void saveFileIfNamed() {
+        if (useAndroidManager()) {
+            saveNamedFile();
+        } else {
+            saveNamedFileLegacy();
         }
     }
 
@@ -790,11 +810,7 @@ public class EditorActivity extends AppCompatActivity {
                         //do nothing!!
                     }).show();
         } else {
-            if (useAndroidManager()) {
-                saveNamedFile();
-            } else {
-                saveNamedFileLegacy();
-            }
+            saveFileIfNamed();
         }
     }
 

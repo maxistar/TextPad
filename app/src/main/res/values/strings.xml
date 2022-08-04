@@ -88,4 +88,7 @@
     <string name="preferenceShowLastEditedFilesTitle">Show Last Edited Files</string>
     <string name="preferenceShowLastEditedFilesDescription">Show last edited files in options menu</string>
 
+    <string name="preferenceAutoSaveCurrentFileTitle">Autosaving</string>
+    <string name="preferenceAutoSaveCurrentFileDescription">Automatically save currently editing file when window is closed</string>
+
 </resources>
