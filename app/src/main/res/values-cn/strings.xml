@@ -87,5 +87,7 @@
     <string name="preferenceSearchSelectionColor">搜索结果突出显示颜色</string>
     <string name="preferenceShowLastEditedFilesTitle">显示上次编辑的文件</string>
     <string name="preferenceShowLastEditedFilesDescription">在选项菜单中显示最后编辑的文件</string>
+    <string name="preferenceAutoSaveCurrentFileTitle">自动保存</string>
+    <string name="preferenceAutoSaveCurrentFileDescription">关闭窗口时自动保存当前正在编辑的文件</string>
 
 </resources>

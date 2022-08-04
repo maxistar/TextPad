@@ -86,5 +86,7 @@
     <string name="preferenceSearchSelectionColor">検索結果のハイライトカラー</string>
     <string name="preferenceShowLastEditedFilesTitle">最後に編集したファイルを表示する</string>
     <string name="preferenceShowLastEditedFilesDescription">オプションメニューに最後に編集したファイルを表示する</string>
+    <string name="preferenceAutoSaveCurrentFileTitle">自動保存</string>
+    <string name="preferenceAutoSaveCurrentFileDescription">ウィンドウを閉じたときに現在編集中のファイルを自動的に保存する</string>
 
 </resources>

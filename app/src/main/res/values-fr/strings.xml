@@ -86,5 +86,7 @@
     <string name="preferenceSearchSelectionColor">Couleur de surbrillance des résultats de la recherche</string>
     <string name="preferenceShowLastEditedFilesTitle">Afficher les derniers fichiers modifiés</string>
     <string name="preferenceShowLastEditedFilesDescription">Afficher les derniers fichiers modifiés dans le menu des options</string>
+    <string name="preferenceAutoSaveCurrentFileTitle">Sauvegarde automatique</string>
+    <string name="preferenceAutoSaveCurrentFileDescription">Enregistrer automatiquement le fichier en cours d\'édition lorsque la fenêtre est fermée</string>
 
 </resources>

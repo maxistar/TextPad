@@ -14,6 +14,12 @@
             android:summary="@string/preferenceShowLastEditedFilesDescription"
             android:defaultValue="true" />
 
+        <CheckBoxPreference
+            android:key="auto_save_current_file"
+            android:title="@string/preferenceAutoSaveCurrentFileTitle"
+            android:summary="@string/preferenceAutoSaveCurrentFileDescription"
+            android:defaultValue="false" />
+
         <ListPreference
             android:key="encoding"
             android:summary="@string/Click_to_change_encoding"

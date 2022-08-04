@@ -86,5 +86,7 @@
     <string name="preferenceSearchSelectionColor">نتيجة البحث لون تظليل</string>
     <string name="preferenceShowLastEditedFilesTitle">إظهار آخر الملفات التي تم تحريرها</string>
     <string name="preferenceShowLastEditedFilesDescription">إظهار آخر الملفات التي تم تحريرها في قائمة الخيارات</string>
+    <string name="preferenceAutoSaveCurrentFileTitle">الحفظ التلقائي</string>
+    <string name="preferenceAutoSaveCurrentFileDescription">حفظ ملف التحرير الحالي تلقائيًا عند إغلاق النافذة</string>
 
 </resources>
