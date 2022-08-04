@@ -1,0 +1,2 @@
+- teclas cortas agregadas para teclado físico
+- función de guardado automático agregada

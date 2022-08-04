@@ -1,0 +1,2 @@
+- dodano krótkie klawisze dla klawiatury fizycznej
+- dodano funkcję autozapisu

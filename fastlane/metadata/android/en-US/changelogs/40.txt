@@ -1,0 +1,2 @@
+- added short keys for physical keyboard
+- added autosaving feature
