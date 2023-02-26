@@ -117,6 +117,5 @@
     <string name="tts.unknown_command">unknown command</string>
     <string name="tts.repeat">repeat</string>
     <string name="tts.select_sentence">select sentence</string>
-    <string name="Dictate">Dictate</string>
     <string name="tts.sentence_selected">sentence selected</string>
 </resources>

@@ -827,8 +827,6 @@ public class EditorActivity extends AppCompatActivity {
             intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
             intent.putExtra(Intent.EXTRA_TITLE, TPStrings.NEW_FILE_TXT);
             intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
-            startActivityForResult(intent, ACTION_OPTION_FILE);
-            intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
             startActivityForResult(intent, ACTION_CREATE_FILE);
         } else {
             Intent intent = new Intent(this.getBaseContext(), FileDialog.class);
