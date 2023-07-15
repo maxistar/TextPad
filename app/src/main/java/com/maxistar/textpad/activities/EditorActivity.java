@@ -557,6 +557,8 @@ public class EditorActivity extends AppCompatActivity {
         int itemId = item.getItemId();
         if (itemId == R.id.menu_document_open) {
             openFile();
+        } else if (itemId == R.id.menu_document_open_other) {
+            openFile();
         } else if (itemId == R.id.menu_document_search) {
             initSearch(item);
         } else if (itemId == R.id.menu_document_open_last1) {
