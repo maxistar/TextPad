@@ -68,6 +68,11 @@
                 android:title="@string/Open"
                 android:icon="@drawable/ic_file"
                 app:iconTint="@color/colorIcon" />
+            <item
+                android:id="@+id/menu_document_open_other"
+                android:title="@string/Open_Other"
+                android:icon="@drawable/ic_folder_open"
+                app:iconTint="@color/colorIcon" />
         </menu>
     </item>
     <item

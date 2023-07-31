@@ -38,6 +38,10 @@ Once your setup is done, opening and compiling the existing project should not c
 
 ./gradlew lint
 
+### How to translate application
+
+You can use [this service](https://crowdin.com/project/simple-text-editor) to add a new translation or suggest better one
+
 ### To Do
 
 many many things to do.
