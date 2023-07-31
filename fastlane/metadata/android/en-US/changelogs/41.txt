@@ -1,0 +1,1 @@
+- add menu item "open other"

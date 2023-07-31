@@ -89,4 +89,5 @@
 
     <string name="preferenceAutoSaveCurrentFileTitle">Otomatik kaydetme</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Pencere kapatıldığında, o anda düzenlenen dosyayı otomatik olarak kaydet</string>
+    <string name="Open_Other">Diğer aç...</string>
 </resources>

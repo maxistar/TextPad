@@ -88,5 +88,6 @@
     <string name="preferenceShowLastEditedFilesDescription">إظهار آخر الملفات التي تم تحريرها في قائمة الخيارات</string>
     <string name="preferenceAutoSaveCurrentFileTitle">الحفظ التلقائي</string>
     <string name="preferenceAutoSaveCurrentFileDescription">حفظ ملف التحرير الحالي تلقائيًا عند إغلاق النافذة</string>
+    <string name="Open_Other">فتح أخرى ...</string>
 
 </resources>

@@ -88,4 +88,5 @@
     <string name="preferenceShowLastEditedFilesDescription">Pokaż ostatnio edytowane pliki w menu opcji</string>
     <string name="preferenceAutoSaveCurrentFileTitle">Autozapisywanie</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Automatycznie zapisuj aktualnie edytowany plik, gdy okno jest zamknięte</string>
+    <string name="Open_Other">Otwórz inne...</string>
 </resources>

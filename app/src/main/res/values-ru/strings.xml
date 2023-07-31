@@ -88,4 +88,5 @@
     <string name="preferenceShowLastEditedFilesDescription">Показывать последние отредактированные файлы в меню параметров</string>
     <string name="preferenceAutoSaveCurrentFileTitle">Автосохранение</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Автоматически сохранять текущий редактируемый файл при закрытии окна</string>
+    <string name="Open_Other">Открыть другой...</string>
 </resources>

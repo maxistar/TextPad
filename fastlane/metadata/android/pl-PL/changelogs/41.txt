@@ -1,0 +1,1 @@
+- dodaj pozycję menu „otwórz inny”.

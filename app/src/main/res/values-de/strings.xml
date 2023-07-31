@@ -88,5 +88,6 @@
     <string name="preferenceShowLastEditedFilesDescription">Zuletzt bearbeitete Dateien im Optionsmenü anzeigen</string>
     <string name="preferenceAutoSaveCurrentFileTitle">Automatisches Speichern</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Speichern Sie die aktuell bearbeitete Datei automatisch, wenn das Fenster geschlossen wird</string>
+    <string name="Open_Other">Andere öffnen...</string>
 
 </resources>
