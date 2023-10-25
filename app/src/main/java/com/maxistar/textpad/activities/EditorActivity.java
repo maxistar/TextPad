@@ -1200,7 +1200,7 @@ public class EditorActivity extends AppCompatActivity {
         public boolean onQueryTextSubmit(String query)
         {
             // Find next text
-            if (matcher.find()) {
+            if (matcher!= null && matcher.find()) {
                 // Check layout
                 if (mText.getLayout() == null) {
                     return false;
