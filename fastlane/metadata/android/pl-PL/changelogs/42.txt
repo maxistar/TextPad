@@ -1,0 +1,1 @@
+- zapobiegaj awariom, gdy plik nie istnieje
