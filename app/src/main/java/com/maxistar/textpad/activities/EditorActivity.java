@@ -581,6 +581,8 @@ public class EditorActivity extends AppCompatActivity {
             editUndo();
         } else if (itemId == R.id.menu_edit_redo) {
             editRedo();
+        } else if (itemId == R.id.menu_document_share) {
+            shareText();
         } else if (itemId == R.id.menu_document_settings) {
             showSettings();
         } else if (itemId == R.id.menu_exit) {
@@ -588,6 +590,17 @@ public class EditorActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void shareText() {
+        String textToShare = this.mText.getText().toString();
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
+        sendIntent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
     }
 
     private void showSettings() {
