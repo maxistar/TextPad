@@ -1155,7 +1155,6 @@ public class EditorActivity extends AppCompatActivity {
                     & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                     | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             getContentResolver().takePersistableUriPermission(uri, takeFlags);
-            openNamedFile(uri);
         }
     }
 
