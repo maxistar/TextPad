@@ -89,5 +89,6 @@
     <string name="preferenceAutoSaveCurrentFileTitle">自動保存</string>
     <string name="preferenceAutoSaveCurrentFileDescription">ウィンドウを閉じたときに現在編集中のファイルを自動的に保存する</string>
     <string name="Open_Other">他を開く...</string>
+    <string name="Menu_Share">共有...</string>
 
 </resources>

@@ -89,4 +89,5 @@
     <string name="preferenceAutoSaveCurrentFileTitle">Autozapisywanie</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Automatycznie zapisuj aktualnie edytowany plik, gdy okno jest zamknięte</string>
     <string name="Open_Other">Otwórz inne...</string>
+    <string name="Menu_Share">Udostępnij...</string>
 </resources>

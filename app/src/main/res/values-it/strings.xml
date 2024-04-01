@@ -89,5 +89,6 @@
     <string name="preferenceAutoSaveCurrentFileTitle">Salvataggio automatico</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Salva automaticamente il file attualmente in fase di modifica quando la finestra è chiusa</string>
     <string name="Open_Other">Apri altro...</string>
+    <string name="Menu_Share">Condividi...</string>
 
 </resources>
