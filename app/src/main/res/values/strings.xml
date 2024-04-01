@@ -93,6 +93,6 @@
     <string name="Open_Other">Open other…</string>
 
 
-    <string name="Menu_Share" translatable="false">Share</string>
+    <string name="Menu_Share">Share...</string>
 
 </resources>

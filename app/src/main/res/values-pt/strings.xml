@@ -89,5 +89,6 @@
     <string name="preferenceAutoSaveCurrentFileTitle">Salvamento automático</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Salva automaticamente o arquivo em edição atual quando a janela é fechada</string>
     <string name="Open_Other">Abra outro...</string>
+    <string name="Menu_Share">Compartilhar...</string>
 
 </resources>
