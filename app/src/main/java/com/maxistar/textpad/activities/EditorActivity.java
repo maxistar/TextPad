@@ -1123,19 +1123,16 @@ public class EditorActivity extends AppCompatActivity {
             if (data != null) {
                 uri = data.getData();
                 if (uri != null) {
-                    final int takeFlags = data.getFlags()
-                            & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
                     // Check for the freshest data.
+                    persistUriPermissions(data);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        getContentResolver().takePersistableUriPermission(uri, takeFlags);
                         openNamedFile(uri);
                     }
                 }
             }
         } else if (requestCode == ACTION_CREATE_FILE) {
             if (data != null) {
+                persistUriPermissions(data);
                 Uri uri = data.getData();
                 if (uri != null) {
                     setFilename(uri.toString());
@@ -1144,6 +1141,21 @@ public class EditorActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @SuppressLint("WrongConstant")
+    private void persistUriPermissions(Intent data) {
+        // Check for the freshest data.
+        Uri uri = data.getData();
+        if (uri == null) {
+           return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int takeFlags = data.getFlags()
+                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            getContentResolver().takePersistableUriPermission(uri, takeFlags);
+        }
     }
 
     protected void showToast(int toast_str) {
