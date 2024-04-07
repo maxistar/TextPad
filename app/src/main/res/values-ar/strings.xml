@@ -90,5 +90,6 @@
     <string name="preferenceAutoSaveCurrentFileDescription">حفظ ملف التحرير الحالي تلقائيًا عند إغلاق النافذة</string>
     <string name="Open_Other">فتح أخرى ...</string>
     <string name="Menu_Share">يشارك...</string>
+    <string name="Menu_Print">مطبعة</string>
 
 </resources>

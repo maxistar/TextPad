@@ -91,4 +91,5 @@
     <string name="preferenceAutoSaveCurrentFileDescription">Pencere kapatıldığında, o anda düzenlenen dosyayı otomatik olarak kaydet</string>
     <string name="Open_Other">Diğer aç...</string>
     <string name="Menu_Share">Paylaş...</string>
+    <string name="Menu_Print">Yazdır</string>
 </resources>

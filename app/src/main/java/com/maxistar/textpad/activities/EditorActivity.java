@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,6 +26,10 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintJob;
+import android.print.PrintManager;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spanned;
@@ -35,6 +40,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.SearchView;
@@ -121,6 +128,8 @@ public class EditorActivity extends AppCompatActivity {
 
     EditTextUndoRedo editTextUndoRedo;
 
+    WebView mWebView;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -201,7 +210,6 @@ public class EditorActivity extends AppCompatActivity {
 
     /**
      * Checks if the app has permission to write to device storage
-     *
      * If the app does not has permission then the user will be prompted to grant permissions
      *
      * @param activity Activity
@@ -353,6 +361,10 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     void updateTitle() {
+        this.setTitle(getEditingTitle());
+    }
+
+    private String getEditingTitle() {
         String title;
         if (isFilenameEmpty()) {
             title = TPStrings.NEW_FILE_TXT;
@@ -363,7 +375,7 @@ public class EditorActivity extends AppCompatActivity {
         if (changed) {
             title = title + TPStrings.STAR;
         }
-        this.setTitle(title);
+        return title;
     }
 
     private String getFilename() {
@@ -447,6 +459,11 @@ public class EditorActivity extends AppCompatActivity {
         redoMenu.setEnabled(editTextUndoRedo.getCanRedo());
         
         updateRecentFiles(menu);
+
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            MenuItem printMenu = menu.findItem(R.id.menu_document_print);
+            printMenu.setVisible(false);
+        }
 
         return true;
     }
@@ -583,6 +600,8 @@ public class EditorActivity extends AppCompatActivity {
             editRedo();
         } else if (itemId == R.id.menu_document_share) {
             shareText();
+        } else if (itemId == R.id.menu_document_print) {
+            printText();
         } else if (itemId == R.id.menu_document_settings) {
             showSettings();
         } else if (itemId == R.id.menu_exit) {
@@ -590,6 +609,56 @@ public class EditorActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void printText() {
+         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+             // Create a WebView object specifically for printing
+             WebView webView = new WebView(this);
+             webView.setWebViewClient(new WebViewClient() {
+
+                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                     return false;
+                 }
+
+                 @Override
+                 public void onPageFinished(WebView view, String url) {
+                     createWebPrintJob(view);
+                     mWebView = null;
+                 }
+             });
+
+             // Generate an HTML document on the fly:
+             String htmlDocument = "<html><body><h1>" + this.getEditingTitle() +
+                     "</h1><pre>" +
+                     mText.getText() +
+                     "</pre></body></html>";
+             webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
+
+             mWebView = webView;
+        }
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void createWebPrintJob(WebView webView) {
+
+        // Get a PrintManager instance
+        PrintManager printManager = null;
+            printManager = (PrintManager) this.getSystemService(Context.PRINT_SERVICE);
+
+        String jobName = getString(R.string.app_name) + " Document";
+
+        // Get a print adapter instance
+        PrintDocumentAdapter printAdapter = webView.createPrintDocumentAdapter(jobName);
+
+        // Create a print job with name and adapter instance
+        PrintJob printJob = printManager.print(jobName, printAdapter,
+                new PrintAttributes.Builder().build());
+
+        // Save the job object for later status checking
+        List<PrintJob> printJobs = new ArrayList<>();
+        printJobs.add(printJob);
     }
 
     private void shareText() {

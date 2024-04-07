@@ -90,4 +90,5 @@
     <string name="preferenceAutoSaveCurrentFileDescription">Автоматически сохранять текущий редактируемый файл при закрытии окна</string>
     <string name="Open_Other">Открыть другой...</string>
     <string name="Menu_Share">Поделиться...</string>
+    <string name="Menu_Print">Распечатать</string>
 </resources>
