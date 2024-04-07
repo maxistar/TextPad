@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,18 +23,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CancellationSignal;
-import android.os.ParcelFileDescriptor;
-import android.print.PageRange;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
-import android.print.PrintDocumentInfo;
+import android.print.PrintJob;
 import android.print.PrintManager;
-import android.print.pdf.PrintedPdfDocument;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spanned;
@@ -44,6 +40,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.SearchView;
@@ -130,6 +128,8 @@ public class EditorActivity extends AppCompatActivity {
 
     EditTextUndoRedo editTextUndoRedo;
 
+    WebView mWebView;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -210,7 +210,6 @@ public class EditorActivity extends AppCompatActivity {
 
     /**
      * Checks if the app has permission to write to device storage
-     *
      * If the app does not has permission then the user will be prompted to grant permissions
      *
      * @param activity Activity
@@ -362,6 +361,10 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     void updateTitle() {
+        this.setTitle(getEditingTitle());
+    }
+
+    private String getEditingTitle() {
         String title;
         if (isFilenameEmpty()) {
             title = TPStrings.NEW_FILE_TXT;
@@ -372,7 +375,7 @@ public class EditorActivity extends AppCompatActivity {
         if (changed) {
             title = title + TPStrings.STAR;
         }
-        this.setTitle(title);
+        return title;
     }
 
     private String getFilename() {
@@ -456,6 +459,11 @@ public class EditorActivity extends AppCompatActivity {
         redoMenu.setEnabled(editTextUndoRedo.getCanRedo());
         
         updateRecentFiles(menu);
+
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            MenuItem printMenu = menu.findItem(R.id.menu_document_print);
+            printMenu.setVisible(false);
+        }
 
         return true;
     }
@@ -604,21 +612,53 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void printText() {
-        // Get a PrintManager instance
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            PrintManager printManager = null;
+         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+             // Create a WebView object specifically for printing
+             WebView webView = new WebView(this);
+             webView.setWebViewClient(new WebViewClient() {
 
-            printManager = (PrintManager) this.getSystemService(Context.PRINT_SERVICE);
-            // Set job name, which will be displayed in the print queue
-            String jobName = getString(R.string.app_name) + " Document";
+                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                     return false;
+                 }
 
-            // Start a print job, passing in a PrintDocumentAdapter implementation
-            // to handle the generation of a print document
-            printManager.print(jobName, new MyPrintDocumentAdapter(),
-                    null); //
+                 @Override
+                 public void onPageFinished(WebView view, String url) {
+                     createWebPrintJob(view);
+                     mWebView = null;
+                 }
+             });
 
+             // Generate an HTML document on the fly:
+             String htmlDocument = "<html><body><h1>" + this.getEditingTitle() +
+                     "</h1><pre>" +
+                     mText.getText() +
+                     "</pre></body></html>";
+             webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
+
+             mWebView = webView;
         }
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void createWebPrintJob(WebView webView) {
+
+        // Get a PrintManager instance
+        PrintManager printManager = null;
+            printManager = (PrintManager) this.getSystemService(Context.PRINT_SERVICE);
+
+        String jobName = getString(R.string.app_name) + " Document";
+
+        // Get a print adapter instance
+        PrintDocumentAdapter printAdapter = webView.createPrintDocumentAdapter(jobName);
+
+        // Create a print job with name and adapter instance
+        PrintJob printJob = printManager.print(jobName, printAdapter,
+                new PrintAttributes.Builder().build());
+
+        // Save the job object for later status checking
+        List<PrintJob> printJobs = new ArrayList<>();
+        printJobs.add(printJob);
     }
 
     private void shareText() {
@@ -1199,101 +1239,6 @@ public class EditorActivity extends AppCompatActivity {
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, toast_str, duration);
         toast.show();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private class MyPrintDocumentAdapter extends PrintDocumentAdapter {
-        PrintedPdfDocument pdfDocument;
-        @Override
-        public void onLayout(PrintAttributes oldAttributes, PrintAttributes newAttributes, CancellationSignal cancellationSignal, LayoutResultCallback callback, Bundle extras) {
-            // Create a new PdfDocument with the requested page attributes
-            pdfDocument = new PrintedPdfDocument(EditorActivity.this, newAttributes);
-
-            // Respond to cancellation request
-            if (cancellationSignal.isCanceled() ) {
-                callback.onLayoutCancelled();
-                return;
-            }
-
-            // Compute the expected number of printed pages
-            int pages = computePageCount(newAttributes);
-
-            if (pages > 0) {
-                // Return print information to print framework
-                PrintDocumentInfo info = new PrintDocumentInfo
-                        .Builder("print_output.pdf")
-                        .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
-                        .setPageCount(pages)
-                        .build();
-                // Content layout reflow is complete
-                callback.onLayoutFinished(info, true);
-            } else {
-                // Otherwise report an error to the print framework
-                callback.onLayoutFailed("Page count calculation failed.");
-            }
-        }
-
-        @Override
-        public void onWrite(PageRange[] pages, ParcelFileDescriptor destination, CancellationSignal cancellationSignal, WriteResultCallback callback) {
-            // Iterate over each page of the document,
-            // check if it's in the output range.
-            int totalPages = pages.length;
-            /*
-            for (int i = 0; i < totalPages; i++) {
-                // Check to see if this page is in the output range.
-                if (containsPage(pageRanges, i)) {
-                    // If so, add it to writtenPagesArray. writtenPagesArray.size()
-                    // is used to compute the next output page index.
-                    writtenPagesArray.append(writtenPagesArray.size(), i);
-                    PdfDocument.Page page = pdfDocument.startPage(i);
-
-                    // check for cancellation
-                    if (cancellationSignal.isCanceled()) {
-                        callback.onWriteCancelled();
-                        pdfDocument.close();
-                        pdfDocument = null;
-                        return;
-                    }
-
-                    // Draw page content for printing
-                    drawPage(page);
-
-                    // Rendering is complete, so page can be finalized.
-                    pdfDocument.finishPage(page);
-                }
-            }
-
-            // Write PDF document to file
-            try {
-                pdfDocument.writeTo(new FileOutputStream(
-                        destination.getFileDescriptor()));
-            } catch (IOException e) {
-                callback.onWriteFailed(e.toString());
-                return;
-            } finally {
-                pdfDocument.close();
-                pdfDocument = null;
-            }
-            PageRange[] writtenPages = computeWrittenPages();
-            // Signal the print framework the document is complete
-            callback.onWriteFinished(writtenPages);
-            */
-        }
-
-        private int computePageCount(PrintAttributes printAttributes) {
-            int itemsPerPage = 4; // default item count for portrait mode
-
-            PrintAttributes.MediaSize pageSize = printAttributes.getMediaSize();
-            if (!pageSize.isPortrait()) {
-                // Six items per page in landscape orientation
-                itemsPerPage = 6;
-            }
-
-            // Determine number of print items
-            int printItemCount = 1;// getPrintItemCount();
-
-            return (int) Math.ceil(printItemCount / itemsPerPage);
-        }
     }
 
     // QueryTextListener

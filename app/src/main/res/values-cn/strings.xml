@@ -91,5 +91,6 @@
     <string name="preferenceAutoSaveCurrentFileDescription">关闭窗口时自动保存当前正在编辑的文件</string>
     <string name="Open_Other">打开其他...</string>
     <string name="Menu_Share">分享</string>
+    <string name="Menu_Print">打印</string>
 
 </resources>

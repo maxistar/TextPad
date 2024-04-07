@@ -90,5 +90,6 @@
     <string name="preferenceAutoSaveCurrentFileDescription">Enregistrer automatiquement le fichier en cours d\'édition lorsque la fenêtre est fermée</string>
     <string name="Open_Other">Ouvrir d\'autres...</string>
     <string name="Menu_Share">Partager...</string>
+    <string name="Menu_Print">Imprimer</string>
 
 </resources>

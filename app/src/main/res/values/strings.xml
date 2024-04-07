@@ -93,6 +93,7 @@
     <string name="Open_Other">Open other…</string>
 
 
-    <string name="Menu_Share">Share...</string>
+    <string name="Menu_Share">Share…</string>
+    <string name="Menu_Print">Print</string>
 
 </resources>
