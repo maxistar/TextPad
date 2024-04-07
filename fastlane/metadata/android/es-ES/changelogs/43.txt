@@ -1,0 +1,3 @@
+- se agregó el comando "compartir"
+- agregado el comando "imprimir"
+- permisos de archivos fijos para archivos recién creados

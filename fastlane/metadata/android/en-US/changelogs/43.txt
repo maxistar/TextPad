@@ -1,0 +1,3 @@
+- added "share" command
+- added "print" command
+- fixed file permissions for newly created files
