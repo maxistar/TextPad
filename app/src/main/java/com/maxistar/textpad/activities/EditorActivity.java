@@ -271,6 +271,8 @@ public class EditorActivity extends AppCompatActivity {
             finish();
             startActivity(intent);
         }
+
+        ServiceLocator.getInstance().getWakeLockService().acquireLock(this.getApplicationContext());
     }
 
     protected void onPause() {
@@ -280,6 +282,7 @@ public class EditorActivity extends AppCompatActivity {
 
         mText.removeTextChangedListener(textWatcher);
         selectionStart = mText.getSelectionStart();
+        ServiceLocator.getInstance().getWakeLockService().releaseLock();
         super.onPause();
     }
 
