@@ -92,4 +92,13 @@
     <string name="Open_Other">Diğer aç...</string>
     <string name="Menu_Share">Paylaş...</string>
     <string name="Menu_Print">Yazdır</string>
+
+    <string name="preferenceUseSystemColors">Renk teması</string>
+    <string name="preferenceUseSystemColorsDescription">Sistem temasını seçin</string>
+    <string name="preference_color_theme_auto">Oto</string>
+    <string name="preference_color_theme_light">Işık</string>
+    <string name="preference_color_theme_dark">Karanlık</string>
+    <string name="preference_color_theme_custom">Gelenek</string>
+
+
 </resources>

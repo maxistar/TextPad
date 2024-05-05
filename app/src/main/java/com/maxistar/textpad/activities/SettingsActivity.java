@@ -21,7 +21,7 @@ import android.preference.PreferenceManager;
 
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.ServiceLocator;
-import com.maxistar.textpad.SettingsService;
+import com.maxistar.textpad.service.SettingsService;
 import com.maxistar.textpad.TPStrings;
 import com.maxistar.textpad.service.AlternativeUrlsService;
 
@@ -72,7 +72,15 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
         encoding.setEntries(entries.toArray(entries_arr));
         encoding.setEntryValues(entry_values.toArray(entry_values_arr));
-        
+
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String value = sharedPreferences.getString(SettingsService.SETTING_COLOR_THEME_TYPE, SettingsService.COLOR_THEME_EMPTY);
+        Preference colorPreference = this.findPreference(SettingsService.SETTING_FONT_COLOR);
+        colorPreference.setEnabled(SettingsService.COLOR_THEME_CUSTOM.equals(value));
+        Preference backgroundColorPreference = this.findPreference(SettingsService.SETTING_BG_COLOR);
+        backgroundColorPreference.setEnabled(SettingsService.COLOR_THEME_CUSTOM.equals(value));
+
         initAlternativeLocations();
     }
 
@@ -147,6 +155,13 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             String lang = sharedPreferences.getString(SettingsService.SETTING_LANGUAGE, TPStrings.EN);
             setLocale(lang);
             SettingsService.setLanguageChangedFlag();
+        }
+        if (SettingsService.SETTING_COLOR_THEME_TYPE.equals(key)) {
+            String value = sharedPreferences.getString(SettingsService.SETTING_COLOR_THEME_TYPE, SettingsService.COLOR_THEME_EMPTY);
+            Preference colorPreference = this.findPreference(SettingsService.SETTING_FONT_COLOR);
+            colorPreference.setEnabled(SettingsService.COLOR_THEME_CUSTOM.equals(value));
+            Preference backgroundColorPreference = this.findPreference(SettingsService.SETTING_BG_COLOR);
+            backgroundColorPreference.setEnabled(SettingsService.COLOR_THEME_CUSTOM.equals(value));
         }
         settingsService.reloadSettings(this.getApplicationContext());
     }

@@ -92,4 +92,12 @@
     <string name="Menu_Share">Teilen...</string>
     <string name="Menu_Print">Drucken</string>
 
+    <string name="preferenceUseSystemColors">Farbthema</string>
+    <string name="preferenceUseSystemColorsDescription">Systemthema auswählen</string>
+    <string name="preference_color_theme_auto">Auto</string>
+    <string name="preference_color_theme_light">Licht</string>
+    <string name="preference_color_theme_dark">Dunkel</string>
+    <string name="preference_color_theme_custom">Brauch</string>
+
+
 </resources>

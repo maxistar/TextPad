@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,13 +16,12 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.ServiceLocator;
-import com.maxistar.textpad.SettingsService;
+import com.maxistar.textpad.service.SettingsService;
 
 import java.util.Locale;
 

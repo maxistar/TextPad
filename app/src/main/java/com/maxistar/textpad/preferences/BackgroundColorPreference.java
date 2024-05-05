@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.maxistar.textpad.R;
-import com.maxistar.textpad.SettingsService;
+import com.maxistar.textpad.service.SettingsService;
 
 public class BackgroundColorPreference extends ColorPreference {
     public BackgroundColorPreference(Context context, AttributeSet attrs) {

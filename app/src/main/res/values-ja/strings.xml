@@ -92,4 +92,12 @@
     <string name="Menu_Share">共有...</string>
     <string name="Menu_Print">印刷する</string>
 
+    <string name="preferenceUseSystemColors">カラーテーマ</string>
+    <string name="preferenceUseSystemColorsDescription">システムテーマの選択</string>
+    <string name="preference_color_theme_auto">自動</string>
+    <string name="preference_color_theme_light">ライト</string>
+    <string name="preference_color_theme_dark">暗い</string>
+    <string name="preference_color_theme_custom">カスタム</string>
+
+
 </resources>

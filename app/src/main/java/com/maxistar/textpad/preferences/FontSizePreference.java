@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.ServiceLocator;
-import com.maxistar.textpad.SettingsService;
+import com.maxistar.textpad.service.SettingsService;
 
 import androidx.annotation.NonNull;
 
