@@ -46,4 +46,18 @@
         <item>macos</item>
     </string-array>
 
+
+    <string-array name="color_theme_names" translatable="false">
+        <item>@string/preference_color_theme_auto</item>
+        <item>@string/preference_color_theme_light</item>
+        <item>@string/preference_color_theme_dark</item>
+        <item>@string/preference_color_theme_custom</item>
+    </string-array>
+
+    <string-array name="color_theme_values" translatable="false">
+        <item>auto</item>
+        <item>light</item>
+        <item>dark</item>
+        <item>custom</item>
+    </string-array>
 </resources>

@@ -92,4 +92,12 @@
     <string name="Menu_Share">Compartilhar...</string>
     <string name="Menu_Print">Imprimir</string>
 
+    <string name="preferenceUseSystemColors">Tema de cores</string>
+    <string name="preferenceUseSystemColorsDescription">Selecione o tema do sistema</string>
+    <string name="preference_color_theme_auto">Auto</string>
+    <string name="preference_color_theme_light">Luz</string>
+    <string name="preference_color_theme_dark">Escura</string>
+    <string name="preference_color_theme_custom">Personalizada</string>
+
+
 </resources>

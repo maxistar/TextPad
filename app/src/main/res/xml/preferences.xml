@@ -61,6 +61,17 @@
             android:summary="@string/Choose_a_font_size"
             android:defaultValue="Medium"
             android:dialogTitle="@string/Choose_a_font_size" />
+
+        <ListPreference
+            android:entries="@array/color_theme_names"
+            android:entryValues="@array/color_theme_values"
+            android:key="color_theme_type"
+            android:summary="@string/preferenceUseSystemColorsDescription"
+            android:title="@string/preferenceUseSystemColors"
+            android:dialogTitle="@string/Select"
+            android:defaultValue="auto"
+            />
+
         <com.maxistar.textpad.preferences.TextColorPreference
             android:key="fontcolor"
             android:title="@string/Font_Color"
@@ -71,7 +82,7 @@
             android:key="bgcolor"
             android:title="@string/Background_Color"
             android:summary="@string/Choose_a_background_color"
-            android:defaultValue="0xFFCCCCCC"
+            android:defaultValue="0xFFDDDDDD"
             android:dialogTitle="@string/Choose_a_background_color" />
         <com.maxistar.textpad.preferences.TextSelectionColorPreference
             android:key="text_selection_color"

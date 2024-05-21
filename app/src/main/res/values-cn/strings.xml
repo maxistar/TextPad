@@ -93,4 +93,12 @@
     <string name="Menu_Share">分享</string>
     <string name="Menu_Print">打印</string>
 
+    <string name="preferenceUseSystemColors">颜色主题</string>
+    <string name="preferenceUseSystemColorsDescription">选择系统主题</string>
+    <string name="preference_color_theme_auto">汽车</string>
+    <string name="preference_color_theme_light">光</string>
+    <string name="preference_color_theme_dark">黑暗的</string>
+    <string name="preference_color_theme_custom">风俗</string>
+
+
 </resources>

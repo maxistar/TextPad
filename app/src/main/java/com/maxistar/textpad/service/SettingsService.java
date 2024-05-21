@@ -1,17 +1,18 @@
-package com.maxistar.textpad;
+package com.maxistar.textpad.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.preference.PreferenceManager;
-
+import com.maxistar.textpad.TPStrings;
 import java.util.Locale;
 
 public class SettingsService {
     public static final String SETTING_FONT = "font";
     public static final String SETTING_LAST_FILENAME = "last_filename";
     public static final String SETTING_AUTO_SAVE_CURRENT_FILE = "auto_save_current_file";
+
+    public static final String SETTING_COLOR_THEME_TYPE = "color_theme_type";
     public static final String SETTING_OPEN_LAST_FILE = "open_last_file";
     public static final String SETTING_DELIMITERS = "delimeters";
     public static final String SETTING_FILE_ENCODING = "encoding";
@@ -27,16 +28,27 @@ public class SettingsService {
     public static final String SETTING_ALTERNATIVE_FILE_ACCESS = "use_alternative_file_access";
     public static final String SETTING_SHOW_LAST_EDITED_FILES = "show_last_edited_files";
 
+
     public static final String SETTING_MEDIUM = "Medium";
     public static final String SETTING_EXTRA_SMALL = "Extra Small";
     public static final String SETTING_SMALL = "Small";
     public static final String SETTING_LARGE = "Large";
     public static final String SETTING_HUGE = "Huge";
 
-    public static final int DEFAULT_BACKGROUND_COLOR = 0xFFCCCCCC;
+    public static final int DEFAULT_BACKGROUND_COLOR = 0xFFDDDDDD;
     public static final int DEFAULT_TEXT_COLOR = 0xFF000000;
     public static final int DEFAULT_SEARCH_SELECTION_COLOR = 0xFFFFFF00;
     public static final int DEFAULT_TEXT_SELECTION_COLOR = 0xFF83A5AE;
+
+    public static final String COLOR_THEME_EMPTY = "";
+
+    public static final String COLOR_THEME_AUTO = "auto";
+
+    public static final String COLOR_THEME_LIGHT = "light";
+
+    public static final String COLOR_THEME_DARK = "dark";
+
+    public static final String COLOR_THEME_CUSTOM = "custom";
 
     private boolean open_last_file = true;
     private boolean show_last_edited_files = true;
@@ -49,7 +61,11 @@ public class SettingsService {
     private String delimiters;
     private String font;
     private String font_size;
+
     private String language;
+
+    private String colorThemeType = COLOR_THEME_AUTO;
+
     private int bgcolor;
     private int fontcolor;
     private int searchSelectionColor;
@@ -59,11 +75,9 @@ public class SettingsService {
     private static boolean languageWasChanged = false;
 
 
-    SettingsService(Context context) {
-        loadSettings(context);
-    }
+    public SettingsService() {}
 
-    private void loadSettings(Context context) {
+    public void loadSettings(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         open_last_file = sharedPref.getBoolean(SETTING_OPEN_LAST_FILE, false);
         show_last_edited_files = sharedPref.getBoolean(SETTING_SHOW_LAST_EDITED_FILES, true);
@@ -80,6 +94,7 @@ public class SettingsService {
         textSelectionColor = sharedPref.getInt(SETTING_TEXT_SELECTION_COLOR, DEFAULT_TEXT_SELECTION_COLOR);
         language = sharedPref.getString(SETTING_LANGUAGE, TPStrings.EMPTY);
         auto_save_current_file = sharedPref.getBoolean(SETTING_AUTO_SAVE_CURRENT_FILE, false);
+        colorThemeType = sharedPref.getString(SETTING_COLOR_THEME_TYPE, COLOR_THEME_EMPTY);
     }
 
     public void reloadSettings(Context context) {
@@ -170,7 +185,6 @@ public class SettingsService {
         legacy_file_picker = value;
     }
 
-    //setters
     public void setFontSize(String font_size, Context context) {
         this.setSettingValue(SETTING_FONT_SIZE, font_size, context);
         this.font_size = font_size;
@@ -231,5 +245,20 @@ public class SettingsService {
 
     public boolean isAlternativeFileAccess() {
         return alternative_file_access;
+    }
+
+    public boolean isThemeForced() {
+        return COLOR_THEME_DARK.equals(colorThemeType) || COLOR_THEME_LIGHT.equals(colorThemeType);
+    }
+
+    public boolean isCustomTheme() {
+        if (fontcolor != DEFAULT_TEXT_COLOR || bgcolor != DEFAULT_BACKGROUND_COLOR) {
+            return true;
+        }
+        return COLOR_THEME_CUSTOM.equals(colorThemeType);
+    }
+
+    public String getColorThemeType() {
+        return this.colorThemeType;
     }
 }
