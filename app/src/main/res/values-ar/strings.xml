@@ -92,4 +92,12 @@
     <string name="Menu_Share">يشارك...</string>
     <string name="Menu_Print">مطبعة</string>
 
+    <string name="preferenceUseSystemColors">موضوع اللون</string>
+    <string name="preferenceUseSystemColorsDescription">حدد سمة النظام</string>
+    <string name="preference_color_theme_auto">آلي</string>
+    <string name="preference_color_theme_light">ضوء</string>
+    <string name="preference_color_theme_dark">مظلم</string>
+    <string name="preference_color_theme_custom">مخصص</string>
+
+
 </resources>

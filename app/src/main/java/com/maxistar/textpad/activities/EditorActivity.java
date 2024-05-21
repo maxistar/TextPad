@@ -51,10 +51,11 @@ import com.maxistar.textpad.FileDialog;
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.SelectionMode;
 import com.maxistar.textpad.ServiceLocator;
-import com.maxistar.textpad.SettingsService;
+import com.maxistar.textpad.service.SettingsService;
 import com.maxistar.textpad.TPStrings;
 import com.maxistar.textpad.service.AlternativeUrlsService;
 import com.maxistar.textpad.service.RecentFilesService;
+import com.maxistar.textpad.service.ThemeService;
 import com.maxistar.textpad.utils.EditTextUndoRedo;
 import com.maxistar.textpad.utils.FileNameHelper;
 import com.maxistar.textpad.utils.System;
@@ -387,7 +388,12 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     void applyPreferences() {
+        applyFontFace();
+        applyFontSize();
+        applyColors();
+    }
 
+    private void applyFontFace() {
         mText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE |
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
                 InputType.TYPE_TEXT_VARIATION_NORMAL |
@@ -401,30 +407,40 @@ public class EditorActivity extends AppCompatActivity {
             mText.setTypeface(Typeface.SANS_SERIF);
         else
             mText.setTypeface(Typeface.MONOSPACE);
+    }
 
+    private void applyFontSize() {
         String fontsize = settingsService.getFontSize();
 
         switch (fontsize) {
             case (SettingsService.SETTING_EXTRA_SMALL):
-            mText.setTextSize(12.0f);
-            break;
+                mText.setTextSize(12.0f);
+                break;
             case (SettingsService.SETTING_SMALL):
-            mText.setTextSize(16.0f);
-            break;
+                mText.setTextSize(16.0f);
+                break;
             case (SettingsService.SETTING_LARGE):
-            mText.setTextSize(24.0f);
-            break;
+                mText.setTextSize(24.0f);
+                break;
             case (SettingsService.SETTING_HUGE):
-            mText.setTextSize(28.0f);
-            break;
+                mText.setTextSize(28.0f);
+                break;
             case (SettingsService.SETTING_MEDIUM):
             default:
-            mText.setTextSize(20.0f);
+                mText.setTextSize(20.0f);
         }
+    }
 
-        scrollView.setBackgroundColor(settingsService.getBgColor());
-        mText.setTextColor(settingsService.getFontColor());
+    private void applyColors() {
         mText.setHighlightColor(settingsService.getTextSelectionColor());
+        if (settingsService.isThemeForced()) {
+            ThemeService themeService = ServiceLocator.getInstance().getThemeService(this);
+            themeService.applyColorTheme(this);
+        }
+        if (settingsService.isCustomTheme()) {
+            scrollView.setBackgroundColor(settingsService.getBgColor());
+            mText.setTextColor(settingsService.getFontColor());
+        }
     }
 
     private QueryTextListener getQueryTextListener() {

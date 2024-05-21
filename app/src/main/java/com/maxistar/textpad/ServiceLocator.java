@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.maxistar.textpad.service.AlternativeUrlsService;
 import com.maxistar.textpad.service.RecentFilesService;
+import com.maxistar.textpad.service.SettingsService;
+import com.maxistar.textpad.service.ThemeService;
 
 public class ServiceLocator {
     private static ServiceLocator instance = null;
@@ -16,6 +18,8 @@ public class ServiceLocator {
 
     private AlternativeUrlsService alternativeUrlsService;
 
+    private ThemeService themeService;
+
     public static ServiceLocator getInstance() {
         if (instance == null) {
             synchronized(ServiceLocator.class) {
@@ -27,7 +31,8 @@ public class ServiceLocator {
 
     public SettingsService getSettingsService(Context context) {
         if (settingsService == null) {
-            settingsService = new SettingsService(context);
+            settingsService = new SettingsService();
+            settingsService.loadSettings(context);
         }
         return settingsService;
     }
@@ -46,4 +51,10 @@ public class ServiceLocator {
         return alternativeUrlsService;
     }
 
+    public ThemeService getThemeService(Context context) {
+        if (themeService == null) {
+            themeService = new ThemeService(getSettingsService(context));
+        }
+        return themeService;
+    }
 }

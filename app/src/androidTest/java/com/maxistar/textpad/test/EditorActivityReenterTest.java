@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.maxistar.textpad.ServiceLocator;
-import com.maxistar.textpad.SettingsService;
+import com.maxistar.textpad.service.SettingsService;
 import com.maxistar.textpad.activities.EditorActivity;
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.test.assertions.TextViewAssertions;

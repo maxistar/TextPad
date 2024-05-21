@@ -91,4 +91,13 @@
     <string name="Open_Other">Otwórz inne...</string>
     <string name="Menu_Share">Udostępnij...</string>
     <string name="Menu_Print">Wydrukować</string>
+
+    <string name="preferenceUseSystemColors">Motyw koloru</string>
+    <string name="preferenceUseSystemColorsDescription">Wybierz motyw systemu</string>
+    <string name="preference_color_theme_auto">Auto</string>
+    <string name="preference_color_theme_light">Światło</string>
+    <string name="preference_color_theme_dark">Ciemny</string>
+    <string name="preference_color_theme_custom">Zwyczaj</string>
+
+
 </resources>
