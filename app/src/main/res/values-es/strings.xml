@@ -99,5 +99,7 @@
     <string name="preference_color_theme_dark">Oscura</string>
     <string name="preference_color_theme_custom">Costumbre</string>
 
+    <string name="preferenceUseWakeLockTitle">Usar WakeLock</string>
+    <string name="preferenceUseWakeLockDescription">Evitar que el dispositivo entre en modo de suspensión</string>
 
 </resources>

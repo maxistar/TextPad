@@ -99,5 +99,8 @@
     <string name="preference_color_theme_dark">Dunkel</string>
     <string name="preference_color_theme_custom">Brauch</string>
 
+    <string name="preferenceUseWakeLockTitle">Verwenden WakeLock</string>
+    <string name="preferenceUseWakeLockDescription">Verhindern, dass das Gerät in den Ruhemodus wechselt</string>
+
 
 </resources>

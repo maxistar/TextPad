@@ -100,5 +100,8 @@
     <string name="preference_color_theme_dark">黑暗的</string>
     <string name="preference_color_theme_custom">风俗</string>
 
+    <string name="preferenceUseWakeLockTitle">使用唤醒锁</string>
+    <string name="preferenceUseWakeLockDescription">防止设备进入睡眠模式</string>
+
 
 </resources>

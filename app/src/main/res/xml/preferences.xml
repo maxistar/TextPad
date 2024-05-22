@@ -20,6 +20,12 @@
             android:summary="@string/preferenceAutoSaveCurrentFileDescription"
             android:defaultValue="false" />
 
+        <CheckBoxPreference
+            android:key="use_wake_lock"
+            android:title="@string/preferenceUseWakeLockTitle"
+            android:summary="@string/preferenceUseWakeLockDescription"
+            android:defaultValue="false" />
+
         <ListPreference
             android:key="encoding"
             android:summary="@string/Click_to_change_encoding"
