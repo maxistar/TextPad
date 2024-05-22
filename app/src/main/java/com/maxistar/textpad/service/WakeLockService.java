@@ -36,8 +36,5 @@ public class WakeLockService {
         } catch (Exception e) {
             Log.e("ERROR", e.toString());
         }
-
     }
-
-
 }

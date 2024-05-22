@@ -102,6 +102,8 @@
     <string name="preference_color_theme_light">Light</string>
     <string name="preference_color_theme_dark">Dark</string>
     <string name="preference_color_theme_custom">Custom</string>
+    <string name="preferenceUseWakeLockTitle">Use WakeLock</string>
+    <string name="preferenceUseWakeLockDescription">Prevent device going to sleep mode</string>
 
 
 </resources>

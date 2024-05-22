@@ -99,5 +99,7 @@
     <string name="preference_color_theme_dark">Ciemny</string>
     <string name="preference_color_theme_custom">Zwyczaj</string>
 
+    <string name="preferenceUseWakeLockTitle">Użyj funkcji WakeLock</string>
+    <string name="preferenceUseWakeLockDescription">Zapobiegaj przejściu urządzenia w tryb uśpienia</string>
 
 </resources>

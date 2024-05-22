@@ -100,5 +100,7 @@
     <string name="preference_color_theme_dark">Karanlık</string>
     <string name="preference_color_theme_custom">Gelenek</string>
 
+    <string name="preferenceUseWakeLockTitle">WakeLock\'u kullanın</string>
+    <string name="preferenceUseWakeLockDescription">Cihazın uyku moduna geçmesini önleyin</string>
 
 </resources>
