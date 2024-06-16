@@ -1,0 +1,1 @@
+- Se agregó un escape a la función de búsqueda.
