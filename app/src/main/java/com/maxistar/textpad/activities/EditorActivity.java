@@ -88,7 +88,7 @@ public class EditorActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "TextEditor";
 
-    private QueryTextListener queryTextListener;
+
 
     String [] mimeTypes = {
             "*/*",
@@ -122,6 +122,8 @@ public class EditorActivity extends AppCompatActivity {
     RecentFilesService recentFilesService;
 
     AlternativeUrlsService alternativeUrlsService;
+
+    private QueryTextListener queryTextListener;
 
     private MenuItem searchItem;
 
@@ -1286,7 +1288,8 @@ public class EditorActivity extends AppCompatActivity {
 
             // Check pattern
             try {
-                Pattern pattern = Pattern.compile(newText, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+                String escapedTextToFind = Pattern.quote(newText);
+                Pattern pattern = Pattern.compile(escapedTextToFind, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
                 matcher = pattern.matcher(editable);
             } catch (Exception e) {
                 return false;
