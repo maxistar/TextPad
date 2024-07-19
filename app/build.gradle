@@ -9,12 +9,12 @@ def signingKeyPassword = properties.getProperty('signing_key_password')
 
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "com.maxistar.textpad"
         minSdkVersion 16
-        targetSdkVersion 33
+        targetSdkVersion 34
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -47,5 +47,6 @@ android {
         androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
         androidTestImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
     }
+    namespace 'com.maxistar.textpad'
 
 }
