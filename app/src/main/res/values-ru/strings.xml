@@ -100,4 +100,22 @@
     <string name="preference_color_theme_custom">Пользовательская</string>
 
 
+    <string name="Dictate">Dictate</string>
+
+    <string name="tts.waiting_the_command">ожидаю команду</string>
+    <string name="tts.ready_to_dictate">готов к диктовке</string>
+    <string name="tts.dictate">диктовать</string>
+    <string name="tts.done">готово</string>
+    <string name="tts.read_last_sentence">прочитать последнее предложение</string>
+    <string name="tts.go_to_start">перейти в начало</string>
+    <string name="tts.go_to_end">перейти в конец</string>
+    <string name="tts.do_not_understand">не понимаю</string>
+    <string name="tts.read_current_sentence">прочитать текущее предложение</string>
+    <string name="tts.proceed">продолжай</string>
+    <string name="tts.further">дальше</string>
+    <string name="tts.good_bye">пока</string>
+    <string name="tts.unknown_command">неизвестная команда</string>
+    <string name="tts.repeat">повтори</string>
+    <string name="tts.select_sentence">выделите предложение</string>
+    <string name="tts.sentence_selected">предложение выделено</string>
 </resources>
