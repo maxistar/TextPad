@@ -26,6 +26,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintJob;
@@ -1081,6 +1082,28 @@ public class EditorActivity extends AppCompatActivity {
     protected void openNamedFile(final Uri uri) {
         try {
             ContentResolver contentResolver = getContentResolver();
+
+            boolean isReadOnly = false;
+
+            try {
+                // Try opening the file with write mode
+                ParcelFileDescriptor pfdWrite = getContentResolver().openFileDescriptor(uri, "rw");
+                if (pfdWrite == null) {
+                    isReadOnly = true;
+                } else {
+                    pfdWrite.close(); // Close it if opened successfully
+                }
+            } catch (Exception e) {
+                isReadOnly = true;
+            }
+
+            if (isReadOnly) {
+                // Inform the user that the file is read-only
+                Toast.makeText(this, "The file is opened for reading only. Please open it for writing or save it with a different name.", Toast.LENGTH_LONG).show();
+            } else {
+                // The file is writable
+            }
+
             InputStream inputStream = contentResolver.openInputStream(uri);
             if (inputStream == null) {
                 throw new IOException();
