@@ -30,6 +30,7 @@ import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintJob;
 import android.print.PrintManager;
+import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spanned;
@@ -41,6 +42,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.InputMethodSubtype;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
@@ -50,6 +54,7 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.maxistar.textpad.FileDialog;
+import com.maxistar.textpad.LanguageDetailsChecker;
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.SelectionMode;
 import com.maxistar.textpad.ServiceLocator;
@@ -274,6 +279,32 @@ public class EditorActivity extends AppCompatActivity {
             finish();
             startActivity(intent);
         }
+
+        // InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        // InputMethodSubtype ims = imm.getCurrentInputMethodSubtype();
+        // String localeString = ims.getLocale();
+        // Locale locale = new Locale(localeString);
+        // String currentLanguage = locale.getDisplayLanguage();
+        // showToast(currentLanguage);
+
+
+        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //List<InputMethodInfo> ims = imm.getEnabledInputMethodList();
+//
+        //for (InputMethodInfo method : ims) {
+        //    List<InputMethodSubtype> submethods = imm.getEnabledInputMethodSubtypeList(method, true);
+        //    for (InputMethodSubtype submethod : submethods) {
+        //        //if (submethod.getMode().equals("keyboard")) {
+        //            String currentLocale = submethod.getLocale();
+        //            Log.i("dfdfdf", "Available input method locale: " + currentLocale);
+        //        //}
+        //    }
+        //}
+
+        Intent detailsIntent =  new Intent(RecognizerIntent.ACTION_GET_LANGUAGE_DETAILS);
+        sendOrderedBroadcast(
+                detailsIntent, null, new LanguageDetailsChecker(), null, Activity.RESULT_OK, null, null);
+
     }
 
     protected void onPause() {
