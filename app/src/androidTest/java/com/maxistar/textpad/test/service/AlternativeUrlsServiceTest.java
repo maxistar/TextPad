@@ -5,8 +5,9 @@ import android.net.Uri;
 
 import com.maxistar.textpad.service.AlternativeUrlsService;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 public class AlternativeUrlsServiceTest {
     static final String ALTERNATIVE_URLS_FILENAME = "alternative_urls";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         deleteAlternativeUrls();
     }

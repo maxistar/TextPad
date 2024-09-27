@@ -13,16 +13,15 @@ import com.maxistar.textpad.activities.EditorActivity;
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.test.assertions.TextViewAssertions;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.GrantPermissionRule;
 
@@ -48,11 +47,11 @@ public class EditorActivityReenterTest {
     @Rule
     public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-    @Rule
-    public IntentsTestRule<EditorActivity> intentsTestRule =
-            new IntentsTestRule<>(EditorActivity.class);
+    // @Rule
+    // public IntentsTestRule<EditorActivity> intentsTestRule =
+    //         new IntentsTestRule<>(EditorActivity.class);
 
-    @Before
+    @BeforeEach
     public void launchActivity() {
         setLegacyFileFinder();
 
