@@ -62,11 +62,23 @@ android {
         androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
         androidTestImplementation 'androidx.test.espresso:espresso-intents:3.6.1'
         androidTestImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-        */
+
         androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
         androidTestImplementation 'androidx.test:runner:1.6.2'
         androidTestImplementation 'androidx.test:rules:1.6.1'
         androidTestImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+         */
+
+        androidTestImplementation "androidx.test:core:" + rootProject.coreVersion;
+        androidTestImplementation "androidx.test.ext:junit:" + rootProject.extJUnitVersion;
+        androidTestImplementation "androidx.test:runner:" + rootProject.runnerVersion;
+        androidTestImplementation "androidx.test:rules:" + rootProject.rulesVersion;
+        androidTestImplementation "androidx.test.espresso:espresso-core:" + rootProject.espressoVersion;
+        androidTestImplementation "androidx.test.espresso:espresso-intents:" + rootProject.espressoVersion;
+        androidTestImplementation "androidx.test.ext:truth:" + rootProject.extTruthVersion;
+        androidTestImplementation "androidx.test.ext:junit:" + rootProject.extJUnitVersion;
+        androidTestImplementation "org.robolectric:annotations:" + rootProject.robolectricVersion;
+
 
     }
 }

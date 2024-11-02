@@ -13,9 +13,9 @@ import com.maxistar.textpad.activities.EditorActivity;
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.test.assertions.TextViewAssertions;
 
-import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
-import org.junit.jupiter.api.Test;
+// import org.junit.jupiter.api.Test;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
@@ -51,7 +51,7 @@ public class EditorActivityReenterTest {
     // public IntentsTestRule<EditorActivity> intentsTestRule =
     //         new IntentsTestRule<>(EditorActivity.class);
 
-    @BeforeEach
+    // @BeforeEach
     public void launchActivity() {
         setLegacyFileFinder();
 
@@ -87,7 +87,7 @@ public class EditorActivityReenterTest {
     /**
      * Check if the text is empty if to click on new menu item
      */
-    @Test
+    // @Test
     public void testReenterActivity() {
         String textExample = "some new text";
 

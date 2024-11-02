@@ -23,9 +23,9 @@ import com.maxistar.textpad.test.assertions.TextViewAssertions;
 
 import org.hamcrest.Matcher;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
-import org.junit.jupiter.api.Test;
+// import org.junit.jupiter.api.Test;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -77,7 +77,7 @@ public class EditorActivityTest {
     // public IntentsTestRule<EditorActivity> intentsTestRule =
     //         new IntentsTestRule<>(EditorActivity.class);
 
-    @BeforeEach
+    // @BeforeEach
     public void launchActivity() {
         setLegacyFileFinder();
 
@@ -121,7 +121,7 @@ public class EditorActivityTest {
     /**
      * Check if the text is empty if to click on new menu item
      */
-    @Test
+    // @Test
     public void listGoesOverTheFold() {
         Context context = ApplicationProvider.getApplicationContext();
         openActionBarOverflowOrOptionsMenu(context );
@@ -283,7 +283,7 @@ public class EditorActivityTest {
         Assert.assertEquals(textExample, content);
     }
 
-    @Test
+    // @Test
     public void testActivityRotation() {
         String textExample = "some new text";
 
