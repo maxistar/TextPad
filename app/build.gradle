@@ -21,10 +21,15 @@ android {
 
     signingConfigs {
         release {
-            storeFile file(System.getenv("ANDROID_KEYSTORE"))
-            storePassword System.getenv("KEYSTORE_PASSWORD")
-            keyAlias System.getenv("KEY_ALIAS")
-            keyPassword System.getenv("KEY_PASSWORD")
+            def keystoreFile = System.getenv("ANDROID_KEYSTORE")
+            if (keystoreFile) {
+                storeFile file(keystoreFile)
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+            } else {
+                println("Warning: ANDROID_KEYSTORE is not set. Skipping signing configuration.")
+            }
         }
     }
 
