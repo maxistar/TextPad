@@ -1,0 +1,38 @@
+name: Android Build & Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up ruby env
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.2
+          bundler-cache: true
+
+      - name: Setup Properties
+        run: cp fastlane/Appfile.deploy Appfile
+
+      - name: Decode Service Account Key JSON File
+        run: echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}" | base64 -d > service_account_key.json
+
+      - name: Decode Keystore File
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android_keystore.jks
+
+      - name: Run tests
+        run: bundle exec fastlane android test
+        env:
+          ANDROID_KEYSTORE: "../android_keystore.jks"
+
+      - name: Build & deploy Android release
+        run: bundle exec fastlane android deploy
+        env:
+          ANDROID_KEYSTORE: "../android_keystore.jks"
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS}}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
