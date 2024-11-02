@@ -22,3 +22,5 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew test
+      env:
+        ANDROID_KEYSTORE: "../android_keystore.jks"
