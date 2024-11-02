@@ -647,8 +647,7 @@ public class EditorActivity extends AppCompatActivity {
              });
 
              // Generate an HTML document on the fly:
-             String htmlDocument = "<html><body><h1>" + this.getEditingTitle() +
-                     "</h1><pre>" +
+             String htmlDocument = "<html><body><pre style='padding:1.5cm 1cm 1.5cm 2cm'>" +
                      mText.getText() +
                      "</pre></body></html>";
              webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
