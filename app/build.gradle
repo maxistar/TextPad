@@ -1,13 +1,5 @@
 apply plugin: 'com.android.application'
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def signingKeystorePassword = properties.getProperty('signing_keystore_password')
-def signingKeystoreFile = properties.getProperty('signing_keystore_file')
-def signingKeyAlias = properties.getProperty('signing_key_alias')
-def signingKeyPassword = properties.getProperty('signing_key_password')
-
-
 android {
     defaultConfig {
         applicationId "com.maxistar.textpad"
@@ -29,10 +21,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("${signingKeystoreFile}")
-            storePassword "${signingKeystorePassword}"
-            keyAlias "${signingKeyAlias}"
-            keyPassword "${signingKeyPassword}"
+            storeFile file(System.getenv("ANDROID_KEYSTORE"))
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
         }
     }
 
@@ -54,20 +46,6 @@ android {
 
 
         testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-
-        /*
-        androidTestImplementation 'androidx.test:core:1.6.1'
-        androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-        androidTestImplementation 'androidx.test:runner:1.6.2'
-        androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-        androidTestImplementation 'androidx.test.espresso:espresso-intents:3.6.1'
-        androidTestImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-
-        androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-        androidTestImplementation 'androidx.test:runner:1.6.2'
-        androidTestImplementation 'androidx.test:rules:1.6.1'
-        androidTestImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-         */
 
         androidTestImplementation "androidx.test:core:" + rootProject.coreVersion;
         androidTestImplementation "androidx.test.ext:junit:" + rootProject.extJUnitVersion;
