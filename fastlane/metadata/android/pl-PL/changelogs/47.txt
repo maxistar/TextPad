@@ -1,0 +1,1 @@
+- wycofano aktualizację zależności, aby naprawić problemy z edycją dużych plików
