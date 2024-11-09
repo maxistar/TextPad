@@ -1,0 +1,1 @@
+- rolled back dependency update to fix problems with editing large files
