@@ -1,0 +1,1 @@
+- Actualización de dependencia revertida para solucionar problemas con la edición de archivos grandes.
