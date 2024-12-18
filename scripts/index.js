@@ -1,11 +1,11 @@
-const {remote} = require('webdriverio');
+const { remote } = require('webdriverio');
 
 const capabilities = {
   platformName: 'Android',
   'appium:automationName': 'UiAutomator2',
-  //'appium:deviceName': 'Android',
-  'appium:appPackage': 'com.android.settings',
-  'appium:appActivity': '.Settings',
+  'appium:deviceName': 'emulator-5554',
+  'appium:appPackage': 'com.maxistar.textpad',
+  'appium:appActivity': '.activities.EditorActivity',
 };
 
 const wdOpts = {
@@ -16,14 +16,19 @@ const wdOpts = {
 };
 
 async function runTest() {
-  const driver = await remote(wdOpts);
-  try {
-    const batteryItem = await driver.$('//*[@text="Battery"]');
-    await batteryItem.click();
-  } finally {
-    await driver.pause(1000);
-    await driver.deleteSession();
-  }
+const driver = await remote(wdOpts);
+const el1 = await driver.$("id:com.maxistar.textpad:id/editText1");
+await el1.addValue("some text");
+const el2 = await driver.$("accessibility id:More options");
+await el2.click();
+const el3 = await driver.$("xpath://android.widget.TextView[@resource-id=\"com.maxistar.textpad:id/title\" and @text=\"Save\"]");
+await el3.click();
+const el4 = await driver.$("class name:android.widget.EditText");
+await el4.clearValue();
+await el4.addValue("somefilename.txt");
+const el5 = await driver.$("id:android:id/button1");
+await el5.click();
+
 }
 
 runTest().catch(console.error);
