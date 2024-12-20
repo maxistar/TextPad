@@ -34,6 +34,8 @@ In order to compile the application locally you will need to install [Android St
 Follow the documentation of how to open and compile your [first android application](https://developer.android.com/training/basics/firstapp).
 Once your setup is done, opening and compiling the existing project should not cause any difficulties.
 
+in pipeline an application uses [maxistar/android](https://github.com/maxistar/android-docker-image) docker image
+
 ### How to run sniffer
 
 ./gradlew lint

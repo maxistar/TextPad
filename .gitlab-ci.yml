@@ -1,4 +1,4 @@
-image: maxistar/android:latest
+image: maxistar/android:gradle_v8.10.1
 
 before_script:
   - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
