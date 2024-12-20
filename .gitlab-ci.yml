@@ -1,6 +1,7 @@
 image: maxistar/android:gradle_v8.10.1
 
 before_script:
+  - free -m
   - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
   - eval $(ssh-agent -s)
   - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
