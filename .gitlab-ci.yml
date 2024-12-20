@@ -1,4 +1,4 @@
-image: maxistar/android:gradle_v8.10.1
+image: gradle:8.10.1
 
 before_script:
   - free -m
