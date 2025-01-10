@@ -190,7 +190,7 @@ GEM
       unf_ext
     unf_ext (0.0.8)
     unicode-display_width (1.8.0)
-    webrick (1.7.0)
+    webrick (1.9.1)
     word_wrap (1.0.0)
     xcodeproj (1.21.0)
       CFPropertyList (>= 2.3.3, < 4.0)
@@ -211,6 +211,7 @@ PLATFORMS
 DEPENDENCIES
   fastlane
   jmespath (>= 1.6.1)
+  webrick (>= 1.8.2)
 
 BUNDLED WITH
    2.2.29
