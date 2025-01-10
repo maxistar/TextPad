@@ -225,7 +225,8 @@ public class EditorActivity extends AppCompatActivity {
         int permission = activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         String[] PERMISSIONS_STORAGE = {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.WAKE_LOCK,
         };
 
         if (permission != PackageManager.PERMISSION_GRANTED) {

@@ -1,6 +1,5 @@
 package com.maxistar.textpad.service;
 
-import android.app.KeyguardManager;
 import android.content.Context;
 import android.os.PowerManager;
 import android.util.Log;
@@ -17,11 +16,6 @@ public class WakeLockService {
 
         try {
             fullWakeLock.acquire(10 * 60 * 1000L /*10 minutes*/);
-
-            KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-            KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("TAG");
-            keyguardLock.disableKeyguard();
-
         } catch (Exception e) {
             Log.e("ERROR", e.toString());
         }
