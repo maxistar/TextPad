@@ -144,7 +144,7 @@ GEM
     http-cookie (1.0.4)
       domain_name (~> 0.5)
     httpclient (2.8.3)
-    jmespath (1.4.0)
+    jmespath (1.6.2)
     json (2.6.1)
     jwt (2.3.0)
     memoist (0.16.2)
@@ -205,10 +205,12 @@ GEM
       xcpretty (~> 0.2, >= 0.0.7)
 
 PLATFORMS
+  arm64-darwin-23
   x86_64-linux
 
 DEPENDENCIES
   fastlane
+  jmespath (>= 1.6.1)
 
 BUNDLED WITH
    2.2.29
