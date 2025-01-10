@@ -99,5 +99,8 @@
     <string name="preference_color_theme_dark">مظلم</string>
     <string name="preference_color_theme_custom">مخصص</string>
 
+    <string name="preferenceUseWakeLockTitle">استخدم ويكلوك</string>
+    <string name="preferenceUseWakeLockDescription">منع الجهاز من الدخول في وضع السكون</string>
+
 
 </resources>

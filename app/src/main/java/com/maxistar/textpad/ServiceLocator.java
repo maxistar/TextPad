@@ -6,6 +6,7 @@ import com.maxistar.textpad.service.AlternativeUrlsService;
 import com.maxistar.textpad.service.RecentFilesService;
 import com.maxistar.textpad.service.SettingsService;
 import com.maxistar.textpad.service.ThemeService;
+import com.maxistar.textpad.service.WakeLockService;
 
 public class ServiceLocator {
     private static ServiceLocator instance = null;
@@ -19,6 +20,8 @@ public class ServiceLocator {
     private AlternativeUrlsService alternativeUrlsService;
 
     private ThemeService themeService;
+
+    private WakeLockService wakeLockService = null;
 
     public static ServiceLocator getInstance() {
         if (instance == null) {
@@ -57,4 +60,13 @@ public class ServiceLocator {
         }
         return themeService;
     }
+
+    public WakeLockService getWakeLockService() {
+        if (wakeLockService == null) {
+            wakeLockService = new WakeLockService();
+        }
+        return wakeLockService;
+    }
+
+
 }

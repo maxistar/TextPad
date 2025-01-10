@@ -99,5 +99,7 @@
     <string name="preference_color_theme_dark">暗い</string>
     <string name="preference_color_theme_custom">カスタム</string>
 
+    <string name="preferenceUseWakeLockTitle">ウェイクロックを使用する</string>
+    <string name="preferenceUseWakeLockDescription">デバイスがスリープモードになるのを防ぐ</string>
 
 </resources>
