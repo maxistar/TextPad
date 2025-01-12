@@ -1,0 +1,2 @@
+- ulepszone tłumaczenia
+- zapobieganie przechodzeniu w tryb uśpienia, gdy edytor jest aktywny
