@@ -1,1 +1,1 @@
-Prosty edytor tekstu
+Simple Text Editor

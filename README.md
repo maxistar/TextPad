@@ -12,9 +12,7 @@ the reason of it either the author did not have enough time to implement it or n
      alt="Get it on Google Play"
      height="80">](https://play.google.com/store/apps/details?id=com.maxistar.textpad)
 
-This editor can be useful for editing of small texts, write down small notes etc...
-
-The application supports only plain text files.
+This editor can be useful for editing of small texts, write down small notes etc...  At the moment application supports only plain text files.
 
 The code is open so anyone can review code, send pull requests, new features, translations and so on. 
 
@@ -33,6 +31,8 @@ https://github.com/maxistar/TextPad/issues
 In order to compile the application locally you will need to install [Android Studio](https://developer.android.com/studio)
 Follow the documentation of how to open and compile your [first android application](https://developer.android.com/training/basics/firstapp).
 Once your setup is done, opening and compiling the existing project should not cause any difficulties.
+
+in pipeline an application uses [maxistar/android](https://github.com/maxistar/android-docker-image) docker image
 
 ### How to run sniffer
 

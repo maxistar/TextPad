@@ -1,0 +1,2 @@
+- traducciones mejoradas
+- evitar pasar al modo de suspensión cuando el editor está activo

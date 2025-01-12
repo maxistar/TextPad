@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Prosty edytor tekstu</string>
-    <string name="app_name_settings">Prosty edytor tekstu - Ustawienia</string>
+    <string name="app_name">Simple Text Editor</string>
+    <string name="app_name_settings">Simple Text Editor - Ustawienia</string>
     <string name="Open">Otwórz</string>
     <string name="Open_Recent">Otwórz ostatni</string>
     <string name="New">Nowy</string>
@@ -99,5 +99,7 @@
     <string name="preference_color_theme_dark">Ciemny</string>
     <string name="preference_color_theme_custom">Zwyczaj</string>
 
+    <string name="preferenceUseWakeLockTitle">Użyj funkcji WakeLock</string>
+    <string name="preferenceUseWakeLockDescription">Zapobiegaj przejściu urządzenia w tryb uśpienia</string>
 
 </resources>

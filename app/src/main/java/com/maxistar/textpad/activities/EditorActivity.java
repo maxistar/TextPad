@@ -225,7 +225,8 @@ public class EditorActivity extends AppCompatActivity {
         int permission = activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         String[] PERMISSIONS_STORAGE = {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.WAKE_LOCK,
         };
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -271,6 +272,10 @@ public class EditorActivity extends AppCompatActivity {
             finish();
             startActivity(intent);
         }
+
+        if (settingsService.useWakeLock()) {
+            ServiceLocator.getInstance().getWakeLockService().acquireLock(this.getApplicationContext());
+        }
     }
 
     protected void onPause() {
@@ -280,6 +285,9 @@ public class EditorActivity extends AppCompatActivity {
 
         mText.removeTextChangedListener(textWatcher);
         selectionStart = mText.getSelectionStart();
+        if (settingsService.useWakeLock()) {
+            ServiceLocator.getInstance().getWakeLockService().releaseLock();
+        }
         super.onPause();
     }
 

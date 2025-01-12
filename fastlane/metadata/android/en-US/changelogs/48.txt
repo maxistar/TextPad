@@ -1,0 +1,2 @@
+- improved translations
+- prevent going to sleep mode when editor is active

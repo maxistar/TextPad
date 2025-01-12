@@ -99,5 +99,7 @@
     <string name="preference_color_theme_dark">Escura</string>
     <string name="preference_color_theme_custom">Personalizada</string>
 
+    <string name="preferenceUseWakeLockTitle">Usar WakeLock</string>
+    <string name="preferenceUseWakeLockDescription">Impedir que o dispositivo entre no modo de suspensão</string>
 
 </resources>

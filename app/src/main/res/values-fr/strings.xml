@@ -99,5 +99,7 @@
     <string name="preference_color_theme_dark">Sombre</string>
     <string name="preference_color_theme_custom">Coutume</string>
 
+    <string name="preferenceUseWakeLockTitle">Utiliser WakeLock</string>
+    <string name="preferenceUseWakeLockDescription">Empêcher l\'appareil de passer en mode veille</string>
 
 </resources>
