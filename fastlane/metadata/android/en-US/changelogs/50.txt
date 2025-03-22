@@ -1,0 +1,1 @@
+- Show warning if file is opened in read-only mode
