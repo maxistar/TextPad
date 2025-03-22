@@ -26,6 +26,8 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ParcelFileDescriptor;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintJob;
@@ -66,6 +68,16 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 
+
+
+import android.content.DialogInterface;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.style.UnderlineSpan;
+import android.text.style.ClickableSpan;
+import android.view.View;
+import android.widget.TextView;
+
 public class EditorActivity extends AppCompatActivity {
 
     private static final String STATE_FILENAME = "filename";
@@ -74,10 +86,14 @@ public class EditorActivity extends AppCompatActivity {
 
     private static final int REQUEST_OPEN = 1;
     private static final int REQUEST_SAVE = 2;
+
     private static final int REQUEST_SETTINGS = 3;
+
+
 
     private static final int ACTION_CREATE_FILE = 4;
     private static final int ACTION_OPEN_FILE = 5;
+
 
     private static final int DO_NOTHING = 0;
     private static final int DO_OPEN = 1;
@@ -1081,6 +1097,7 @@ public class EditorActivity extends AppCompatActivity {
     protected void openNamedFile(final Uri uri) {
         try {
             ContentResolver contentResolver = getContentResolver();
+
             InputStream inputStream = contentResolver.openInputStream(uri);
             if (inputStream == null) {
                 throw new IOException();
@@ -1111,17 +1128,85 @@ public class EditorActivity extends AppCompatActivity {
                 lastTriedSystemUri = null;
             }
             updateTitle();
+            detectReadOnlyAccess(uri);
         } catch (FileNotFoundException e) {
             if (isAccessDeniedException(e)) {
                 showAlternativeFileDialog(uri);
             } else {
                 this.showToast(R.string.File_not_found);
             }
-        } catch (IOException e) {
-            this.showToast(R.string.Can_not_read_file);
         } catch (Exception e) {
             this.showToast(R.string.Can_not_read_file);
         }
+    }
+
+    private void detectReadOnlyAccess(final Uri uri) {
+        boolean isReadOnly = false;
+
+        try {
+            // Try opening the file with write mode
+            ParcelFileDescriptor pfdWrite = getContentResolver().openFileDescriptor(uri, "rw");
+            if (pfdWrite == null) {
+                isReadOnly = true;
+            } else {
+                pfdWrite.close(); // Close it if opened successfully
+            }
+        } catch (Exception e) {
+            isReadOnly = true;
+        }
+
+        if (isReadOnly) {
+            new Handler().postDelayed(this::showReadOnlyDialog, 1000);
+        }
+
+    }
+
+    public void showReadOnlyDialog() {
+        Context context = this;
+        // Message text with a clickable link
+        SpannableString spannableMessage = new SpannableString(getString(R.string.readOnlyDialogMessage) + ' ' + getString(R.string.readOnlyDialogClickHere));
+
+        // Set the clickable part
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                // Open the link in an external browser
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://texteditor.maxistar.me/faq/"));
+                context.startActivity(browserIntent);
+            }
+        };
+        // would it work for reverse languages?
+        spannableMessage.setSpan(clickableSpan, spannableMessage.length() - getString(R.string.readOnlyDialogClickHere).length(), spannableMessage.length(), 0);
+        spannableMessage.setSpan(new UnderlineSpan(), spannableMessage.length() - getString(R.string.readOnlyDialogClickHere).length(), spannableMessage.length(), 0);
+
+        // Creating the AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.readOnlyDialogTitle);
+
+        // Including the message and link in the dialog
+        builder.setMessage(spannableMessage);
+        builder.setCancelable(true);
+
+        // Setting the dialog buttons
+        builder.setPositiveButton(R.string.readOnlyDialogButtonOpenAgain, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                openFile();
+            }
+        });
+
+        builder.setNegativeButton(R.string.readOnlyDialogButtonContinue, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Make the link clickable
+        ((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void showAlternativeFileDialog(final Uri uri) {

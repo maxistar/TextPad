@@ -102,5 +102,11 @@
     <string name="preferenceUseWakeLockTitle">استخدم ويكلوك</string>
     <string name="preferenceUseWakeLockDescription">منع الجهاز من الدخول في وضع السكون</string>
 
+    <string name="readOnlyDialogMessage">تم فتح هذا الملف في وضع القراءة فقط. يمكنك حفظه باسم مختلف، أو إعادة فتحه باستخدام أمر "فتح" من قائمة التطبيق.</string>
+    <string name="readOnlyDialogClickHere">انقر هنا لمعرفة المزيد.</string>
+    <string name="readOnlyDialogTitle">تحذير: الملف للقراءة فقط!</string>
+    <string name="readOnlyDialogButtonOpenAgain">إعادة الفتح</string>
+    <string name="readOnlyDialogButtonContinue">المتابعة في وضع القراءة فقط</string>
+
 
 </resources>

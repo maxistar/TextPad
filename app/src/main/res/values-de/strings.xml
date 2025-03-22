@@ -102,5 +102,11 @@
     <string name="preferenceUseWakeLockTitle">Verwenden WakeLock</string>
     <string name="preferenceUseWakeLockDescription">Verhindern, dass das Gerät in den Ruhemodus wechselt</string>
 
+    <string name="readOnlyDialogMessage">Diese Datei ist im Nur-Lese-Modus geöffnet. Sie können sie unter einem anderen Namen speichern oder mit dem Befehl „Öffnen“ im App-Menü erneut öffnen.</string>
+    <string name="readOnlyDialogClickHere">Klicken Sie hier, um mehr zu erfahren.</string>
+    <string name="readOnlyDialogTitle">Warnung: Datei ist schreibgeschützt!</string>
+    <string name="readOnlyDialogButtonOpenAgain">Erneut öffnen</string>
+    <string name="readOnlyDialogButtonContinue">Im Nur-Lese-Modus fortfahren</string>
+
 
 </resources>

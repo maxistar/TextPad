@@ -102,4 +102,11 @@
     <string name="preferenceUseWakeLockTitle">Usar WakeLock</string>
     <string name="preferenceUseWakeLockDescription">Evitar que el dispositivo entre en modo de suspensión</string>
 
+    <string name="readOnlyDialogMessage">Este archivo está abierto en modo de solo lectura. Puedes guardarlo con otro nombre o volver a abrirlo utilizando el comando "Abrir" en el menú de la aplicación.</string>
+    <string name="readOnlyDialogClickHere">Haz clic aquí para saber más.</string>
+    <string name="readOnlyDialogTitle">Advertencia: ¡archivo de solo lectura!</string>
+    <string name="readOnlyDialogButtonOpenAgain">Abrir de nuevo</string>
+    <string name="readOnlyDialogButtonContinue">Continuar en modo solo lectura</string>
+
+
 </resources>

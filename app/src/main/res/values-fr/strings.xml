@@ -102,4 +102,11 @@
     <string name="preferenceUseWakeLockTitle">Utiliser WakeLock</string>
     <string name="preferenceUseWakeLockDescription">Empêcher l\'appareil de passer en mode veille</string>
 
+    <string name="readOnlyDialogMessage">Ce fichier est ouvert en mode lecture seule. Vous pouvez l\'enregistrer sous un autre nom ou le rouvrir en utilisant la commande "Ouvrir" dans le menu de l\'application.</string>
+    <string name="readOnlyDialogClickHere">Cliquez ici pour en savoir plus.</string>
+    <string name="readOnlyDialogTitle">Attention : fichier en lecture seule !</string>
+    <string name="readOnlyDialogButtonOpenAgain">Ouvrir à nouveau</string>
+    <string name="readOnlyDialogButtonContinue">Continuer en lecture seule</string>
+
+
 </resources>

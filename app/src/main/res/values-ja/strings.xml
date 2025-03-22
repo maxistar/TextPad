@@ -102,4 +102,11 @@
     <string name="preferenceUseWakeLockTitle">ウェイクロックを使用する</string>
     <string name="preferenceUseWakeLockDescription">デバイスがスリープモードになるのを防ぐ</string>
 
+    <string name="readOnlyDialogMessage">このファイルは読み取り専用モードで開かれています。別の名前で保存するか、アプリのメニューから「開く」コマンドを使って再度開くことができます。</string>
+    <string name="readOnlyDialogClickHere">詳細はこちらをクリックしてください。</string>
+    <string name="readOnlyDialogTitle">警告：ファイルは読み取り専用です！</string>
+    <string name="readOnlyDialogButtonOpenAgain">再度開く</string>
+    <string name="readOnlyDialogButtonContinue">読み取り専用で続行</string>
+
+
 </resources>

@@ -88,8 +88,8 @@
     <string name="preferenceShowLastEditedFilesDescription">Mostra gli ultimi file modificati nel menu delle opzioni</string>
     <string name="preferenceAutoSaveCurrentFileTitle">Salvataggio automatico</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Salva automaticamente il file attualmente in fase di modifica quando la finestra è chiusa</string>
-    <string name="Open_Other">Apri altro...</string>
-    <string name="Menu_Share">Condividi...</string>
+    <string name="Open_Other">Apri altro…</string>
+    <string name="Menu_Share">Condividi…</string>
     <string name="Menu_Print">Stampa</string>
 
     <string name="preferenceUseSystemColors">Tema del colore</string>
@@ -101,5 +101,12 @@
 
     <string name="preferenceUseWakeLockTitle">Usa WakeLock</string>
     <string name="preferenceUseWakeLockDescription">Impedisce al dispositivo di entrare in modalità sospensione</string>
+
+    <string name="readOnlyDialogMessage">Questo file è aperto in modalità sola lettura. Puoi salvarlo con un nome diverso oppure riaprirlo utilizzando il comando "Apri" dal menu dell\'applicazione.</string>
+    <string name="readOnlyDialogClickHere">Clicca qui per saperne di più.</string>
+    <string name="readOnlyDialogTitle">Attenzione: file in sola lettura!</string>
+    <string name="readOnlyDialogButtonOpenAgain">Apri di nuovo</string>
+    <string name="readOnlyDialogButtonContinue">Continua in sola lettura</string>
+
 
 </resources>

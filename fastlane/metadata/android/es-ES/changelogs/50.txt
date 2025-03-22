@@ -1,0 +1,1 @@
+- Mostrar advertencia si el archivo se abre en modo de solo lectura
