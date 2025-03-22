@@ -105,5 +105,11 @@
     <string name="preferenceUseWakeLockTitle">Use WakeLock</string>
     <string name="preferenceUseWakeLockDescription">Prevent device going to sleep mode</string>
 
+    <string name="readOnlyDialogMessage">This file is open in read only mode. You can save it with a different name, or you can open it again using \'Open\' command from the application menu.</string>
+    <string name="readOnlyDialogClickHere">Click here to read more.</string>
+    <string name="readOnlyDialogTitle">Warning: file is read only!</string>
+    <string name="readOnlyDialogButtonOpenAgain">Open again</string>
+    <string name="readOnlyDialogButtonContinue">Continue read only</string>
+
 
 </resources>

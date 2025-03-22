@@ -89,8 +89,8 @@
 
     <string name="preferenceAutoSaveCurrentFileTitle">Otomatik kaydetme</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Pencere kapatıldığında, o anda düzenlenen dosyayı otomatik olarak kaydet</string>
-    <string name="Open_Other">Diğer aç...</string>
-    <string name="Menu_Share">Paylaş...</string>
+    <string name="Open_Other">Diğer aç…</string>
+    <string name="Menu_Share">Paylaş…</string>
     <string name="Menu_Print">Yazdır</string>
 
     <string name="preferenceUseSystemColors">Renk teması</string>
@@ -102,5 +102,12 @@
 
     <string name="preferenceUseWakeLockTitle">WakeLock\'u kullanın</string>
     <string name="preferenceUseWakeLockDescription">Cihazın uyku moduna geçmesini önleyin</string>
+
+    <string name="readOnlyDialogMessage">Bu dosya salt okunur modda açılmıştır. Farklı bir adla kaydedebilir veya uygulama menüsünden "Aç" komutunu kullanarak yeniden açabilirsiniz.</string>
+    <string name="readOnlyDialogClickHere">Daha fazla bilgi için buraya tıklayın.</string>
+    <string name="readOnlyDialogTitle">Uyarı: dosya salt okunur!</string>
+    <string name="readOnlyDialogButtonOpenAgain">Tekrar aç</string>
+    <string name="readOnlyDialogButtonContinue">Salt okunur olarak devam et</string>
+
 
 </resources>
