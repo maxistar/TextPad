@@ -67,7 +67,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
-import androidx.documentfile.provider.DocumentFile;
+
 
 
 import android.content.DialogInterface;
@@ -93,8 +93,6 @@ public class EditorActivity extends AppCompatActivity {
 
     private static final int ACTION_CREATE_FILE = 4;
     private static final int ACTION_OPEN_FILE = 5;
-
-    private static final int REQUEST_AUTHORIZE_FOLDER = 6;
 
 
     private static final int DO_NOTHING = 0;
@@ -1100,32 +1098,6 @@ public class EditorActivity extends AppCompatActivity {
         try {
             ContentResolver contentResolver = getContentResolver();
 
-            boolean isReadOnly = false;
-
-            //DocumentFile file = DocumentFile.fromSingleUri(getApplicationContext(), uri);
-            //isReadOnly = !file.canWrite();
-
-
-            try {
-                // Try opening the file with write mode
-                ParcelFileDescriptor pfdWrite = getContentResolver().openFileDescriptor(uri, "rw");
-                if (pfdWrite == null) {
-                    isReadOnly = true;
-                } else {
-                    pfdWrite.close(); // Close it if opened successfully
-                }
-            } catch (Exception e) {
-                isReadOnly = true;
-            }
-
-            if (isReadOnly) {
-                // Inform the user that the file is read-only
-                //Toast.makeText(this, "The file is opened for reading only. Please open it for writing or save it with a different name.", Toast.LENGTH_LONG).show();
-                new Handler().postDelayed(this::showReadOnlyDialog, 1000);
-            }
-
-
-
             InputStream inputStream = contentResolver.openInputStream(uri);
             if (inputStream == null) {
                 throw new IOException();
@@ -1156,53 +1128,74 @@ public class EditorActivity extends AppCompatActivity {
                 lastTriedSystemUri = null;
             }
             updateTitle();
+            detectReadOnlyAccess(uri);
         } catch (FileNotFoundException e) {
             if (isAccessDeniedException(e)) {
                 showAlternativeFileDialog(uri);
             } else {
                 this.showToast(R.string.File_not_found);
             }
-        } catch (IOException e) {
-            this.showToast(R.string.Can_not_read_file);
         } catch (Exception e) {
             this.showToast(R.string.Can_not_read_file);
         }
     }
 
+    private void detectReadOnlyAccess(final Uri uri) {
+        boolean isReadOnly = false;
+
+        try {
+            // Try opening the file with write mode
+            ParcelFileDescriptor pfdWrite = getContentResolver().openFileDescriptor(uri, "rw");
+            if (pfdWrite == null) {
+                isReadOnly = true;
+            } else {
+                pfdWrite.close(); // Close it if opened successfully
+            }
+        } catch (Exception e) {
+            isReadOnly = true;
+        }
+
+        if (isReadOnly) {
+            new Handler().postDelayed(this::showReadOnlyDialog, 1000);
+        }
+
+    }
+
     public void showReadOnlyDialog() {
         Context context = this;
         // Message text with a clickable link
-        SpannableString spannableMessage = new SpannableString("This file is in read only mode. You can save it with a different name, or you can open it again using 'Open' command from the application menu. Alternatively, you can allow the parent folder for write access, so next time this file will be writable. Click 'authorize folder' to allow all files in the folder to be writable. Click here to read more.");
+        SpannableString spannableMessage = new SpannableString(getString(R.string.readOnlyDialogMessage) + ' ' + getString(R.string.readOnlyDialogClickHere));
 
         // Set the clickable part
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View textView) {
                 // Open the link in an external browser
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://your-link.com"));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://texteditor.maxistar.me/faq/"));
                 context.startActivity(browserIntent);
             }
         };
-        spannableMessage.setSpan(clickableSpan, spannableMessage.length() - "Click here to read more.".length(), spannableMessage.length(), 0);
-        spannableMessage.setSpan(new UnderlineSpan(), spannableMessage.length() - "Click here to read more.".length(), spannableMessage.length(), 0);
+        // would it work for reverse languages?
+        spannableMessage.setSpan(clickableSpan, spannableMessage.length() - getString(R.string.readOnlyDialogClickHere).length(), spannableMessage.length(), 0);
+        spannableMessage.setSpan(new UnderlineSpan(), spannableMessage.length() - getString(R.string.readOnlyDialogClickHere).length(), spannableMessage.length(), 0);
 
         // Creating the AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("File Access");
+        builder.setTitle(R.string.readOnlyDialogTitle);
 
         // Including the message and link in the dialog
         builder.setMessage(spannableMessage);
         builder.setCancelable(true);
 
         // Setting the dialog buttons
-        builder.setPositiveButton("Authorize Folder", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.readOnlyDialogButtonOpenAgain, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                authorizeFolder();
+                openFile();
             }
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.readOnlyDialogButtonContinue, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -1214,11 +1207,6 @@ public class EditorActivity extends AppCompatActivity {
 
         // Make the link clickable
         ((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-    }
-
-    void authorizeFolder() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        startActivityForResult(intent, REQUEST_AUTHORIZE_FOLDER);
     }
 
     private void showAlternativeFileDialog(final Uri uri) {
@@ -1330,13 +1318,6 @@ public class EditorActivity extends AppCompatActivity {
                     this.saveFileWithConfirmation();
                 }
             }
-        } else if (requestCode == REQUEST_AUTHORIZE_FOLDER) {
-            Uri folderUri = data.getData();
-            if (folderUri != null) {
-                getContentResolver().takePersistableUriPermission(folderUri,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            }
-            persistUriPermissions(data);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

@@ -88,7 +88,7 @@
     <string name="preferenceShowLastEditedFilesDescription">Pokaż ostatnio edytowane pliki w menu opcji</string>
     <string name="preferenceAutoSaveCurrentFileTitle">Autozapisywanie</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Automatycznie zapisuj aktualnie edytowany plik, gdy okno jest zamknięte</string>
-    <string name="Open_Other">Otwórz inne...</string>
+    <string name="Open_Other">Otwórz inne…</string>
     <string name="Menu_Share">Udostępnij...</string>
     <string name="Menu_Print">Wydrukować</string>
 
@@ -101,5 +101,12 @@
 
     <string name="preferenceUseWakeLockTitle">Użyj funkcji WakeLock</string>
     <string name="preferenceUseWakeLockDescription">Zapobiegaj przejściu urządzenia w tryb uśpienia</string>
+
+    <string name="readOnlyDialogMessage">Ten plik jest otwarty w trybie tylko do odczytu. Możesz zapisać go pod inną nazwą lub otworzyć ponownie, używając polecenia „Otwórz” z menu aplikacji.</string>
+    <string name="readOnlyDialogClickHere">Kliknij tutaj, aby dowiedzieć się więcej.</string>
+    <string name="readOnlyDialogTitle">Ostrzeżenie: plik tylko do odczytu!</string>
+    <string name="readOnlyDialogButtonOpenAgain">Otwórz ponownie</string>
+    <string name="readOnlyDialogButtonContinue">Kontynuuj w trybie tylko do odczytu</string>
+
 
 </resources>

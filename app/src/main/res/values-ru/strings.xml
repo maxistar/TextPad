@@ -102,4 +102,11 @@
     <string name="preferenceUseWakeLockTitle">Использовать WakeLock</string>
     <string name="preferenceUseWakeLockDescription">Запретить переход устройства в спящий режим</string>
 
+    <string name="readOnlyDialogMessage">Этот файл открыт в режиме только для чтения. Вы можете сохранить его под другим именем или открыть его снова, используя команду "Открыть" в меню приложения.</string>
+    <string name="readOnlyDialogClickHere">Нажмите здесь, чтобы узнать больше.</string>
+    <string name="readOnlyDialogTitle">Предупреждение: файл доступен только для чтения!</string>
+    <string name="readOnlyDialogButtonOpenAgain">Открыть снова</string>
+    <string name="readOnlyDialogButtonContinue">Продолжить в режиме только для чтения</string>
+
+
 </resources>

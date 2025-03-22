@@ -103,5 +103,11 @@
     <string name="preferenceUseWakeLockTitle">使用唤醒锁</string>
     <string name="preferenceUseWakeLockDescription">防止设备进入睡眠模式</string>
 
+    <string name="readOnlyDialogMessage">此文件以只读模式打开。您可以另存为其他名称，或使用应用菜单中的“打开”命令重新打开。</string>
+    <string name="readOnlyDialogClickHere">点击此处了解更多信息。</string>
+    <string name="readOnlyDialogTitle">警告：文件为只读！</string>
+    <string name="readOnlyDialogButtonOpenAgain">重新打开</string>
+    <string name="readOnlyDialogButtonContinue">以只读模式继续</string>
+
 
 </resources>

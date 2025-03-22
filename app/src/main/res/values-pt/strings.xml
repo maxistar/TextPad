@@ -89,7 +89,7 @@
     <string name="preferenceAutoSaveCurrentFileTitle">Salvamento automático</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Salva automaticamente o arquivo em edição atual quando a janela é fechada</string>
     <string name="Open_Other">Abra outro...</string>
-    <string name="Menu_Share">Compartilhar...</string>
+    <string name="Menu_Share">Compartilhar…</string>
     <string name="Menu_Print">Imprimir</string>
 
     <string name="preferenceUseSystemColors">Tema de cores</string>
@@ -101,5 +101,12 @@
 
     <string name="preferenceUseWakeLockTitle">Usar WakeLock</string>
     <string name="preferenceUseWakeLockDescription">Impedir que o dispositivo entre no modo de suspensão</string>
+
+    <string name="readOnlyDialogMessage">Este arquivo está aberto no modo somente leitura. Você pode salvá-lo com outro nome ou abri-lo novamente usando o comando "Abrir" no menu do aplicativo.</string>
+    <string name="readOnlyDialogClickHere">Clique aqui para saber mais.</string>
+    <string name="readOnlyDialogTitle">Aviso: arquivo somente leitura!</string>
+    <string name="readOnlyDialogButtonOpenAgain">Abrir novamente</string>
+    <string name="readOnlyDialogButtonContinue">Continuar em modo somente leitura</string>
+
 
 </resources>
