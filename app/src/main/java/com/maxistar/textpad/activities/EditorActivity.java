@@ -42,6 +42,11 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
+import android.view.textservice.SentenceSuggestionsInfo;
+import android.view.textservice.SpellCheckerSession;
+import android.view.textservice.SuggestionsInfo;
+import android.view.textservice.TextInfo;
+import android.view.textservice.TextServicesManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
@@ -78,7 +83,7 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.TextView;
 
-public class EditorActivity extends AppCompatActivity {
+public class EditorActivity extends AppCompatActivity  implements SpellCheckerSession.SpellCheckerSessionListener {
 
     private static final String STATE_FILENAME = "filename";
     private static final String STATE_CHANGED = "changed";
@@ -149,6 +154,8 @@ public class EditorActivity extends AppCompatActivity {
 
     WebView mWebView;
 
+    private SpellCheckerSession mScs;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -190,7 +197,41 @@ public class EditorActivity extends AppCompatActivity {
         updateTitle();
         mText.requestFocus();
 
+
+        TextServicesManager tsm = (TextServicesManager) getSystemService(TEXT_SERVICES_MANAGER_SERVICE);
+        mScs = tsm.newSpellCheckerSession(null, Locale.getDefault(), this, true);
+
         settingsService.applyLocale(this.getBaseContext());
+    }
+
+    @Override
+    public void onGetSuggestions(SuggestionsInfo[] results) {
+        for (SuggestionsInfo result : results) {
+            int suggestionsCount = result.getSuggestionsCount();
+            for (int i = 0; i < suggestionsCount; i++) {
+                String suggestion = result.getSuggestionAt(i);
+                Log.d("SpellChecker", "Suggestion: " + suggestion);
+            }
+        }
+    }
+
+    @Override
+    public void onGetSentenceSuggestions(SentenceSuggestionsInfo[] results) {
+        // Optional, if you want sentence-level suggestions
+    }
+
+    public void checkWord(String word) {
+        if (mScs != null) {
+            mScs.getSuggestions(new TextInfo(word), 5);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mScs != null) {
+            mScs.close();
+        }
     }
 
     private void openFileByUri(Uri u) {
