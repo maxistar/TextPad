@@ -22,6 +22,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -34,9 +35,11 @@ import android.print.PrintJob;
 import android.print.PrintManager;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -154,7 +157,10 @@ public class EditorActivity extends AppCompatActivity  implements SpellCheckerSe
 
     WebView mWebView;
 
-    private SpellCheckerSession mScs;
+    private SpellCheckerSession spellCheckerSession;
+
+    private TextServicesManager tsm;
+    private SpannableString spannableText;
 
     /** Called when the activity is first created. */
     @Override
@@ -198,21 +204,80 @@ public class EditorActivity extends AppCompatActivity  implements SpellCheckerSe
         mText.requestFocus();
 
 
-        TextServicesManager tsm = (TextServicesManager) getSystemService(TEXT_SERVICES_MANAGER_SERVICE);
-        mScs = tsm.newSpellCheckerSession(null, Locale.getDefault(), this, true);
+        tsm = (TextServicesManager) getSystemService(TEXT_SERVICES_MANAGER_SERVICE);
+        spellCheckerSession = tsm.newSpellCheckerSession(null, Locale.getDefault(), this, true);
+
+
+        mText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                checkText(s.toString());
+            }
+        });
+
 
         settingsService.applyLocale(this.getBaseContext());
     }
 
+    private void checkText(String text) {
+        Log.i("SPELL", text);
+        /*
+        spannableText = new SpannableString(text);
+        String[] words = text.split("\\s+");
+        int index = 0;
+
+        for (String word : words) {
+            int start = text.indexOf(word, index);
+            int end = start + word.length();
+            index = end;
+
+            if (spellCheckerSession != null) {
+                spellCheckerSession.getSuggestions(new TextInfo(word), 5);
+            }
+        } */
+    }
+
     @Override
     public void onGetSuggestions(SuggestionsInfo[] results) {
-        for (SuggestionsInfo result : results) {
-            int suggestionsCount = result.getSuggestionsCount();
-            for (int i = 0; i < suggestionsCount; i++) {
-                String suggestion = result.getSuggestionAt(i);
-                Log.d("SpellChecker", "Suggestion: " + suggestion);
+        /*runOnUiThread(() -> {
+            for (SuggestionsInfo result : results) {
+                int start = result.getCookie(); // We stored start index here.
+                int end = start; // Will adjust after knowing the word length.
+                int suggestionsCount = result.getSuggestionsCount();
+
+                if (suggestionsCount == 0) {
+                    // Word is considered incorrect; underline it.
+                    for (int i = start; i < spannableText.length(); i++) {
+                        if (Character.isWhitespace(spannableText.charAt(i))) {
+                            end = i;
+                            break;
+                        }
+                    }
+                    if (end == start) end = spannableText.length();
+
+                    spannableText.setSpan(
+                            new UnderlineSpan(),
+                            start,
+                            end,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    );
+                    spannableText.setSpan(
+                            new ForegroundColorSpan(Color.RED),
+                            start,
+                            end,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    );
+                }
             }
-        }
+            mText.setText(spannableText);
+            mText.setSelection(spannableText.length());
+        });*/
     }
 
     @Override
@@ -220,17 +285,13 @@ public class EditorActivity extends AppCompatActivity  implements SpellCheckerSe
         // Optional, if you want sentence-level suggestions
     }
 
-    public void checkWord(String word) {
-        if (mScs != null) {
-            mScs.getSuggestions(new TextInfo(word), 5);
-        }
-    }
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mScs != null) {
-            mScs.close();
+        if (spellCheckerSession != null) {
+            spellCheckerSession.close();
         }
     }
 
