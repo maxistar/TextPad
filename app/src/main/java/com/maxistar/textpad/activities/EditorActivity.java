@@ -1405,21 +1405,23 @@ public class EditorActivity extends AppCompatActivity {
         public boolean onQueryTextSubmit(String query)
         {
             // Find next text
-            if (matcher!= null && matcher.find()) {
-                // Check layout
-                if (mText.getLayout() == null) {
-                    return false;
+            if (matcher!= null) {
+                if (matcher.find()) {
+                    // Check layout
+                    if (mText.getLayout() == null) {
+                        return false;
+                    }
+                    doSearch();
+                } else {
+                    Toast.makeText(
+                            EditorActivity.this,
+                            formatString(R.string.s_not_found, query),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    matcher.reset();
+                    index = 0;
+                    editable.removeSpan(span);
                 }
-                doSearch();
-            } else {
-                Toast.makeText(
-                        EditorActivity.this,
-                        formatString(R.string.s_not_found, query),
-                        Toast.LENGTH_SHORT
-                ).show();
-                matcher.reset();
-                index = 0;
-                editable.removeSpan(span);
             }
 
             return true;
