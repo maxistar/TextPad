@@ -1,0 +1,1 @@
+- naprawiono awarię przez wyszukiwanie tekstowe
