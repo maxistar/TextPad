@@ -1,0 +1,1 @@
+- fixed crash by text search

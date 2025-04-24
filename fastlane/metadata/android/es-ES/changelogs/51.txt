@@ -1,0 +1,1 @@
+- Se solucionó el fallo por búsqueda de texto
