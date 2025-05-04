@@ -117,12 +117,12 @@ public class EditorActivity extends AppCompatActivity {
 
     private EditText mText;
     private ScrollView scrollView;
-    
+
     String urlFilename = TPStrings.EMPTY;
 
     Uri lastTriedSystemUri = null;
 
-    
+
     boolean changed = false;
 
     boolean exitDialogShown = false;
@@ -161,7 +161,7 @@ public class EditorActivity extends AppCompatActivity {
         setContentView(R.layout.main);
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
-        editTextUndoRedo = new EditTextUndoRedo(mText);
+        editTextUndoRedo = new EditTextUndoRedo(mText, this);
         scrollView = findViewById(R.id.vscroll);
         applyPreferences();
 
@@ -333,7 +333,7 @@ public class EditorActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
     }
-    
+
     @Override
     public void onBackPressed() {
         if (this.changed && !exitDialogShown) {
@@ -499,7 +499,7 @@ public class EditorActivity extends AppCompatActivity {
 
         MenuItem redoMenu = menu.findItem(R.id.menu_edit_redo);
         redoMenu.setEnabled(editTextUndoRedo.getCanRedo());
-        
+
         updateRecentFiles(menu);
 
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -882,7 +882,7 @@ public class EditorActivity extends AppCompatActivity {
             System.exitFromApp(EditorActivity.this);
         }
     }
-    
+
     protected void selectFileUsingAndroidSystemPicker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
