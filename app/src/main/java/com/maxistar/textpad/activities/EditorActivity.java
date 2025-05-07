@@ -116,7 +116,7 @@ public class EditorActivity extends AppCompatActivity {
     };
 
     private EditText mText;
-    private ScrollView scrollView;
+    //private ScrollView scrollView;
     
     String urlFilename = TPStrings.EMPTY;
 
@@ -162,7 +162,7 @@ public class EditorActivity extends AppCompatActivity {
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
         editTextUndoRedo = new EditTextUndoRedo(mText);
-        scrollView = findViewById(R.id.vscroll);
+        //scrollView = findViewById(R.id.vscroll);
         applyPreferences();
 
         if (savedInstanceState != null) {
@@ -464,7 +464,7 @@ public class EditorActivity extends AppCompatActivity {
             themeService.applyColorTheme(this);
         }
         if (settingsService.isCustomTheme()) {
-            scrollView.setBackgroundColor(settingsService.getBgColor());
+            //scrollView.setBackgroundColor(settingsService.getBgColor());
             mText.setTextColor(settingsService.getFontColor());
         }
     }
@@ -1359,11 +1359,11 @@ public class EditorActivity extends AppCompatActivity {
         private final Editable editable;
         private Matcher matcher;
         private int index;
-        private final int height;
+        // private final int height;
 
         public QueryTextListener() {
             // Use regex search and spannable for highlighting
-            height = scrollView.getHeight();
+            //height = scrollView.getHeight();
             editable = mText.getEditableText();
         }
 
@@ -1436,7 +1436,7 @@ public class EditorActivity extends AppCompatActivity {
             int pos = mText.getLayout().getLineBaseline(line);
 
             // Scroll to it
-            scrollView.smoothScrollTo(0, pos - height / 2);
+            //scrollView.smoothScrollTo(0, pos - height / 2);
 
             // Highlight it
             editable.setSpan(

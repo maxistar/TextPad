@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/vscroll"
 	android:layout_width="match_parent"
@@ -19,4 +19,4 @@
 		android:autofillHints=""
 		android:inputType="text|textAutoComplete|textAutoCorrect"
 		/>
-</ScrollView>
+</LinearLayout>
