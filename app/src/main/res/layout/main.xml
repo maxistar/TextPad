@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/vscroll"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
@@ -11,12 +10,11 @@
 		android:id="@+id/editText1"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:padding="5dip"
+		android:padding="5dp"
 		android:hint="@string/Type_Something_Here"
-		android:fadingEdge="none"
-		android:scrollbars="none"
-		android:gravity="top"
 		android:autofillHints=""
-		android:inputType="text|textAutoComplete|textAutoCorrect"
+		android:gravity="top|start"
+		android:inputType="textMultiLine|textAutoComplete|textAutoCorrect"
+		android:minLines="10"
 		/>
-</LinearLayout>
+</ScrollView>
