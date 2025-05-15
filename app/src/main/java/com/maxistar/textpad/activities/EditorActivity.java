@@ -141,8 +141,6 @@ public class EditorActivity extends AppCompatActivity {
 
     private QueryTextListener queryTextListener;
 
-    private MenuItem searchItem;
-
     private TextWatcher textWatcher;
 
     EditTextUndoRedo editTextUndoRedo;
@@ -492,7 +490,11 @@ public class EditorActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        this.searchItem = menu.findItem(R.id.menu_document_search);
+        MenuItem searchItem = menu.findItem(R.id.menu_document_search);
+        if (searchItem.isActionViewExpanded()) {
+            searchItem.collapseActionView();
+        }
+
 
         MenuItem undoMenu = menu.findItem(R.id.menu_edit_undo);
         undoMenu.setEnabled(editTextUndoRedo.getCanUndo());
@@ -608,11 +610,6 @@ public class EditorActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // Close text search
-        if (searchItem != null && searchItem.isActionViewExpanded()) {
-            searchItem.collapseActionView();
-        }
-
         int itemId = item.getItemId();
         if (itemId == R.id.menu_document_open) {
             openFile();
@@ -819,7 +816,6 @@ public class EditorActivity extends AppCompatActivity {
         changed = false;
         editTextUndoRedo.clearHistory();
         queryTextListener = null;
-        searchItem = null;
     }
 
     protected void editRedo() {
@@ -1454,7 +1450,6 @@ public class EditorActivity extends AppCompatActivity {
 
         @Override
         public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-            Log.d(LOG_TAG, "onClose");
             editable.removeSpan(span);
             mText.requestFocus();
             queryTextListener = null;
