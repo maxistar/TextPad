@@ -107,6 +107,6 @@
     <string name="readOnlyDialogTitle">Предупреждение: файл доступен только для чтения!</string>
     <string name="readOnlyDialogButtonOpenAgain">Открыть снова</string>
     <string name="readOnlyDialogButtonContinue">Продолжить в режиме только для чтения</string>
-
-
+    <string name="preferenceUseSimpleScrolling">Исправить нестабильную прокрутку</string>
+    <string name="preferenceUseSimpleScrollingDescription">Включите, если текст неожиданно перепрыгивает в конец при прокрутке</string>
 </resources>

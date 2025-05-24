@@ -202,7 +202,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private boolean simpleScrolling() {
-        return true;
+        return settingsService.isUseSimpleScrolling();
     }
 
     private void openFileByUri(Uri u) {
