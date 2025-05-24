@@ -45,6 +45,7 @@ import android.view.inputmethod.EditorInfo;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -116,7 +117,8 @@ public class EditorActivity extends AppCompatActivity {
     };
 
     private EditText mText;
-    //private ScrollView scrollView;
+    private ScrollView scrollView;
+    private LinearLayout linearLayout;
     
     String urlFilename = TPStrings.EMPTY;
 
@@ -164,7 +166,12 @@ public class EditorActivity extends AppCompatActivity {
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
         editTextUndoRedo = new EditTextUndoRedo(mText);
-        //scrollView = findViewById(R.id.vscroll);
+
+        if (simpleScrolling()) {
+            linearLayout = findViewById(R.id.linear_layout);
+        } else{
+            scrollView = findViewById(R.id.vscroll);
+        }
         applyPreferences();
 
         if (savedInstanceState != null) {
@@ -470,8 +477,14 @@ public class EditorActivity extends AppCompatActivity {
             themeService.applyColorTheme(this);
         }
         if (settingsService.isCustomTheme()) {
-            //scrollView.setBackgroundColor(settingsService.getBgColor());
-            mText.setTextColor(settingsService.getFontColor());
+            if (simpleScrolling()) {
+                linearLayout.setBackgroundColor(settingsService.getBgColor());
+            }
+            else
+            {
+                scrollView.setBackgroundColor(settingsService.getBgColor());
+            }
+                mText.setTextColor(settingsService.getFontColor());
         }
     }
 
@@ -1363,11 +1376,15 @@ public class EditorActivity extends AppCompatActivity {
         private final Editable editable;
         private Matcher matcher;
         private int index;
-        // private final int height;
+        private final int height;
 
         public QueryTextListener() {
             // Use regex search and spannable for highlighting
-            //height = scrollView.getHeight();
+            if (simpleScrolling()) {
+                height = linearLayout.getHeight();
+            } else {
+                height = scrollView.getHeight();
+            }
             editable = mText.getEditableText();
         }
 
@@ -1440,8 +1457,11 @@ public class EditorActivity extends AppCompatActivity {
             int pos = mText.getLayout().getLineBaseline(line);
 
             // Scroll to it
-            //scrollView.smoothScrollTo(0, pos - height / 2);
-
+            if (simpleScrolling()) {
+                mText.scrollTo(0, pos - height / 2);
+            } else {
+                scrollView.smoothScrollTo(0, pos - height / 2);
+            }
             // Highlight it
             editable.setSpan(
                     span,
