@@ -156,7 +156,11 @@ public class EditorActivity extends AppCompatActivity {
         recentFilesService = ServiceLocator.getInstance().getRecentFilesService();
         alternativeUrlsService = ServiceLocator.getInstance().getAlternativeUrlsService();
 
-        setContentView(R.layout.main);
+        if (simpleScrolling()) {
+            setContentView(R.layout.main_simple_scrolling);
+        } else {
+            setContentView(R.layout.main);
+        }
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
         editTextUndoRedo = new EditTextUndoRedo(mText);
@@ -189,6 +193,10 @@ public class EditorActivity extends AppCompatActivity {
         mText.requestFocus();
 
         settingsService.applyLocale(this.getBaseContext());
+    }
+
+    private boolean simpleScrolling() {
+        return true;
     }
 
     private void openFileByUri(Uri u) {
