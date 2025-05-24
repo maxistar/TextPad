@@ -97,6 +97,8 @@
     <string name="preference_color_theme_custom">Custom</string>
     <string name="preferenceUseWakeLockTitle">Використовуйте WakeLock</string>
     <string name="preferenceUseWakeLockDescription">Запобігання переходу пристрою в сплячий режим</string>
+    <string name="preferenceUseSimpleScrolling">Виправити нестабільне прокручування</string>
+    <string name="preferenceUseSimpleScrollingDescription">Увімкніть, якщо текст несподівано перестрибує в кінець під час прокручування</string>
 
     <string name="readOnlyDialogMessage">Цей файл відкрито в режимі лише для читання. Ви можете зберегти його під іншою назвою або відкрити знову за допомогою команди "Відкрити" в меню додатка.</string>
     <string name="readOnlyDialogClickHere">Натисніть тут, щоб дізнатися більше.</string>

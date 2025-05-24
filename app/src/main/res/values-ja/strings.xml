@@ -107,6 +107,6 @@
     <string name="readOnlyDialogTitle">警告：ファイルは読み取り専用です！</string>
     <string name="readOnlyDialogButtonOpenAgain">再度開く</string>
     <string name="readOnlyDialogButtonContinue">読み取り専用で続行</string>
-
-
+    <string name="preferenceUseSimpleScrolling">不安定なスクロールを修正</string>
+    <string name="preferenceUseSimpleScrollingDescription">スクロール中にテキストが予期せず最後までジャンプする場合に有効にしてください</string>
 </resources>

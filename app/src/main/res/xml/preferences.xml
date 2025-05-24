@@ -26,6 +26,12 @@
             android:summary="@string/preferenceUseWakeLockDescription"
             android:defaultValue="false" />
 
+        <CheckBoxPreference
+            android:key="use_simple_scrolling"
+            android:title="@string/preferenceUseSimpleScrolling"
+            android:summary="@string/preferenceUseSimpleScrollingDescription"
+            android:defaultValue="false" />
+
         <ListPreference
             android:key="encoding"
             android:summary="@string/Click_to_change_encoding"

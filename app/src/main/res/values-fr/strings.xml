@@ -107,6 +107,6 @@
     <string name="readOnlyDialogTitle">Attention : fichier en lecture seule !</string>
     <string name="readOnlyDialogButtonOpenAgain">Ouvrir à nouveau</string>
     <string name="readOnlyDialogButtonContinue">Continuer en lecture seule</string>
-
-
+    <string name="preferenceUseSimpleScrolling">Corriger le défilement erratique</string>
+    <string name="preferenceUseSimpleScrollingDescription">Activez ceci si le texte saute de manière inattendue à la fin pendant le défilement</string>
 </resources>
