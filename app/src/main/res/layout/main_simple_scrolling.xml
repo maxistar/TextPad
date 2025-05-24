@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dip"
+        android:hint="@string/Type_Something_Here"
+        android:fadingEdge="none"
+        android:scrollbars="vertical"
+        android:overScrollMode="ifContentScrolls"
+        android:gravity="top"
+        android:autofillHints=""
+        android:inputType="text|textAutoComplete|textAutoCorrect"
+        />
+</LinearLayout>

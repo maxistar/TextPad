@@ -102,6 +102,8 @@
 
     <string name="preferenceUseWakeLockTitle">WakeLock\'u kullanın</string>
     <string name="preferenceUseWakeLockDescription">Cihazın uyku moduna geçmesini önleyin</string>
+<string name="preferenceUseSimpleScrolling">Düzensiz Kaydırmayı Düzelt</string>
+<string name="preferenceUseSimpleScrollingDescription">Metin kaydırma sırasında beklenmedik şekilde sona atlarsa bunu etkinleştirin</string>
 
     <string name="readOnlyDialogMessage">Bu dosya salt okunur modda açılmıştır. Farklı bir adla kaydedebilir veya uygulama menüsünden "Aç" komutunu kullanarak yeniden açabilirsiniz.</string>
     <string name="readOnlyDialogClickHere">Daha fazla bilgi için buraya tıklayın.</string>

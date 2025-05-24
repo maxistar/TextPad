@@ -101,6 +101,8 @@
 
     <string name="preferenceUseWakeLockTitle">Użyj funkcji WakeLock</string>
     <string name="preferenceUseWakeLockDescription">Zapobiegaj przejściu urządzenia w tryb uśpienia</string>
+    <string name="preferenceUseSimpleScrolling">Napraw niestabilne przewijanie</string>
+    <string name="preferenceUseSimpleScrollingDescription">Włącz to, jeśli tekst nieoczekiwanie przeskakuje na koniec podczas przewijania</string>
 
     <string name="readOnlyDialogMessage">Ten plik jest otwarty w trybie tylko do odczytu. Możesz zapisać go pod inną nazwą lub otworzyć ponownie, używając polecenia „Otwórz” z menu aplikacji.</string>
     <string name="readOnlyDialogClickHere">Kliknij tutaj, aby dowiedzieć się więcej.</string>

@@ -1,0 +1,2 @@
+- dodano nową funkcję, proste przewijanie, naprawia to przewijanie na niektórych urządzeniach Samsung
+- dodano prawidłową lokalizację dla tłumaczenia na język chiński

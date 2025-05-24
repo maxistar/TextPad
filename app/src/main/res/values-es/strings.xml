@@ -107,6 +107,6 @@
     <string name="readOnlyDialogTitle">Advertencia: ¡archivo de solo lectura!</string>
     <string name="readOnlyDialogButtonOpenAgain">Abrir de nuevo</string>
     <string name="readOnlyDialogButtonContinue">Continuar en modo solo lectura</string>
-
-
+    <string name="preferenceUseSimpleScrolling">Corregir desplazamiento errático</string>
+    <string name="preferenceUseSimpleScrollingDescription">Activa esto si el texto salta inesperadamente al final durante el desplazamiento</string>
 </resources>

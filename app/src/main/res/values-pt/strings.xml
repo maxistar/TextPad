@@ -101,6 +101,8 @@
 
     <string name="preferenceUseWakeLockTitle">Usar WakeLock</string>
     <string name="preferenceUseWakeLockDescription">Impedir que o dispositivo entre no modo de suspensão</string>
+    <string name="preferenceUseSimpleScrolling">Corrigir Rolagem Errática</string>
+    <string name="preferenceUseSimpleScrollingDescription">Ative isto se o texto pular inesperadamente para o final durante a rolagem</string>
 
     <string name="readOnlyDialogMessage">Este arquivo está aberto no modo somente leitura. Você pode salvá-lo com outro nome ou abri-lo novamente usando o comando "Abrir" no menu do aplicativo.</string>
     <string name="readOnlyDialogClickHere">Clique aqui para saber mais.</string>
