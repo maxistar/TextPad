@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
+
 import com.maxistar.textpad.TPStrings;
+
 import java.util.Locale;
 
 public class SettingsService {
@@ -29,6 +31,7 @@ public class SettingsService {
     public static final String SETTING_SHOW_LAST_EDITED_FILES = "show_last_edited_files";
 
     private static final String SETTING_USE_WAKE_LOCK = "use_wake_lock";
+    public static final String SETTING_USE_SIMPLE_SCROLLING = "use_simple_scrolling";
 
     public static final String SETTING_MEDIUM = "Medium";
     public static final String SETTING_EXTRA_SMALL = "Extra Small";
@@ -73,19 +76,22 @@ public class SettingsService {
     private int textSelectionColor;
 
     private boolean useWakeLock = false;
+    private boolean useSimpleScrolling = false;
 
 
     private static boolean languageWasChanged = false;
 
 
-    public SettingsService() {}
+    public SettingsService() {
+    }
 
     public void loadSettings(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         open_last_file = sharedPref.getBoolean(SETTING_OPEN_LAST_FILE, false);
         show_last_edited_files = sharedPref.getBoolean(SETTING_SHOW_LAST_EDITED_FILES, true);
         legacy_file_picker = sharedPref.getBoolean(SETTING_LEGASY_FILE_PICKER, false);
-        useWakeLock= sharedPref.getBoolean(SETTING_USE_WAKE_LOCK, false);
+        useWakeLock = sharedPref.getBoolean(SETTING_USE_WAKE_LOCK, false);
+        useSimpleScrolling = sharedPref.getBoolean(SETTING_USE_SIMPLE_SCROLLING, false);
         alternative_file_access = sharedPref.getBoolean(SETTING_ALTERNATIVE_FILE_ACCESS, true);
         last_filename = sharedPref.getString(SETTING_LAST_FILENAME, TPStrings.EMPTY);
         file_encoding = sharedPref.getString(SETTING_FILE_ENCODING, TPStrings.UTF_8);
@@ -130,7 +136,9 @@ public class SettingsService {
         return open_last_file;
     }
 
-    public boolean isShowLastEditedFiles() { return show_last_edited_files; }
+    public boolean isShowLastEditedFiles() {
+        return show_last_edited_files;
+    }
 
     public boolean isLegacyFilePicker() {
         return legacy_file_picker;
@@ -235,7 +243,7 @@ public class SettingsService {
         return value;
     }
 
-    public void applyLocale(Context context){
+    public void applyLocale(Context context) {
         String lang = getLanguage();
         if ("".equals(lang)) {
             return; //use system default
@@ -268,5 +276,9 @@ public class SettingsService {
 
     public boolean useWakeLock() {
         return this.useWakeLock;
+    }
+
+    public boolean isUseSimpleScrolling() {
+        return this.useSimpleScrolling;
     }
 }

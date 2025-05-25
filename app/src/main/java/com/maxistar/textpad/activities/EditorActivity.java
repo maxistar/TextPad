@@ -45,6 +45,7 @@ import android.view.inputmethod.EditorInfo;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -69,7 +70,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 
 
-
 import android.content.DialogInterface;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -90,7 +90,6 @@ public class EditorActivity extends AppCompatActivity {
     private static final int REQUEST_SETTINGS = 3;
 
 
-
     private static final int ACTION_CREATE_FILE = 4;
     private static final int ACTION_OPEN_FILE = 5;
 
@@ -105,8 +104,7 @@ public class EditorActivity extends AppCompatActivity {
     private static final String LOG_TAG = "TextEditor";
 
 
-
-    String [] mimeTypes = {
+    String[] mimeTypes = {
             "*/*",
             "text/*",
             "plain/*",
@@ -117,12 +115,13 @@ public class EditorActivity extends AppCompatActivity {
 
     private EditText mText;
     private ScrollView scrollView;
-    
+    private LinearLayout linearLayout;
+
     String urlFilename = TPStrings.EMPTY;
 
     Uri lastTriedSystemUri = null;
 
-    
+
     boolean changed = false;
 
     boolean exitDialogShown = false;
@@ -147,7 +146,9 @@ public class EditorActivity extends AppCompatActivity {
 
     WebView mWebView;
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,11 +157,20 @@ public class EditorActivity extends AppCompatActivity {
         recentFilesService = ServiceLocator.getInstance().getRecentFilesService();
         alternativeUrlsService = ServiceLocator.getInstance().getAlternativeUrlsService();
 
-        setContentView(R.layout.main);
+        if (simpleScrolling()) {
+            setContentView(R.layout.main_simple_scrolling);
+        } else {
+            setContentView(R.layout.main);
+        }
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
         editTextUndoRedo = new EditTextUndoRedo(mText);
-        scrollView = findViewById(R.id.vscroll);
+
+        if (simpleScrolling()) {
+            linearLayout = findViewById(R.id.linear_layout);
+        } else {
+            scrollView = findViewById(R.id.vscroll);
+        }
         applyPreferences();
 
         if (savedInstanceState != null) {
@@ -191,11 +201,15 @@ public class EditorActivity extends AppCompatActivity {
         settingsService.applyLocale(this.getBaseContext());
     }
 
+    private boolean simpleScrolling() {
+        return settingsService.isUseSimpleScrolling();
+    }
+
     private void openFileByUri(Uri u) {
         if (useAndroidManager()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 if (settingsService.isAlternativeFileAccess() &&
-                    alternativeUrlsService.hasAlternativeUrl(u, getApplicationContext())) {
+                        alternativeUrlsService.hasAlternativeUrl(u, getApplicationContext())) {
                     openNamedFile(alternativeUrlsService.getAlternativeUrl(u, getApplicationContext()));
                 } else {
                     openNamedFile(u);
@@ -209,10 +223,12 @@ public class EditorActivity extends AppCompatActivity {
     private void setTextWatcher() {
         textWatcher = new TextWatcher() {
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -258,12 +274,10 @@ public class EditorActivity extends AppCompatActivity {
             if (keyCode == KeyEvent.KEYCODE_S) {
                 saveFile();
                 return true;
-            }
-            else if (keyCode == KeyEvent.KEYCODE_Z) {
+            } else if (keyCode == KeyEvent.KEYCODE_Z) {
                 editUndo();
                 return true;
-            }
-            else if (keyCode == KeyEvent.KEYCODE_Y) {
+            } else if (keyCode == KeyEvent.KEYCODE_Y) {
                 editRedo();
                 return true;
             }
@@ -331,7 +345,7 @@ public class EditorActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
     }
-    
+
     @Override
     public void onBackPressed() {
         if (this.changed && !exitDialogShown) {
@@ -462,7 +476,11 @@ public class EditorActivity extends AppCompatActivity {
             themeService.applyColorTheme(this);
         }
         if (settingsService.isCustomTheme()) {
-            scrollView.setBackgroundColor(settingsService.getBgColor());
+            if (simpleScrolling()) {
+                linearLayout.setBackgroundColor(settingsService.getBgColor());
+            } else {
+                scrollView.setBackgroundColor(settingsService.getBgColor());
+            }
             mText.setTextColor(settingsService.getFontColor());
         }
     }
@@ -501,7 +519,7 @@ public class EditorActivity extends AppCompatActivity {
 
         MenuItem redoMenu = menu.findItem(R.id.menu_edit_redo);
         redoMenu.setEnabled(editTextUndoRedo.getCanRedo());
-        
+
         updateRecentFiles(menu);
 
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -600,7 +618,7 @@ public class EditorActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        if(menu instanceof MenuBuilder){
+        if (menu instanceof MenuBuilder) {
             MenuBuilder m = (MenuBuilder) menu;
             m.setOptionalIconsVisible(true);
         }
@@ -651,29 +669,29 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void printText() {
-         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-             // Create a WebView object specifically for printing
-             WebView webView = new WebView(this);
-             webView.setWebViewClient(new WebViewClient() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Create a WebView object specifically for printing
+            WebView webView = new WebView(this);
+            webView.setWebViewClient(new WebViewClient() {
 
-                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                     return false;
-                 }
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    return false;
+                }
 
-                 @Override
-                 public void onPageFinished(WebView view, String url) {
-                     createWebPrintJob(view);
-                     mWebView = null;
-                 }
-             });
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    createWebPrintJob(view);
+                    mWebView = null;
+                }
+            });
 
-             // Generate an HTML document on the fly:
-             String htmlDocument = "<html><body><pre style='padding:1.5cm 1cm 1.5cm 2cm'>" +
-                     mText.getText() +
-                     "</pre></body></html>";
-             webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
+            // Generate an HTML document on the fly:
+            String htmlDocument = "<html><body><pre style='padding:1.5cm 1cm 1.5cm 2cm'>" +
+                    mText.getText() +
+                    "</pre></body></html>";
+            webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
 
-             mWebView = webView;
+            mWebView = webView;
         }
 
     }
@@ -683,7 +701,7 @@ public class EditorActivity extends AppCompatActivity {
 
         // Get a PrintManager instance
         PrintManager printManager = null;
-            printManager = (PrintManager) this.getSystemService(Context.PRINT_SERVICE);
+        printManager = (PrintManager) this.getSystemService(Context.PRINT_SERVICE);
 
         String jobName = getString(R.string.app_name) + " Document";
 
@@ -878,7 +896,7 @@ public class EditorActivity extends AppCompatActivity {
             System.exitFromApp(EditorActivity.this);
         }
     }
-    
+
     protected void selectFileUsingAndroidSystemPicker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -927,9 +945,9 @@ public class EditorActivity extends AppCompatActivity {
                                 next_action = DO_OPEN;
                                 EditorActivity.this.saveFile();
                             }).setNegativeButton(R.string.No,
-                    (dialog, which) -> {
-                        //do nothing!!
-                    }).show();
+                            (dialog, which) -> {
+                                //do nothing!!
+                            }).show();
         } else {
             saveFileIfNamed();
         }
@@ -1202,24 +1220,24 @@ public class EditorActivity extends AppCompatActivity {
         dialog.show();
 
         // Make the link clickable
-        ((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+        ((TextView) dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void showAlternativeFileDialog(final Uri uri) {
         new AlertDialog.Builder(this)
-            .setTitle(R.string.AlternativeFileAccessTitle)
-            .setMessage(R.string.SelectAlternativeLocationForFile)
-            .setNegativeButton(R.string.Yes, (arg0, arg1) -> {
-                lastTriedSystemUri = uri;
-                selectFileUsingAndroidSystemPicker();
-            })
-            .setPositiveButton(R.string.No, (arg0, arg1) -> lastTriedSystemUri = null)
-            .setOnCancelListener(arg0 -> {
-                lastTriedSystemUri = null;
-                EditorActivity.super.onBackPressed();
-        })
-            .create()
-            .show();
+                .setTitle(R.string.AlternativeFileAccessTitle)
+                .setMessage(R.string.SelectAlternativeLocationForFile)
+                .setNegativeButton(R.string.Yes, (arg0, arg1) -> {
+                    lastTriedSystemUri = uri;
+                    selectFileUsingAndroidSystemPicker();
+                })
+                .setPositiveButton(R.string.No, (arg0, arg1) -> lastTriedSystemUri = null)
+                .setOnCancelListener(arg0 -> {
+                    lastTriedSystemUri = null;
+                    EditorActivity.super.onBackPressed();
+                })
+                .create()
+                .show();
     }
 
     private boolean isAccessDeniedException(FileNotFoundException e) {
@@ -1237,7 +1255,7 @@ public class EditorActivity extends AppCompatActivity {
      * @param value String to fix
      * @return Fixed String
      */
-    String applyEndings(String value){
+    String applyEndings(String value) {
         String to = settingsService.getDelimiters();
         value = TextConverter.getInstance().applyEndings(value, to);
         return value;
@@ -1245,7 +1263,6 @@ public class EditorActivity extends AppCompatActivity {
 
     /**
      * @param value Value
-     *
      * @return String
      */
     String toUnixEndings(String value) {
@@ -1268,15 +1285,15 @@ public class EditorActivity extends AppCompatActivity {
      */
     @SuppressLint("WrongConstant")
     public synchronized void onActivityResult(
-        final int requestCode,
-        int resultCode,
-        final Intent data
+            final int requestCode,
+            int resultCode,
+            final Intent data
     ) {
 
         if (requestCode == REQUEST_SAVE) {
             if (resultCode == Activity.RESULT_OK) {
                 setFilename(
-                    data.getStringExtra(TPStrings.RESULT_PATH)
+                        data.getStringExtra(TPStrings.RESULT_PATH)
                 );
                 this.saveFileWithConfirmation();
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -1323,7 +1340,7 @@ public class EditorActivity extends AppCompatActivity {
         // Check for the freshest data.
         Uri uri = data.getData();
         if (uri == null) {
-           return;
+            return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             int takeFlags = data.getFlags()
@@ -1349,8 +1366,7 @@ public class EditorActivity extends AppCompatActivity {
 
     // QueryTextListener
     private class QueryTextListener
-            implements SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener
-    {
+            implements SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
         private final BackgroundColorSpan span = new BackgroundColorSpan(getSearchSelectionColor());
         private final Editable editable;
         private Matcher matcher;
@@ -1359,14 +1375,17 @@ public class EditorActivity extends AppCompatActivity {
 
         public QueryTextListener() {
             // Use regex search and spannable for highlighting
-            height = scrollView.getHeight();
+            if (simpleScrolling()) {
+                height = linearLayout.getHeight();
+            } else {
+                height = scrollView.getHeight();
+            }
             editable = mText.getEditableText();
         }
 
         // onQueryTextChange
         @Override
-        public boolean onQueryTextChange(String newText)
-        {
+        public boolean onQueryTextChange(String newText) {
             // Reset the index and clear highlighting
             if (newText.length() == 0) {
                 index = 0;
@@ -1398,10 +1417,9 @@ public class EditorActivity extends AppCompatActivity {
 
         // onQueryTextSubmit
         @Override
-        public boolean onQueryTextSubmit(String query)
-        {
+        public boolean onQueryTextSubmit(String query) {
             // Find next text
-            if (matcher!= null) {
+            if (matcher != null) {
                 if (matcher.find()) {
                     // Check layout
                     if (mText.getLayout() == null) {
@@ -1432,8 +1450,11 @@ public class EditorActivity extends AppCompatActivity {
             int pos = mText.getLayout().getLineBaseline(line);
 
             // Scroll to it
-            scrollView.smoothScrollTo(0, pos - height / 2);
-
+            if (simpleScrolling()) {
+                mText.scrollTo(0, pos - height / 2);
+            } else {
+                scrollView.smoothScrollTo(0, pos - height / 2);
+            }
             // Highlight it
             editable.setSpan(
                     span,

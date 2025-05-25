@@ -1,0 +1,1 @@
+- add new feature "simple scrolling", this fixes scrolling on some samsung devices

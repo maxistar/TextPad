@@ -108,6 +108,7 @@
     <string name="readOnlyDialogTitle">警告：文件为只读！</string>
     <string name="readOnlyDialogButtonOpenAgain">重新打开</string>
     <string name="readOnlyDialogButtonContinue">以只读模式继续</string>
-
+    <string name="preferenceUseSimpleScrolling">修复滚动问题</string>
+    <string name="preferenceUseSimpleScrollingDescription">如果文本在滚动时意外跳转到末尾，请启用此选项</string>
 
 </resources>

@@ -1,0 +1,1 @@
+- añadir nueva función, desplazamiento simple, esto arregla el desplazamiento en algunos dispositivos Samsung

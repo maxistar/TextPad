@@ -150,7 +150,8 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             SettingsService.SETTING_FONT.equals(key) ||
             SettingsService.SETTING_BG_COLOR.equals(key) ||
             SettingsService.SETTING_FONT_COLOR.equals(key) ||
-            SettingsService.SETTING_FONT_SIZE.equals(key)
+            SettingsService.SETTING_FONT_SIZE.equals(key) ||
+            SettingsService.SETTING_USE_SIMPLE_SCROLLING.equals(key)
         ) {
             String lang = sharedPreferences.getString(SettingsService.SETTING_LANGUAGE, TPStrings.EN);
             setLocale(lang);
