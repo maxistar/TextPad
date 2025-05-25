@@ -1,2 +1,1 @@
 - add new feature, simple scrolling, this fixes scrolling on some samsung devices
-- add correct location for Chinese translation
