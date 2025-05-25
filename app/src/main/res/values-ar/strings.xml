@@ -96,7 +96,8 @@
     <string name="preferenceUseSystemColorsDescription">حدد سمة النظام</string>
     <string name="preferenceUseSimpleScrolling">إصلاح التمرير المضطرب</string>
     <string name="preferenceUseSimpleScrollingDescription">فعّل هذا إذا كان النص يقفز بشكل غير متوقع إلى النهاية أثناء التمرير</string>
-    <string name="_color_theme_auto">آلي</string>
+    <string name="preference_color_theme_auto">آلي</string>
+
     <string name="preference_color_theme_light">ضوء</string>
     <string name="preference_color_theme_dark">مظلم</string>
     <string name="preference_color_theme_custom">مخصص</string>
