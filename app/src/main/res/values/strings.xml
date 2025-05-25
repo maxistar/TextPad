@@ -98,7 +98,7 @@
 
     <string name="preferenceUseSystemColors">Color Theme</string>
     <string name="preferenceUseSystemColorsDescription">Select system theme</string>
-    <string name="preference_color_theme_auto" translatable="false">Auto</string>
+    <string name="preference_color_theme_auto">Auto</string>
     <string name="preference_color_theme_light">Light</string>
     <string name="preference_color_theme_dark">Dark</string>
     <string name="preference_color_theme_custom">Custom</string>
