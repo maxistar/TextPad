@@ -107,6 +107,6 @@
     <string name="readOnlyDialogTitle">Attenzione: file in sola lettura!</string>
     <string name="readOnlyDialogButtonOpenAgain">Apri di nuovo</string>
     <string name="readOnlyDialogButtonContinue">Continua in sola lettura</string>
-
-
+    <string name="preferenceUseSimpleScrolling">Correggi scorrimento irregolare</string>
+    <string name="preferenceUseSimpleScrollingDescription">Attiva questa opzione se il testo salta inaspettatamente alla fine durante lo scorrimento</string>
 </resources>

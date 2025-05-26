@@ -94,6 +94,8 @@
 
     <string name="preferenceUseSystemColors">Farbthema</string>
     <string name="preferenceUseSystemColorsDescription">Systemthema auswählen</string>
+    <string name="preferenceUseSimpleScrolling">Sprunghaftes Scrollen beheben</string>
+    <string name="preferenceUseSimpleScrollingDescription">Aktivieren Sie dies, wenn der Text beim Scrollen unerwartet ans Ende springt</string>
     <string name="preference_color_theme_auto">Auto</string>
     <string name="preference_color_theme_light">Licht</string>
     <string name="preference_color_theme_dark">Dunkel</string>

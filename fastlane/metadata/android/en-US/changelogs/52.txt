@@ -1,0 +1,1 @@
+- fixed disappearing of search icon

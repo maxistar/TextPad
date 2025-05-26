@@ -1,0 +1,1 @@
+- dodano nową funkcję, proste przewijanie, naprawia to przewijanie na niektórych urządzeniach Samsung

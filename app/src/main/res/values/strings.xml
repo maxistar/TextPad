@@ -104,6 +104,9 @@
     <string name="preference_color_theme_custom">Custom</string>
     <string name="preferenceUseWakeLockTitle">Use WakeLock</string>
     <string name="preferenceUseWakeLockDescription">Prevent device going to sleep mode</string>
+    <string name="preferenceUseSimpleScrolling">Fix Erratic Scrolling</string>
+    <string name="preferenceUseSimpleScrollingDescription">Enable this if text unexpectedly jumps to the end while scrolling</string>
+
 
     <string name="readOnlyDialogMessage">This file is open in read only mode. You can save it with a different name, or you can open it again using \'Open\' command from the application menu.</string>
     <string name="readOnlyDialogClickHere">Click here to read more.</string>

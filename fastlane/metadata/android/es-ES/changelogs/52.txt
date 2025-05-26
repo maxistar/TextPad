@@ -1,0 +1,1 @@
+- Se solucionó la desaparición del icono de búsqueda.
