@@ -164,7 +164,7 @@ public class EditorActivity extends AppCompatActivity {
         }
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
-        editTextUndoRedo = new EditTextUndoRedo(mText);
+        editTextUndoRedo = new EditTextUndoRedo(mText, this);
 
         if (simpleScrolling()) {
             linearLayout = findViewById(R.id.linear_layout);

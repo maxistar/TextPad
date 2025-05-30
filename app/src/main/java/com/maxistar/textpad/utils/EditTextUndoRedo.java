@@ -2,6 +2,7 @@ package com.maxistar.textpad.utils;
 
 import java.util.LinkedList;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.text.Editable;
@@ -45,10 +46,10 @@ public class EditTextUndoRedo {
      * @param textView
      *            The text view for which the undo/redo is implemented.
      */
-    public EditTextUndoRedo(TextView textView) {
+    public EditTextUndoRedo(TextView textView, Activity activity) {
         mTextView = textView;
         mEditHistory = new EditHistory();
-        mChangeListener = new EditTextChangeListener();
+        mChangeListener = new EditTextChangeListener(activity);
         mTextView.addTextChangedListener(mChangeListener);
     }
 
@@ -348,11 +349,15 @@ public class EditTextUndoRedo {
      * Class that listens to changes in the text.
      */
     private final class EditTextChangeListener implements TextWatcher {
-
+        Activity mActivity;
         /**
          * The text that will be removed by the change event.
          */
         private CharSequence mBeforeChange;
+
+        private EditTextChangeListener(Activity activity) {
+            mActivity = activity;
+        }
 
         public void beforeTextChanged(CharSequence s, int start, int count,
                                       int after) {
@@ -365,6 +370,7 @@ public class EditTextUndoRedo {
 
         public void onTextChanged(CharSequence s, int start, int before,
                                   int count) {
+            mActivity.invalidateOptionsMenu();
             if (mIsUndoOrRedo) {
                 return;
             }
