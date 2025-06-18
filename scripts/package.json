@@ -1,0 +1,18 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webdriverio": "^8.32.3"
+  },
+  "dependencies": {
+    "jest": "^29.7.0",
+    "ts-node": "^10.9.2"
+  }
+}
