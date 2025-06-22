@@ -3,9 +3,10 @@ const { remote } = require('webdriverio');
 const capabilities = {
   platformName: 'Android',
   'appium:automationName': 'UiAutomator2',
-  'appium:deviceName': 'emulator-5554',
+//  'appium:deviceName': 'emulator-5554',
   'appium:appPackage': 'com.maxistar.textpad',
   'appium:appActivity': '.activities.EditorActivity',
+  'appium:autoGrantPermissions': true,
 };
 
 const wdOpts = {
