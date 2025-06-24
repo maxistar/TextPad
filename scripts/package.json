@@ -4,15 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "vitest"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "vitest": "^3.2.4",
     "webdriverio": "^8.32.3"
-  },
-  "dependencies": {
-    "jest": "^29.7.0",
-    "ts-node": "^10.9.2"
   }
 }
