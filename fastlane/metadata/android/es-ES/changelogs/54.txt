@@ -1,0 +1,1 @@
+- Se corrigió un error en las funciones "deshacer" y "rehacer".

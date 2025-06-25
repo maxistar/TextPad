@@ -1,0 +1,1 @@
+- fixed a bug in the "undo", "redo" functions

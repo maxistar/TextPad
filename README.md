@@ -45,4 +45,3 @@ You can use [this service](https://crowdin.com/project/simple-text-editor) to ad
 ### To Do
 
 many many things to do.
-
