@@ -1,1 +1,1 @@
-- evitar fallos cuando el archivo no existe
+- avoid failures when the file does not exist

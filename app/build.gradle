@@ -4,7 +4,7 @@ android {
     defaultConfig {
         applicationId "com.maxistar.textpad"
         minSdkVersion 21
-        compileSdkVersion 34
+        compileSdkVersion 35
         targetSdkVersion 35
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
