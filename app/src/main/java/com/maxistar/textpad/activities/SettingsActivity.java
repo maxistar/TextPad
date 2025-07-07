@@ -38,6 +38,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         super.onCreate(savedInstanceState);
         settingsService = ServiceLocator.getInstance().getSettingsService(getApplicationContext());
         alternativeUrlsService = ServiceLocator.getInstance().getAlternativeUrlsService();
+        settingsService.applyLocale(this.getBaseContext());
         addPreferencesFromResource(R.xml.preferences);
 
         if (hideLegacyPicker()) {
@@ -142,7 +143,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
         // Unregister the listener whenever a key changes
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
-        settingsService.reloadSettings(this.getApplicationContext());
+        settingsService.reloadSettings(this.getBaseContext());
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {

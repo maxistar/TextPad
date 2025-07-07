@@ -1,0 +1,2 @@
+- Se corrigió el cambio de idioma en la configuración (gracias a bo039247 por notarlo).
+- Se actualizó al SDK de Android.

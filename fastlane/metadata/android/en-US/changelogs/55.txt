@@ -1,0 +1,2 @@
+- fixed language switch on settings activity (thanks bo039247 for noticing)
+- updated to android sdk

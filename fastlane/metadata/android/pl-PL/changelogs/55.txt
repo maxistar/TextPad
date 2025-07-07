@@ -1,0 +1,2 @@
+- naprawiono przełączanie języka w ustawieniach aktywności (dzięki bo039247 za zauważenie)
+- zaktualizowano do android sdk
