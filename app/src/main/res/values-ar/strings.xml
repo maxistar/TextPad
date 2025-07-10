@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <resources>
-    <string name="app_name">محرر النص البسيط</string>
-    <string name="app_name_settings">إعدادات - محرر النص البسيط</string>
+    <string name="app_name">Simple Text Editor</string>
+    <string name="app_name_settings">إعدادات</string>
     <string name="Open">فتح</string>
     <string name="New">جديد</string>
     <string name="Save">حفظ</string>
@@ -11,7 +11,7 @@
     <string name="File_Name">إسم الملف:</string>
     <string name="Cancel">إلغاء</string>
     <string name="Create">حفظ</string>
-    <string name="No_Data">لا توجد بيانات</string>
+    <string name="No_Data">لا يوجد بيانات</string>
     <string name="File_not_saved">لم يتم حفظ الملف:</string>
     <string name="Save_current_file">هل تريد حفظ الملف الحالي ؟</string>
     <string name="Yes">نعم</string>
@@ -26,10 +26,10 @@
     <string name="Settings">الإعدادات</string>
     <string name="About">حول</string>
     <string name="Continue">متابعة</string>
-    <string name="about_message">هذا هو محرر النص البسيط للأندرويد. للحصول على المزيد من المعلومات ، تفضل بزيارة https://texteditor.maxistar.me.</string>
+    <string name="about_message">هذا هو محرر Simple Text Editor للأندرويد. للحصول على المزيد من المعلومات ، تفضل بزيارة https://texteditor.maxistar.me.</string>
     <string name="Choose_Language">إختار اللغة</string>
     <string name="Language">اللغة</string>
-    <string name="Click_to_change_language">أنقر لتغيير لغة الواجهة</string>
+    <string name="Click_to_change_language">أنقر لتغيير اللغة</string>
     <string name="searchLabel">بحث</string>
     <string name="searchHint">النص</string>
     <string name="s_not_found">"%s" لم يتم العثور على</string>
@@ -59,9 +59,9 @@
     <string name="Main_Settings">الإعدادات الرئيسية</string>
     <string name="Appearance">المظهر</string>
     <string name="You_have_made_some_changes">لقد قمت ببعض التغييرات.</string>
-    <string name="Are_you_sure_to_quit">هل تريد بالتاكيد الخروج من التطبيق ؟</string>
+    <string name="Are_you_sure_to_quit">هل تريد الخروج من التطبيق ؟</string>
     <string name="File_already_exists">الملف موجود بالفعل</string>
-    <string name="Existing_file_will_be_overwritten">سيتم إستبدال الملف الموجود، هل تريد المتابعة بالتاكيد؟</string>
+    <string name="Existing_file_will_be_overwritten">سيتم إستبدال الملف الموجود، هل تريد المتابعة؟</string>
     <string name="Exit">خروج</string>
     <string name="Type_Something_Here">اكتب شيئًا هنا</string>
     <string name="Legacy_file_picker">محدد الملفات القديم</string>
@@ -70,7 +70,6 @@
     <string name="action_redo">إعادة</string>
     <string name="action_undo">الغاء التحميل</string>
     <string name="Open_Recent">افتح الملف الأخير</string>
-
     <string name="FileSystemAccess">الوصول إلى نظام الملفات</string>
     <string name="AlternativeFileAccessTitle">مسارات الملفات البديلة</string>
     <string name="AlternativeFileAccessDescription">السماح بتعيين عناوين بديلة للملفات إذا لم يتم منح أذونات نظام الملفات.</string>
@@ -78,38 +77,31 @@
     <string name="ResetAlternativeFilePathsSummary">انقر هنا لإعادة تعيين مسارات الملفات البديلة المخزنة</string>
     <string name="SelectAlternativeLocationForFile">لا يمكن فتح الملف باستخدام اسم نظام الملفات ، هل تريد تحديد هذا الملف باستخدام مدير الوسائط؟</string>
     <string name="ResetAlternativeFileLocations">هل أنت متأكد أنك تريد حذف مسارات الملفات البديلة المخزنة؟</string>
-
     <string name="preferenceDefaultColor">اللون الافتراضي</string>
-    <string name="preferenceChooseTextSelectionColor">اختر لون تمييز النص</string>
-    <string name="preferenceTextSelectionColor">لون تمييز النص</string>
+    <string name="preferenceChooseTextSelectionColor">اختر لون تحديد النص</string>
+    <string name="preferenceTextSelectionColor">لون تحديد النص</string>
     <string name="preferenceChooseSearchSelectionColor">اختر لون تظليل نتيجة البحث</string>
-    <string name="preferenceSearchSelectionColor">نتيجة البحث لون تظليل</string>
+    <string name="preferenceSearchSelectionColor">لون تظليل نتيجة البحث</string>
     <string name="preferenceShowLastEditedFilesTitle">إظهار آخر الملفات التي تم تحريرها</string>
     <string name="preferenceShowLastEditedFilesDescription">إظهار آخر الملفات التي تم تحريرها في قائمة الخيارات</string>
     <string name="preferenceAutoSaveCurrentFileTitle">الحفظ التلقائي</string>
     <string name="preferenceAutoSaveCurrentFileDescription">حفظ ملف التحرير الحالي تلقائيًا عند إغلاق النافذة</string>
     <string name="Open_Other">فتح أخرى ...</string>
-    <string name="Menu_Share">يشارك...</string>
-    <string name="Menu_Print">مطبعة</string>
-
+    <string name="Menu_Share">مشاركة</string>
+    <string name="Menu_Print">طباعة</string>
     <string name="preferenceUseSystemColors">موضوع اللون</string>
     <string name="preferenceUseSystemColorsDescription">حدد سمة النظام</string>
     <string name="preferenceUseSimpleScrolling">إصلاح التمرير المضطرب</string>
     <string name="preferenceUseSimpleScrollingDescription">فعّل هذا إذا كان النص يقفز بشكل غير متوقع إلى النهاية أثناء التمرير</string>
-    <string name="preference_color_theme_auto">آلي</string>
-
-    <string name="preference_color_theme_light">ضوء</string>
-    <string name="preference_color_theme_dark">مظلم</string>
+    <string name="preference_color_theme_auto">تلقائي</string>
+    <string name="preference_color_theme_light">الوضع الساطع</string>
+    <string name="preference_color_theme_dark">الوضع المظلم</string>
     <string name="preference_color_theme_custom">مخصص</string>
-
-    <string name="preferenceUseWakeLockTitle">استخدم ويكلوك</string>
+    <string name="preferenceUseWakeLockTitle">البقاء نشط</string>
     <string name="preferenceUseWakeLockDescription">منع الجهاز من الدخول في وضع السكون</string>
-
     <string name="readOnlyDialogMessage">تم فتح هذا الملف في وضع القراءة فقط. يمكنك حفظه باسم مختلف، أو إعادة فتحه باستخدام أمر "فتح" من قائمة التطبيق.</string>
     <string name="readOnlyDialogClickHere">انقر هنا لمعرفة المزيد.</string>
     <string name="readOnlyDialogTitle">تحذير: الملف للقراءة فقط!</string>
     <string name="readOnlyDialogButtonOpenAgain">إعادة الفتح</string>
     <string name="readOnlyDialogButtonContinue">المتابعة في وضع القراءة فقط</string>
-
-
 </resources>
