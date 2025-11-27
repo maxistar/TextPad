@@ -49,6 +49,10 @@ public class FontSizePreference extends DialogPreference
                 break;
             case SettingsService.SETTING_HUGE:
                 selected = 4;
+                break;
+            case SettingsService.SETTING_EXTRA_HUGE:
+                selected = 5;
+                break;
         }
     }
 
@@ -72,10 +76,13 @@ public class FontSizePreference extends DialogPreference
                     case 3:
                     settingsService.setFontSize(SettingsService.SETTING_LARGE, getContext());
                     break;
-                    case 4:
+                case 4:
                     settingsService.setFontSize(SettingsService.SETTING_HUGE, getContext());
                     break;
-                }
+                case 5:
+                    settingsService.setFontSize(SettingsService.SETTING_EXTRA_HUGE, getContext());
+                    break;
+            }
 
                 notifyChanged();
             }
@@ -88,7 +95,8 @@ public class FontSizePreference extends DialogPreference
                 SettingsService.SETTING_SMALL,
                 SettingsService.SETTING_MEDIUM,
                 SettingsService.SETTING_LARGE,
-                SettingsService.SETTING_HUGE
+                SettingsService.SETTING_HUGE,
+                SettingsService.SETTING_EXTRA_HUGE
         };
 
         List<String> fonts = Arrays.asList(arrayOfFonts);
@@ -143,6 +151,9 @@ public class FontSizePreference extends DialogPreference
                     break;
                 case SettingsService.SETTING_HUGE:
                     tv.setTextSize(28.0f);
+                    break;
+                case SettingsService.SETTING_EXTRA_HUGE:
+                    tv.setTextSize(56.0f);
             }
             // general options
             tv.setTextColor(Color.BLACK);

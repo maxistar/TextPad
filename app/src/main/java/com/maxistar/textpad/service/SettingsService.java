@@ -38,6 +38,7 @@ public class SettingsService {
     public static final String SETTING_SMALL = "Small";
     public static final String SETTING_LARGE = "Large";
     public static final String SETTING_HUGE = "Huge";
+    public static final String SETTING_EXTRA_HUGE = "Extra Huge";
 
     public static final int DEFAULT_BACKGROUND_COLOR = 0xFFDDDDDD;
     public static final int DEFAULT_TEXT_COLOR = 0xFF000000;
