@@ -463,6 +463,9 @@ public class EditorActivity extends AppCompatActivity {
             case (SettingsService.SETTING_HUGE):
                 mText.setTextSize(28.0f);
                 break;
+            case (SettingsService.SETTING_EXTRA_HUGE):
+                mText.setTextSize(56.0f);
+                break;
             case (SettingsService.SETTING_MEDIUM):
             default:
                 mText.setTextSize(20.0f);
