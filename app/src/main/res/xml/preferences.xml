@@ -21,6 +21,12 @@
             android:defaultValue="false" />
 
         <CheckBoxPreference
+            android:key="auto_wrapping"
+            android:title="@string/preferenceAutowrappingTitle"
+            android:summary="@string/preferenceAutowrappingDescription"
+            android:defaultValue="true" />
+
+        <CheckBoxPreference
             android:key="use_wake_lock"
             android:title="@string/preferenceUseWakeLockTitle"
             android:summary="@string/preferenceUseWakeLockDescription"

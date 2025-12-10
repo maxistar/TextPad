@@ -90,6 +90,8 @@
 
     <string name="preferenceAutoSaveCurrentFileTitle">Autosaving</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Automatically save currently editing file when window is closed</string>
+    <string name="preferenceAutowrappingTitle">Autowrapping</string>
+    <string name="preferenceAutowrappingDescription">wrap the line if text too long</string>
     <string name="Open_Other">Open other…</string>
 
 
