@@ -30,6 +30,8 @@ public class SettingsService {
     public static final String SETTING_ALTERNATIVE_FILE_ACCESS = "use_alternative_file_access";
     public static final String SETTING_SHOW_LAST_EDITED_FILES = "show_last_edited_files";
 
+    public static final String SETTING_AUTO_WRAPPING = "auto_wrapping";
+
     private static final String SETTING_USE_WAKE_LOCK = "use_wake_lock";
     public static final String SETTING_USE_SIMPLE_SCROLLING = "use_simple_scrolling";
 
@@ -59,6 +61,7 @@ public class SettingsService {
     private boolean legacy_file_picker = false;
     private boolean alternative_file_access = true;
     private boolean auto_save_current_file = false;
+    private boolean auto_wrapping = true;
 
     private String file_encoding = "";
     private String last_filename = "";
@@ -93,6 +96,7 @@ public class SettingsService {
         useWakeLock = sharedPref.getBoolean(SETTING_USE_WAKE_LOCK, false);
         useSimpleScrolling = sharedPref.getBoolean(SETTING_USE_SIMPLE_SCROLLING, false);
         alternative_file_access = sharedPref.getBoolean(SETTING_ALTERNATIVE_FILE_ACCESS, true);
+        auto_wrapping = sharedPref.getBoolean(SETTING_AUTO_WRAPPING, true);
         last_filename = sharedPref.getString(SETTING_LAST_FILENAME, TPStrings.EMPTY);
         file_encoding = sharedPref.getString(SETTING_FILE_ENCODING, TPStrings.UTF_8);
         delimiters = sharedPref.getString(SETTING_DELIMITERS, TPStrings.EMPTY);
@@ -280,5 +284,9 @@ public class SettingsService {
 
     public boolean isUseSimpleScrolling() {
         return this.useSimpleScrolling;
+    }
+
+    public boolean isAutoWrapping() {
+        return this.auto_wrapping;
     }
 }
