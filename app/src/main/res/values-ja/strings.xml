@@ -88,6 +88,8 @@
     <string name="preferenceShowLastEditedFilesDescription">オプションメニューに最後に編集したファイルを表示する</string>
     <string name="preferenceAutoSaveCurrentFileTitle">自動保存</string>
     <string name="preferenceAutoSaveCurrentFileDescription">ウィンドウを閉じたときに現在編集中のファイルを自動的に保存する</string>
+    <string name="preferenceAutowrappingDescription">テキストが長い場合に自動で改行する</string>
+    <string name="preferenceAutowrappingTitle">自動改行</string>
     <string name="Open_Other">他を開く...</string>
     <string name="Menu_Share">共有...</string>
     <string name="Menu_Print">印刷する</string>

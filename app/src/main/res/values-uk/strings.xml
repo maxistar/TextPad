@@ -86,6 +86,8 @@
     <string name="preferenceShowLastEditedFilesDescription">Показати останні змінені файли в меню параметрів</string>
     <string name="preferenceAutoSaveCurrentFileTitle">Автозбереження</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Автоматично зберігати поточний файл після закриття вікна</string>
+    <string name="preferenceAutowrappingDescription">Переносити рядок, якщо текст надто довгий</string>
+    <string name="preferenceAutowrappingTitle">Автоперенесення рядків</string>
     <string name="Open_Other">Відкрити інші…</string>
     <string name="Menu_Share">Поділитися…</string>
     <string name="Menu_Print">Роздрукувати</string>
