@@ -1,0 +1,2 @@
+- Se agregó un tamaño de texto extra grande (función solicitada por Arun).
+- Se agregó una opción para deshabilitar el ajuste automático (función solicitada por Dave).

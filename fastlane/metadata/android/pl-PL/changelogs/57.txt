@@ -1,0 +1,2 @@
+- dodano bardzo duży rozmiar tekstu (prośba Aruna)
+- dodano ustawienie wyłączające automatyczne zawijanie tekstu (prośba Dave'a)
