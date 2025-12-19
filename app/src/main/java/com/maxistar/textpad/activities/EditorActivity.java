@@ -37,7 +37,6 @@ import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -164,6 +163,9 @@ public class EditorActivity extends AppCompatActivity {
         }
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
+        if (!settingsService.isAutoWrapping()) {
+            disableEditorAutowrapping();
+        }
         editTextUndoRedo = new EditTextUndoRedo(mText, this);
 
         if (simpleScrolling()) {
@@ -431,6 +433,12 @@ public class EditorActivity extends AppCompatActivity {
         applyColors();
     }
 
+    private void disableEditorAutowrapping() {
+        mText.setHorizontallyScrolling(true);
+        mText.setHorizontalScrollBarEnabled(true);
+        mText.setMaxLines(Integer.MAX_VALUE);
+    }
+
     private void applyFontFace() {
         mText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE |
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
@@ -462,6 +470,9 @@ public class EditorActivity extends AppCompatActivity {
                 break;
             case (SettingsService.SETTING_HUGE):
                 mText.setTextSize(28.0f);
+                break;
+            case (SettingsService.SETTING_EXTRA_HUGE):
+                mText.setTextSize(56.0f);
                 break;
             case (SettingsService.SETTING_MEDIUM):
             default:

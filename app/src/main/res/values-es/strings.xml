@@ -88,6 +88,8 @@
     <string name="preferenceShowLastEditedFilesDescription">Mostrar los últimos archivos editados en el menú de opciones</string>
     <string name="preferenceAutoSaveCurrentFileTitle">Guardado automático</string>
     <string name="preferenceAutoSaveCurrentFileDescription">Guardar automáticamente el archivo de edición actual cuando se cierra la ventana</string>
+    <string name="preferenceAutowrappingDescription">Ajustar la línea si el texto es demasiado largo</string>
+    <string name="preferenceAutowrappingTitle">Ajuste automático de línea</string>
     <string name="Open_Other">Abierto otro...</string>
     <string name="Menu_Share">Compartir...</string>
     <string name="Menu_Print">Imprimir</string>

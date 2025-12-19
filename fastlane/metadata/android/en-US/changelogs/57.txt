@@ -1,0 +1,2 @@
+- added extra large text size (feature request of Arun)
+- add a setting to disable auto-wrapping (feature request of Dave)
