@@ -435,7 +435,7 @@ public class EditorActivity extends AppCompatActivity {
 
     private void disableEditorAutowrapping() {
         mText.setHorizontallyScrolling(true);
-        //mText.setHorizontalScrollBarEnabled(true);
+        mText.setHorizontalScrollBarEnabled(true);
         mText.setMaxLines(Integer.MAX_VALUE);
     }
 
