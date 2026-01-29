@@ -27,7 +27,7 @@
     <string name="Settings">Налаштування</string>
     <string name="About">Довідка</string>
     <string name="Continue">Продовжити</string>
-    <string name="about_message">Це Простий текстовий редактор для Android. Докладніше див.: https://texteditor.maxistar.me</string>
+    <string name="about_message">Це Простий текстовий редактор для Android. Докладніше див.: https://simpleditor.org</string>
     <string name="Choose_Language">Обрати мову</string>
     <string name="Language">Мова</string>
     <string name="Click_to_change_language">змінити мову інтерфейсу</string>
