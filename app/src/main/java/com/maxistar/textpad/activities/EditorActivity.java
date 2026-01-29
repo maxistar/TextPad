@@ -465,6 +465,9 @@ public class EditorActivity extends AppCompatActivity {
             case (SettingsService.SETTING_SMALL):
                 mText.setTextSize(16.0f);
                 break;
+            case (SettingsService.SETTING_MEDIUM_SMALL):
+                mText.setTextSize(18.0f);
+                break;
             case (SettingsService.SETTING_LARGE):
                 mText.setTextSize(24.0f);
                 break;
@@ -1196,7 +1199,7 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View textView) {
                 // Open the link in an external browser
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://texteditor.maxistar.me/faq/"));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://simpleditor.org/faq/"));
                 context.startActivity(browserIntent);
             }
         };

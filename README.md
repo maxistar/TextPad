@@ -18,7 +18,7 @@ The code is open so anyone can review code, send pull requests, new features, tr
 
 Github repo: https://github.com/maxistar/TextPad.
 
-Website: https://texteditor.maxistar.me
+Website: https://simpleditor.org
 
 Any suggestions, pull requests, translations for this project are welcomed. Thank you!
 

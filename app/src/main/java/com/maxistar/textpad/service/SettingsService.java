@@ -36,6 +36,7 @@ public class SettingsService {
     public static final String SETTING_USE_SIMPLE_SCROLLING = "use_simple_scrolling";
 
     public static final String SETTING_MEDIUM = "Medium";
+    public static final String SETTING_MEDIUM_SMALL = "Medium Small";
     public static final String SETTING_EXTRA_SMALL = "Extra Small";
     public static final String SETTING_SMALL = "Small";
     public static final String SETTING_LARGE = "Large";
