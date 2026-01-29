@@ -1196,7 +1196,7 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View textView) {
                 // Open the link in an external browser
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://texteditor.maxistar.me/faq/"));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://simpleditor.org/faq/"));
                 context.startActivity(browserIntent);
             }
         };
