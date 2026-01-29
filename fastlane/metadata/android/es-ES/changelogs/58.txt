@@ -1,0 +1,2 @@
+- se agregó un nuevo tamaño (gracias Christian por la solicitud de función y por la donación)
+- el sitio web se cambió a https://simpleditor.org

@@ -1,0 +1,2 @@
+- added a new size (thanks Christian for feature request and for donation)
+- website is changed to https://simpleditor.org
