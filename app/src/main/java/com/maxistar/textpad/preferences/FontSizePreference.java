@@ -41,17 +41,20 @@ public class FontSizePreference extends DialogPreference
             case SettingsService.SETTING_SMALL:
                 selected = 1;
                 break;
-            case SettingsService.SETTING_MEDIUM:
+            case SettingsService.SETTING_MEDIUM_SMALL:
                 selected = 2;
                 break;
-            case SettingsService.SETTING_LARGE:
+            case SettingsService.SETTING_MEDIUM:
                 selected = 3;
                 break;
-            case SettingsService.SETTING_HUGE:
+            case SettingsService.SETTING_LARGE:
                 selected = 4;
                 break;
-            case SettingsService.SETTING_EXTRA_HUGE:
+            case SettingsService.SETTING_HUGE:
                 selected = 5;
+                break;
+            case SettingsService.SETTING_EXTRA_HUGE:
+                selected = 6;
                 break;
         }
     }
@@ -71,15 +74,18 @@ public class FontSizePreference extends DialogPreference
                     settingsService.setFontSize(SettingsService.SETTING_SMALL, getContext());
                     break;
                     case 2:
-                    settingsService.setFontSize(SettingsService.SETTING_MEDIUM, getContext());
+                    settingsService.setFontSize(SettingsService.SETTING_MEDIUM_SMALL, getContext());
                     break;
                     case 3:
+                    settingsService.setFontSize(SettingsService.SETTING_MEDIUM, getContext());
+                    break;
+                    case 4:
                     settingsService.setFontSize(SettingsService.SETTING_LARGE, getContext());
                     break;
-                case 4:
+                case 5:
                     settingsService.setFontSize(SettingsService.SETTING_HUGE, getContext());
                     break;
-                case 5:
+                case 6:
                     settingsService.setFontSize(SettingsService.SETTING_EXTRA_HUGE, getContext());
                     break;
             }
@@ -93,6 +99,7 @@ public class FontSizePreference extends DialogPreference
         String[] arrayOfFonts = {
                 SettingsService.SETTING_EXTRA_SMALL,
                 SettingsService.SETTING_SMALL,
+                SettingsService.SETTING_MEDIUM_SMALL,
                 SettingsService.SETTING_MEDIUM,
                 SettingsService.SETTING_LARGE,
                 SettingsService.SETTING_HUGE,
@@ -142,6 +149,9 @@ public class FontSizePreference extends DialogPreference
                     break;
                 case SettingsService.SETTING_SMALL:
                     tv.setTextSize(16.0f);
+                    break;
+                case SettingsService.SETTING_MEDIUM_SMALL:
+                    tv.setTextSize(18.0f);
                     break;
                 case SettingsService.SETTING_MEDIUM:
                     tv.setTextSize(20.0f);
