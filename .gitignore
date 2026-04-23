@@ -1,3 +1,4 @@
+*.apk
 .idea
 .gradle
 /local.properties
