@@ -3,6 +3,8 @@ import type { Selector } from '../pages/Selectors'
 export interface Driver {
   init(): Promise<void>
   dispose(): Promise<void>
+  restartApp(): Promise<void>
+  stopApp(): Promise<void>
   click(selector: Selector, timeoutMs?: number): Promise<void>
   fill(selector: Selector, value: string): Promise<void>
   text(selector: Selector, timeoutMs?: number): Promise<string>

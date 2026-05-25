@@ -37,12 +37,22 @@ export class CustomWorld extends World {
     await this.app.init()
   }
 
+  async prepareApp(): Promise<void> {
+    logger.info('Restarting TextPad before scenario')
+    await this.app.restartApp()
+  }
+
   async disposeSession(): Promise<void> {
     await this.app.dispose()
   }
 
   async resetTestFile(): Promise<void> {
     await this.app.removeFile(this.testFilePath)
+  }
+
+  async stopApp(): Promise<void> {
+    logger.info('Stopping TextPad after scenario')
+    await this.app.stopApp()
   }
 
   async captureDiagnostics(baseName: string): Promise<void> {

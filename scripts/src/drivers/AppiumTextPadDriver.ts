@@ -44,11 +44,25 @@ export class AppiumTextPadDriver implements Driver {
       },
     })
 
-    await this.activateApp()
+    await this.restartApp()
   }
 
   async dispose(): Promise<void> {
     await this.client?.deleteSession()
+  }
+
+  async restartApp(): Promise<void> {
+    if (!this.client) {
+      throw new Error('Appium session is not initialized')
+    }
+
+    await this.stopApp()
+    await sleep(1000)
+    await this.activateApp()
+  }
+
+  async stopApp(): Promise<void> {
+    await this.forceStopApp()
   }
 
   async click(selector: Selector, timeoutMs?: number): Promise<void> {
@@ -144,6 +158,40 @@ export class AppiumTextPadDriver implements Driver {
       }
     ).activateApp(this.androidConfig.appPackage)
   }
+
+  private async forceStopApp(): Promise<void> {
+    if (!this.client) {
+      throw new Error('Appium session is not initialized')
+    }
+
+    try {
+      await this.client.execute('mobile: shell', {
+        command: 'am',
+        args: ['force-stop', this.androidConfig.appPackage],
+      })
+      return
+    } catch (error) {
+      logger.info(
+        `Could not force-stop ${this.androidConfig.appPackage} through mobile shell; falling back to terminateApp. ${String(error)}`,
+      )
+    }
+
+    try {
+      await (
+        this.client as Browser & {
+          terminateApp(appId: string): Promise<boolean>
+        }
+      ).terminateApp(this.androidConfig.appPackage)
+    } catch (error) {
+      logger.info(
+        `Could not confirm ${this.androidConfig.appPackage} termination; continuing with activateApp. ${String(error)}`,
+      )
+    }
+  }
+}
+
+function sleep(durationMs: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, durationMs))
 }
 
 function selectorToQuery(selector: Selector): string {

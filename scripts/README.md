@@ -85,13 +85,15 @@ npm run test:smoke
 
 The save-file smoke scenario:
 
-1. Opens the installed TextPad app.
-2. Waits for the editor to be ready.
-3. Enters predictable test text.
-4. Opens the Save action through the overflow menu.
-5. Saves with a generated filename using the Android document picker or legacy TextPad file dialog.
-6. Verifies the editor remains available after saving.
-7. Reads the saved file from the configured device-storage path and verifies the content.
+1. Terminates any already-running TextPad instance.
+2. Opens the installed TextPad app.
+3. Waits for the editor to be ready.
+4. Enters predictable test text.
+5. Opens the Save action through the overflow menu.
+6. Saves with a generated filename using the Android document picker or legacy TextPad file dialog.
+7. Verifies the editor remains available after saving.
+8. Reads the saved file from the configured device-storage path and verifies the content.
+9. Stops TextPad before closing the Appium session.
 
 Generated filenames use the configured prefix and a timestamp so repeated local runs do not fail only because a previous file exists.
 
