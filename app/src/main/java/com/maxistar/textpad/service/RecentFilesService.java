@@ -31,30 +31,23 @@ public class RecentFilesService {
     public void addRecentFile(String url, Context context) {
         loadItems(context);
 
-        //items.remove(url);
-        items.add(url);
-        removeOldestItems(url);
-
+        items = addRecentFile(items, url);
 
         saveRecentFiles(items, context);
     }
 
-    private void removeOldestItems(String url) {
-        ArrayList<String> newItems = new ArrayList<>();
-        int counter = 0;
-        int lastIndex = items.size();
-        int skip = items.size() - MAX_ELEMENTS_STORED;
-        for(String item: items) {
-            counter++;
-            if (counter != lastIndex && item.equals(url)) {
-                continue;
-            }
-            if (counter <= skip) {
-                continue;
-            }
-            newItems.add(item);
+    static ArrayList<String> addRecentFile(ArrayList<String> items, String url) {
+        ArrayList<String> newItems = new ArrayList<>(items);
+        while (newItems.remove(url)) {
+            // Remove all previous occurrences before appending the latest entry.
         }
-        this.items = newItems;
+        newItems.add(url);
+
+        while (newItems.size() > MAX_ELEMENTS_STORED) {
+            newItems.remove(0);
+        }
+
+        return newItems;
     }
 
     private void loadItems(Context context) {
@@ -72,6 +65,10 @@ public class RecentFilesService {
      */
     public ArrayList<String> getLastFiles(int skip, Context context) {
         loadItems(context);
+        return getLastFiles(items, skip);
+    }
+
+    static ArrayList<String> getLastFiles(ArrayList<String> items, int skip) {
         ArrayList<String> result = new ArrayList<>();
         int counter = 0;
         ListIterator<String> it = items.listIterator(items.size());
@@ -82,8 +79,8 @@ public class RecentFilesService {
             if (counter <= skip) {
                 continue;
             }
-            if (counter > MAX_ELEMENTS_SHOWN + 1) {
-                continue;
+            if (result.size() >= MAX_ELEMENTS_SHOWN) {
+                break;
             }
 
             result.add(name);
