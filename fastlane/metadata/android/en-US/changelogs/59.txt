@@ -1,0 +1,3 @@
+- Fixed recent files bug
+- Updated About section in Settings screen
+- Fixed Chinese translation issue

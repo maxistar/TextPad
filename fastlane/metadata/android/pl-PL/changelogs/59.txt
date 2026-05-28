@@ -1,0 +1,3 @@
+- Naprawiono błąd listy ostatnich plików
+- Zaktualizowano sekcję O aplikacji na ekranie ustawień
+- Naprawiono problem z tłumaczeniem na język chiński
