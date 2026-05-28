@@ -1,0 +1,3 @@
+- Se corrigió un error en los archivos recientes
+- Se actualizó la sección Acerca de en la pantalla de ajustes
+- Se corrigió un problema con la traducción al chino

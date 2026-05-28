@@ -8,3 +8,5 @@
 /app/build
 /releases
 images/scaled
+scripts/artifacts
+scripts/dist

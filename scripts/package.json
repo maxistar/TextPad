@@ -1,15 +1,24 @@
 {
-  "name": "scripts",
+  "name": "textpad-e2e-tests",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "External Appium E2E smoke tests for TextPad",
+  "private": true,
+  "type": "commonjs",
   "scripts": {
-    "test": "vitest"
+    "build": "tsc -p tsconfig.json",
+    "test:smoke": "npm run build && cucumber-js features/save-text-file.feature",
+    "test:smoke:all": "npm run build && cucumber-js"
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@cucumber/cucumber": "^11.0.1",
+    "appium": "^2.13.0",
+    "typescript": "^5.6.2",
+    "webdriverio": "^8.38.2"
+  },
   "devDependencies": {
-    "vitest": "^3.2.4",
-    "webdriverio": "^8.32.3"
+    "@types/node": "^22.7.4",
+    "appium-uiautomator2-driver": "^4.2.3"
   }
 }

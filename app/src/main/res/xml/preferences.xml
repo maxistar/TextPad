@@ -134,11 +134,8 @@
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/About">
-        <Preference
-            android:key="version_name"
-            android:summary=""
-            android:title="@string/Version" />
         <com.maxistar.textpad.AboutBox
+            android:key="version_name"
             android:title="@string/About_Editor"
             android:summary="@string/Just_a_little_FYI"
             android:dialogTitle="@string/Warranty_Information" />
