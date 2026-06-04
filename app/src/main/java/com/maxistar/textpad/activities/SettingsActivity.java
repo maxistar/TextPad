@@ -2,7 +2,6 @@ package com.maxistar.textpad.activities;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Map;
 
 import android.app.AlertDialog;
@@ -11,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -154,7 +152,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             SettingsService.SETTING_FONT_SIZE.equals(key) ||
             SettingsService.SETTING_USE_SIMPLE_SCROLLING.equals(key)
         ) {
-            String lang = sharedPreferences.getString(SettingsService.SETTING_LANGUAGE, TPStrings.EN);
+            String lang = sharedPreferences.getString(SettingsService.SETTING_LANGUAGE, TPStrings.EMPTY);
             setLocale(lang);
             SettingsService.setLanguageChangedFlag();
         }
@@ -170,12 +168,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
 
     public void setLocale(String lang) {
-        Locale locale2 = new Locale(lang);
-        Locale.setDefault(locale2);
-        Configuration config2 = new Configuration();
-        config2.locale = locale2;
-
-        getBaseContext().getResources().updateConfiguration(config2, null);
+        SettingsService.applyLocale(getBaseContext(), lang);
         showPreferences();
     }
 
