@@ -111,4 +111,13 @@
     <string name="readOnlyDialogButtonContinue">Продолжить в режиме только для чтения</string>
     <string name="preferenceUseSimpleScrolling">Исправить нестабильную прокрутку</string>
     <string name="preferenceUseSimpleScrollingDescription">Включите, если текст неожиданно перепрыгивает в конец при прокрутке</string>
+    <string name="preferenceSyntaxHighlightingTitle">Подсветка синтаксиса</string>
+    <string name="preferenceSyntaxHighlightingDescription">Подсвечивать синтаксис JSON, Markdown и JavaScript</string>
+    <string name="syntaxLanguage">Язык синтаксиса</string>
+    <string name="syntaxLanguageAuto">Автоматически</string>
+    <string name="syntaxLanguagePlainText">Обычный текст</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">Подсветка синтаксиса отключена, потому что документ слишком большой.</string>
 </resources>

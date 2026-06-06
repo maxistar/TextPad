@@ -114,4 +114,13 @@
     <string name="readOnlyDialogButtonContinue">المتابعة في وضع القراءة فقط</string>
 
 
+    <string name="preferenceSyntaxHighlightingTitle">تمييز بناء الجملة</string>
+    <string name="preferenceSyntaxHighlightingDescription">تلوين بناء جملة JSON وMarkdown وJavaScript</string>
+    <string name="syntaxLanguage">لغة بناء الجملة</string>
+    <string name="syntaxLanguageAuto">تلقائي</string>
+    <string name="syntaxLanguagePlainText">نص عادي</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">تم تخطي تمييز بناء الجملة لأن هذا المستند كبير جدًا.</string>
 </resources>

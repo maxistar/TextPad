@@ -111,4 +111,13 @@
     <string name="readOnlyDialogButtonContinue">Continua in sola lettura</string>
     <string name="preferenceUseSimpleScrolling">Correggi scorrimento irregolare</string>
     <string name="preferenceUseSimpleScrollingDescription">Attiva questa opzione se il testo salta inaspettatamente alla fine durante lo scorrimento</string>
+    <string name="preferenceSyntaxHighlightingTitle">Evidenziazione della sintassi</string>
+    <string name="preferenceSyntaxHighlightingDescription">Colora la sintassi JSON, Markdown e JavaScript</string>
+    <string name="syntaxLanguage">Linguaggio della sintassi</string>
+    <string name="syntaxLanguageAuto">Automatico</string>
+    <string name="syntaxLanguagePlainText">Testo semplice</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">L\'evidenziazione della sintassi è stata ignorata perché il documento è troppo grande.</string>
 </resources>

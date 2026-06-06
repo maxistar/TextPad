@@ -111,4 +111,13 @@
     <string name="readOnlyDialogButtonContinue">Continuar en modo solo lectura</string>
     <string name="preferenceUseSimpleScrolling">Corregir desplazamiento errático</string>
     <string name="preferenceUseSimpleScrollingDescription">Activa esto si el texto salta inesperadamente al final durante el desplazamiento</string>
+    <string name="preferenceSyntaxHighlightingTitle">Resaltado de sintaxis</string>
+    <string name="preferenceSyntaxHighlightingDescription">Colorear la sintaxis de JSON, Markdown y JavaScript</string>
+    <string name="syntaxLanguage">Lenguaje de sintaxis</string>
+    <string name="syntaxLanguageAuto">Automático</string>
+    <string name="syntaxLanguagePlainText">Texto sin formato</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">Se omitió el resaltado de sintaxis porque este documento es demasiado grande.</string>
 </resources>

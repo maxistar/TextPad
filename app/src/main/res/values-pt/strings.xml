@@ -113,4 +113,13 @@
     <string name="readOnlyDialogButtonContinue">Continuar em modo somente leitura</string>
 
 
+    <string name="preferenceSyntaxHighlightingTitle">Realce de sintaxe</string>
+    <string name="preferenceSyntaxHighlightingDescription">Colorir a sintaxe de JSON, Markdown e JavaScript</string>
+    <string name="syntaxLanguage">Linguagem de sintaxe</string>
+    <string name="syntaxLanguageAuto">Automático</string>
+    <string name="syntaxLanguagePlainText">Texto simples</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">O realce de sintaxe foi ignorado porque este documento é muito grande.</string>
 </resources>

@@ -113,4 +113,13 @@
     <string name="readOnlyDialogButtonContinue">Im Nur-Lese-Modus fortfahren</string>
 
 
+    <string name="preferenceSyntaxHighlightingTitle">Syntaxhervorhebung</string>
+    <string name="preferenceSyntaxHighlightingDescription">JSON-, Markdown- und JavaScript-Syntax farbig darstellen</string>
+    <string name="syntaxLanguage">Syntaxsprache</string>
+    <string name="syntaxLanguageAuto">Automatisch</string>
+    <string name="syntaxLanguagePlainText">Nur Text</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">Die Syntaxhervorhebung wurde übersprungen, weil dieses Dokument zu groß ist.</string>
 </resources>

@@ -111,4 +111,13 @@
     <string name="readOnlyDialogButtonContinue">読み取り専用で続行</string>
     <string name="preferenceUseSimpleScrolling">不安定なスクロールを修正</string>
     <string name="preferenceUseSimpleScrollingDescription">スクロール中にテキストが予期せず最後までジャンプする場合に有効にしてください</string>
+    <string name="preferenceSyntaxHighlightingTitle">構文の強調表示</string>
+    <string name="preferenceSyntaxHighlightingDescription">JSON、Markdown、JavaScript の構文を色分けします</string>
+    <string name="syntaxLanguage">構文言語</string>
+    <string name="syntaxLanguageAuto">自動</string>
+    <string name="syntaxLanguagePlainText">プレーンテキスト</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">ドキュメントが大きすぎるため、構文の強調表示を省略しました。</string>
 </resources>

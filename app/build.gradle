@@ -1,6 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
+
     defaultConfig {
         applicationId "com.maxistar.textpad"
         minSdkVersion 21
@@ -65,6 +71,5 @@ android {
 
     }
 }
-
 
 

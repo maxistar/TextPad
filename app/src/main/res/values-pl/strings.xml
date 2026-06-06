@@ -113,4 +113,13 @@
     <string name="readOnlyDialogButtonContinue">Kontynuuj w trybie tylko do odczytu</string>
 
 
+    <string name="preferenceSyntaxHighlightingTitle">Podświetlanie składni</string>
+    <string name="preferenceSyntaxHighlightingDescription">Kolorowanie składni JSON, Markdown i JavaScript</string>
+    <string name="syntaxLanguage">Język składni</string>
+    <string name="syntaxLanguageAuto">Automatycznie</string>
+    <string name="syntaxLanguagePlainText">Zwykły tekst</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">Pominięto podświetlanie składni, ponieważ dokument jest zbyt duży.</string>
 </resources>

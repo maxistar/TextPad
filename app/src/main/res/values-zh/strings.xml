@@ -107,4 +107,13 @@
     <string name="readOnlyDialogButtonContinue">以只读模式继续</string>
     <string name="preferenceUseSimpleScrolling">修复滚动问题</string>
     <string name="preferenceUseSimpleScrollingDescription">如果文本在滚动时意外跳转到末尾，请启用此选项</string>
+    <string name="preferenceSyntaxHighlightingTitle">语法高亮</string>
+    <string name="preferenceSyntaxHighlightingDescription">为 JSON、Markdown 和 JavaScript 语法着色</string>
+    <string name="syntaxLanguage">语法语言</string>
+    <string name="syntaxLanguageAuto">自动</string>
+    <string name="syntaxLanguagePlainText">纯文本</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">此文档过大，已跳过语法高亮。</string>
 </resources>

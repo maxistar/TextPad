@@ -109,4 +109,13 @@
     <string name="readOnlyDialogButtonContinue">Продовжити в режимі лише для читання</string>
 
 
+    <string name="preferenceSyntaxHighlightingTitle">Підсвічування синтаксису</string>
+    <string name="preferenceSyntaxHighlightingDescription">Підсвічувати синтаксис JSON, Markdown і JavaScript</string>
+    <string name="syntaxLanguage">Мова синтаксису</string>
+    <string name="syntaxLanguageAuto">Автоматично</string>
+    <string name="syntaxLanguagePlainText">Звичайний текст</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">Підсвічування синтаксису пропущено, оскільки документ завеликий.</string>
 </resources>

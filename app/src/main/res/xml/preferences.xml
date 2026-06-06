@@ -80,6 +80,12 @@
             android:defaultValue="Medium"
             android:dialogTitle="@string/Choose_a_font_size" />
 
+        <CheckBoxPreference
+            android:key="syntax_highlighting"
+            android:title="@string/preferenceSyntaxHighlightingTitle"
+            android:summary="@string/preferenceSyntaxHighlightingDescription"
+            android:defaultValue="false" />
+
         <ListPreference
             android:entries="@array/color_theme_names"
             android:entryValues="@array/color_theme_values"

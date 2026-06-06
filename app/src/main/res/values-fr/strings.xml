@@ -111,4 +111,13 @@
     <string name="readOnlyDialogButtonContinue">Continuer en lecture seule</string>
     <string name="preferenceUseSimpleScrolling">Corriger le défilement erratique</string>
     <string name="preferenceUseSimpleScrollingDescription">Activez ceci si le texte saute de manière inattendue à la fin pendant le défilement</string>
+    <string name="preferenceSyntaxHighlightingTitle">Coloration syntaxique</string>
+    <string name="preferenceSyntaxHighlightingDescription">Colorer la syntaxe JSON, Markdown et JavaScript</string>
+    <string name="syntaxLanguage">Langage de syntaxe</string>
+    <string name="syntaxLanguageAuto">Automatique</string>
+    <string name="syntaxLanguagePlainText">Texte brut</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">La coloration syntaxique a été ignorée car ce document est trop volumineux.</string>
 </resources>

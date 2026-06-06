@@ -22,6 +22,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -58,6 +59,9 @@ import com.maxistar.textpad.TPStrings;
 import com.maxistar.textpad.service.AlternativeUrlsService;
 import com.maxistar.textpad.service.RecentFilesService;
 import com.maxistar.textpad.service.ThemeService;
+import com.maxistar.textpad.syntax.LanguageMode;
+import com.maxistar.textpad.syntax.SyntaxHighlightController;
+import com.maxistar.textpad.syntax.SyntaxPalette;
 import com.maxistar.textpad.utils.EditTextUndoRedo;
 import com.maxistar.textpad.utils.FileNameHelper;
 import com.maxistar.textpad.utils.System;
@@ -82,6 +86,7 @@ public class EditorActivity extends AppCompatActivity {
     private static final String STATE_FILENAME = "filename";
     private static final String STATE_CHANGED = "changed";
     private static final String STATE_CURSOR_POSITION = "cursor-position";
+    private static final String STATE_SYNTAX_LANGUAGE = "syntax-language";
 
     private static final int REQUEST_OPEN = 1;
     private static final int REQUEST_SAVE = 2;
@@ -142,6 +147,8 @@ public class EditorActivity extends AppCompatActivity {
     private TextWatcher textWatcher;
 
     EditTextUndoRedo editTextUndoRedo;
+    private SyntaxHighlightController syntaxHighlightController;
+    private LanguageMode syntaxLanguageMode = LanguageMode.AUTO;
 
     WebView mWebView;
 
@@ -167,6 +174,10 @@ public class EditorActivity extends AppCompatActivity {
             disableEditorAutowrapping();
         }
         editTextUndoRedo = new EditTextUndoRedo(mText, this);
+        syntaxHighlightController = new SyntaxHighlightController(
+                mText,
+                () -> showToast(R.string.syntaxHighlightingDocumentTooLarge)
+        );
 
         if (simpleScrolling()) {
             linearLayout = findViewById(R.id.linear_layout);
@@ -197,6 +208,7 @@ public class EditorActivity extends AppCompatActivity {
         }
 
         setTextWatcher();
+        configureSyntaxHighlighting();
         updateTitle();
         mText.requestFocus();
 
@@ -234,6 +246,7 @@ public class EditorActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                syntaxHighlightController.onTextChanged();
                 if (changed) {
                     return;
                 }
@@ -306,6 +319,8 @@ public class EditorActivity extends AppCompatActivity {
         if (settingsService.useWakeLock()) {
             ServiceLocator.getInstance().getWakeLockService().acquireLock(this.getApplicationContext());
         }
+        configureSyntaxHighlighting();
+        syntaxHighlightController.start();
     }
 
     protected void onPause() {
@@ -332,6 +347,14 @@ public class EditorActivity extends AppCompatActivity {
         urlFilename = state.getString(STATE_FILENAME);
         changed = state.getBoolean(STATE_CHANGED);
         selectionStart = state.getInt(STATE_CURSOR_POSITION);
+        String savedMode = state.getString(STATE_SYNTAX_LANGUAGE);
+        if (savedMode != null) {
+            try {
+                syntaxLanguageMode = LanguageMode.valueOf(savedMode);
+            } catch (IllegalArgumentException ignored) {
+                syntaxLanguageMode = LanguageMode.AUTO;
+            }
+        }
     }
 
     /**
@@ -342,10 +365,18 @@ public class EditorActivity extends AppCompatActivity {
         outState.putString(STATE_FILENAME, urlFilename);
         outState.putBoolean(STATE_CHANGED, changed);
         outState.putInt(STATE_CURSOR_POSITION, mText.getSelectionStart());
+        outState.putString(STATE_SYNTAX_LANGUAGE, syntaxLanguageMode.name());
     }
 
     protected void onStop() {
+        syntaxHighlightController.stop();
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        syntaxHighlightController.destroy();
+        super.onDestroy();
     }
 
     @Override
@@ -431,6 +462,42 @@ public class EditorActivity extends AppCompatActivity {
         applyFontFace();
         applyFontSize();
         applyColors();
+        if (syntaxHighlightController != null) {
+            configureSyntaxHighlighting();
+        }
+    }
+
+    private void configureSyntaxHighlighting() {
+        syntaxHighlightController.setEnabled(settingsService.isSyntaxHighlightingEnabled());
+        syntaxHighlightController.setLanguageMode(syntaxLanguageMode);
+        syntaxHighlightController.setDisplayName(getDocumentDisplayName());
+        syntaxHighlightController.setPalette(getSyntaxPalette());
+    }
+
+    private SyntaxPalette getSyntaxPalette() {
+        if (settingsService.isCustomTheme()) {
+            return SyntaxPalette.forBackground(settingsService.getBgColor());
+        }
+        if (SettingsService.COLOR_THEME_DARK.equals(settingsService.getColorThemeType())) {
+            return SyntaxPalette.dark();
+        }
+        if (SettingsService.COLOR_THEME_LIGHT.equals(settingsService.getColorThemeType())) {
+            return SyntaxPalette.light();
+        }
+        int nightMode = getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK;
+        return nightMode == Configuration.UI_MODE_NIGHT_YES
+                ? SyntaxPalette.dark() : SyntaxPalette.light();
+    }
+
+    private String getDocumentDisplayName() {
+        if (isFilenameEmpty()) {
+            return TPStrings.NEW_FILE_TXT;
+        }
+        return FileNameHelper.getFilenameByUri(
+                getApplicationContext(),
+                Uri.parse(getFilename())
+        );
     }
 
     private void disableEditorAutowrapping() {
@@ -535,6 +602,7 @@ public class EditorActivity extends AppCompatActivity {
         redoMenu.setEnabled(editTextUndoRedo.getCanRedo());
 
         updateRecentFiles(menu);
+        updateSyntaxLanguageMenu(menu);
 
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             MenuItem printMenu = menu.findItem(R.id.menu_document_print);
@@ -542,6 +610,34 @@ public class EditorActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private void updateSyntaxLanguageMenu(Menu menu) {
+        MenuItem syntaxMenu = menu.findItem(R.id.menu_syntax_language);
+        syntaxMenu.setVisible(settingsService.isSyntaxHighlightingEnabled());
+        int checkedItem;
+        switch (syntaxLanguageMode) {
+            case PLAIN_TEXT:
+                checkedItem = R.id.menu_syntax_plain_text;
+                break;
+            case JSON:
+                checkedItem = R.id.menu_syntax_json;
+                break;
+            case MARKDOWN:
+                checkedItem = R.id.menu_syntax_markdown;
+                break;
+            case JAVASCRIPT:
+                checkedItem = R.id.menu_syntax_javascript;
+                break;
+            case AUTO:
+            default:
+                checkedItem = R.id.menu_syntax_auto;
+                break;
+        }
+        MenuItem selectedItem = menu.findItem(checkedItem);
+        if (selectedItem != null) {
+            selectedItem.setChecked(true);
+        }
     }
 
     private void updateRecentFiles(Menu menu) {
@@ -673,6 +769,16 @@ public class EditorActivity extends AppCompatActivity {
             shareText();
         } else if (itemId == R.id.menu_document_print) {
             printText();
+        } else if (itemId == R.id.menu_syntax_auto) {
+            selectSyntaxLanguage(LanguageMode.AUTO, item);
+        } else if (itemId == R.id.menu_syntax_plain_text) {
+            selectSyntaxLanguage(LanguageMode.PLAIN_TEXT, item);
+        } else if (itemId == R.id.menu_syntax_json) {
+            selectSyntaxLanguage(LanguageMode.JSON, item);
+        } else if (itemId == R.id.menu_syntax_markdown) {
+            selectSyntaxLanguage(LanguageMode.MARKDOWN, item);
+        } else if (itemId == R.id.menu_syntax_javascript) {
+            selectSyntaxLanguage(LanguageMode.JAVASCRIPT, item);
         } else if (itemId == R.id.menu_document_settings) {
             showSettings();
         } else if (itemId == R.id.menu_exit) {
@@ -680,6 +786,12 @@ public class EditorActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void selectSyntaxLanguage(LanguageMode languageMode, MenuItem item) {
+        syntaxLanguageMode = languageMode;
+        item.setChecked(true);
+        syntaxHighlightController.setLanguageMode(languageMode);
     }
 
     private void printText() {
@@ -826,12 +938,21 @@ public class EditorActivity extends AppCompatActivity {
         mText.setText(TPStrings.EMPTY);
         setFilename(TPStrings.EMPTY);
         initEditor();
+        resetSyntaxDocument();
         updateTitle();
+    }
+
+    private void resetSyntaxDocument() {
+        syntaxLanguageMode = LanguageMode.AUTO;
+        syntaxHighlightController.resetDocument(getDocumentDisplayName());
     }
 
     private void setFilename(String value) {
         this.urlFilename = value;
         storeLastFileName(value);
+        if (syntaxHighlightController != null) {
+            syntaxHighlightController.setDisplayName(getDocumentDisplayName());
+        }
     }
 
     private void storeLastFileName(String value) {
@@ -1110,6 +1231,7 @@ public class EditorActivity extends AppCompatActivity {
                 settingsService.setLastFilename(filename, this.getApplicationContext());
             }
             selectionStart = 0;
+            resetSyntaxDocument();
             updateTitle();
         } catch (FileNotFoundException e) {
             this.showToast(R.string.File_not_found);
@@ -1156,6 +1278,7 @@ public class EditorActivity extends AppCompatActivity {
                 lastTriedSystemUri = null;
             }
             updateTitle();
+            resetSyntaxDocument();
             detectReadOnlyAccess(uri);
         } catch (FileNotFoundException e) {
             if (isAccessDeniedException(e)) {
@@ -1320,6 +1443,7 @@ public class EditorActivity extends AppCompatActivity {
                 showToast(R.string.Operation_Canceled);
             }
         } else if (requestCode == REQUEST_SETTINGS) {
+            settingsService.reloadSettings(getApplicationContext());
             applyPreferences();
         } else if (requestCode == ACTION_OPEN_FILE
                 && resultCode == Activity.RESULT_OK) {
