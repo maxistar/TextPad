@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_title">Dossiers</string>
+    <string name="workspace_add_folder">Ajouter un dossier</string>
+    <string name="workspace_empty">Ajoutez un dossier pour parcourir ses fichiers ici.</string>
+    <string name="workspace_loading">Chargement…</string>
+    <string name="workspace_empty_directory">Dossier vide</string>
+    <string name="workspace_unavailable">Dossier indisponible</string>
+    <string name="workspace_retry">Réessayer</string>
+    <string name="workspace_refresh">Actualiser</string>
+    <string name="workspace_reauthorize">Choisir à nouveau le dossier</string>
+    <string name="workspace_remove">Retirer le dossier</string>
+    <string name="workspace_remove_title">Retirer ce dossier ?</string>
+    <string name="workspace_remove_message">Le dossier et ses fichiers resteront sur l’appareil. Seul ce raccourci sera retiré.</string>
+    <string name="workspace_duplicate">Ce dossier a déjà été ajouté.</string>
+    <string name="workspace_no_external_handler">Aucune application ne peut ouvrir ce fichier.</string>
+</resources>

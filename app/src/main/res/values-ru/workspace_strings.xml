@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_title">Папки</string>
+    <string name="workspace_add_folder">Добавить папку</string>
+    <string name="workspace_empty">Добавьте папку, чтобы просматривать здесь её файлы.</string>
+    <string name="workspace_loading">Загрузка…</string>
+    <string name="workspace_empty_directory">Пустая папка</string>
+    <string name="workspace_unavailable">Папка недоступна</string>
+    <string name="workspace_retry">Повторить</string>
+    <string name="workspace_refresh">Обновить</string>
+    <string name="workspace_reauthorize">Выбрать папку заново</string>
+    <string name="workspace_remove">Удалить папку</string>
+    <string name="workspace_remove_title">Удалить эту папку?</string>
+    <string name="workspace_remove_message">Папка и её файлы останутся на устройстве. Будет удалён только этот ярлык.</string>
+    <string name="workspace_duplicate">Эта папка уже добавлена.</string>
+    <string name="workspace_no_external_handler">Ни одно приложение не может открыть этот файл.</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_title">Foldery</string>
+    <string name="workspace_add_folder">Dodaj folder</string>
+    <string name="workspace_empty">Dodaj folder, aby przeglądać tutaj jego pliki.</string>
+    <string name="workspace_loading">Wczytywanie…</string>
+    <string name="workspace_empty_directory">Pusty folder</string>
+    <string name="workspace_unavailable">Folder niedostępny</string>
+    <string name="workspace_retry">Ponów próbę</string>
+    <string name="workspace_refresh">Odśwież</string>
+    <string name="workspace_reauthorize">Wybierz folder ponownie</string>
+    <string name="workspace_remove">Usuń folder</string>
+    <string name="workspace_remove_title">Usunąć ten folder?</string>
+    <string name="workspace_remove_message">Folder i jego pliki pozostaną na urządzeniu. Usunięty zostanie tylko ten skrót.</string>
+    <string name="workspace_duplicate">Ten folder został już dodany.</string>
+    <string name="workspace_no_external_handler">Żadna aplikacja nie może otworzyć tego pliku.</string>
+</resources>

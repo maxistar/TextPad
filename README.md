@@ -22,6 +22,14 @@ The editor uses a file's extension in **Auto** mode. The editor menu also lets y
 
 Highlighting is lexical and does not validate syntax. JavaScript regular-expression literals are left unstyled, and expressions inside template-string interpolation are not parsed separately. Documents larger than 256,000 characters remain plain text to keep editing responsive.
 
+### Folder workspaces
+
+Open **Folders** from the editor menu or swipe from the start edge, then choose **Add folder**. Android asks which folder TextPad may access. Added folders remain available after restarting the application while Android keeps the persisted permission.
+
+Folders are loaded only when expanded. TextPad opens provider files with a `text/*` MIME type internally and also recognizes `.txt`, `.md`, `.markdown`, `.json`, `.js`, `.mjs`, `.cjs`, `.log`, and `.srt` when provider metadata is incomplete. Other files remain visible and are opened by a compatible installed application.
+
+Long-press a root to refresh it, choose it again after access is revoked, or remove it from the list. Removing a root does not delete files. The first release does not provide workspace search, tabs, file creation, rename, move, delete, Git integration, or persisted expansion state.
+
 The code is open so anyone can review code, send pull requests, new features, translations and so on. 
 
 Github repo: https://github.com/maxistar/TextPad.

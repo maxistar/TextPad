@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_title">Carpetas</string>
+    <string name="workspace_add_folder">Añadir carpeta</string>
+    <string name="workspace_empty">Añade una carpeta para explorar aquí sus archivos.</string>
+    <string name="workspace_loading">Cargando…</string>
+    <string name="workspace_empty_directory">Carpeta vacía</string>
+    <string name="workspace_unavailable">Carpeta no disponible</string>
+    <string name="workspace_retry">Reintentar</string>
+    <string name="workspace_refresh">Actualizar</string>
+    <string name="workspace_reauthorize">Elegir la carpeta de nuevo</string>
+    <string name="workspace_remove">Quitar carpeta</string>
+    <string name="workspace_remove_title">¿Quitar esta carpeta?</string>
+    <string name="workspace_remove_message">La carpeta y sus archivos permanecerán en el dispositivo. Solo se quitará este acceso directo.</string>
+    <string name="workspace_duplicate">Esta carpeta ya está añadida.</string>
+    <string name="workspace_no_external_handler">Ninguna aplicación puede abrir este archivo.</string>
+</resources>

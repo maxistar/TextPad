@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_title">フォルダー</string>
+    <string name="workspace_add_folder">フォルダーを追加</string>
+    <string name="workspace_empty">フォルダーを追加すると、ここでファイルを参照できます。</string>
+    <string name="workspace_loading">読み込み中…</string>
+    <string name="workspace_empty_directory">空のフォルダー</string>
+    <string name="workspace_unavailable">フォルダーを利用できません</string>
+    <string name="workspace_retry">再試行</string>
+    <string name="workspace_refresh">更新</string>
+    <string name="workspace_reauthorize">フォルダーを再選択</string>
+    <string name="workspace_remove">フォルダーを削除</string>
+    <string name="workspace_remove_title">このフォルダーを削除しますか？</string>
+    <string name="workspace_remove_message">フォルダーとファイルは端末に残ります。このショートカットだけが削除されます。</string>
+    <string name="workspace_duplicate">このフォルダーはすでに追加されています。</string>
+    <string name="workspace_no_external_handler">このファイルを開けるアプリがありません。</string>
+</resources>

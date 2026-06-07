@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_title">文件夹</string>
+    <string name="workspace_add_folder">添加文件夹</string>
+    <string name="workspace_empty">添加文件夹后可在此浏览其中的文件。</string>
+    <string name="workspace_loading">正在加载…</string>
+    <string name="workspace_empty_directory">空文件夹</string>
+    <string name="workspace_unavailable">文件夹不可用</string>
+    <string name="workspace_retry">重试</string>
+    <string name="workspace_refresh">刷新</string>
+    <string name="workspace_reauthorize">重新选择文件夹</string>
+    <string name="workspace_remove">移除文件夹</string>
+    <string name="workspace_remove_title">移除此文件夹？</string>
+    <string name="workspace_remove_message">文件夹及其中的文件仍会保留在设备上，只移除此快捷方式。</string>
+    <string name="workspace_duplicate">此文件夹已添加。</string>
+    <string name="workspace_no_external_handler">没有应用可以打开此文件。</string>
+</resources>

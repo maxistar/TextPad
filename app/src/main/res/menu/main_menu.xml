@@ -2,6 +2,12 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/menu_workspace"
+        android:title="@string/workspace_title"
+        android:icon="@drawable/ic_folder_open"
+        app:iconTint="@color/colorIcon"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/menu_document_search"
         android:title="@string/Search"
         android:icon="@drawable/ic_search"

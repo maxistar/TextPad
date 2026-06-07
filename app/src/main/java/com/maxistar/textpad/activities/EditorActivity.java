@@ -1,6 +1,7 @@
 package com.maxistar.textpad.activities;
 
 import java.io.DataInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,6 +12,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,6 +74,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.core.view.GravityCompat;
 
 
 import android.content.DialogInterface;
@@ -80,6 +84,7 @@ import android.text.style.UnderlineSpan;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.ListView;
 
 public class EditorActivity extends AppCompatActivity {
 
@@ -92,6 +97,8 @@ public class EditorActivity extends AppCompatActivity {
     private static final int REQUEST_SAVE = 2;
 
     private static final int REQUEST_SETTINGS = 3;
+    private static final int REQUEST_WORKSPACE_FOLDER = 6;
+    private static final int REQUEST_WORKSPACE_REAUTHORIZE = 7;
 
 
     private static final int ACTION_CREATE_FILE = 4;
@@ -149,6 +156,26 @@ public class EditorActivity extends AppCompatActivity {
     EditTextUndoRedo editTextUndoRedo;
     private SyntaxHighlightController syntaxHighlightController;
     private LanguageMode syntaxLanguageMode = LanguageMode.AUTO;
+    private androidx.drawerlayout.widget.DrawerLayout workspaceDrawer;
+    private com.maxistar.textpad.service.WorkspaceFolderService workspaceFolderService;
+    private com.maxistar.textpad.workspace.WorkspacePermissionManager workspacePermissionManager;
+    private com.maxistar.textpad.workspace.WorkspaceTreeController workspaceTreeController;
+    private com.maxistar.textpad.workspace.WorkspaceTreeAdapter workspaceTreeAdapter;
+    private final com.maxistar.textpad.workspace.WorkspaceTreeFlattener
+            workspaceTreeFlattener =
+            new com.maxistar.textpad.workspace.WorkspaceTreeFlattener();
+    private final com.maxistar.textpad.workspace.WorkspaceFileClassifier
+            workspaceFileClassifier =
+            new com.maxistar.textpad.workspace.WorkspaceFileClassifier();
+    private final com.maxistar.textpad.workspace.WorkspaceExternalIntentFactory
+            workspaceExternalIntentFactory =
+            new com.maxistar.textpad.workspace.WorkspaceExternalIntentFactory();
+    private final com.maxistar.textpad.workspace.WorkspaceExternalDispatcher
+            workspaceExternalDispatcher =
+            new com.maxistar.textpad.workspace.WorkspaceExternalDispatcher();
+    private ExecutorService workspaceExecutor;
+    private String workspaceReauthorizeUri;
+    private Runnable pendingAfterSave;
 
     WebView mWebView;
 
@@ -162,6 +189,8 @@ public class EditorActivity extends AppCompatActivity {
         settingsService = ServiceLocator.getInstance().getSettingsService(this.getApplicationContext());
         recentFilesService = ServiceLocator.getInstance().getRecentFilesService();
         alternativeUrlsService = ServiceLocator.getInstance().getAlternativeUrlsService();
+        workspaceFolderService = ServiceLocator.getInstance()
+                .getWorkspaceFolderService(this.getApplicationContext());
 
         if (simpleScrolling()) {
             setContentView(R.layout.main_simple_scrolling);
@@ -169,6 +198,7 @@ public class EditorActivity extends AppCompatActivity {
             setContentView(R.layout.main);
         }
         mText = this.findViewById(R.id.editText1);
+        initializeWorkspaceDrawer();
         mText.setBackgroundResource(android.R.color.transparent);
         if (!settingsService.isAutoWrapping()) {
             disableEditorAutowrapping();
@@ -217,6 +247,286 @@ public class EditorActivity extends AppCompatActivity {
 
     private boolean simpleScrolling() {
         return settingsService.isUseSimpleScrolling();
+    }
+
+    private void initializeWorkspaceDrawer() {
+        workspaceDrawer = findViewById(R.id.workspace_drawer_layout);
+        ListView tree = findViewById(R.id.workspace_tree);
+        TextView empty = findViewById(R.id.workspace_empty);
+        workspaceTreeAdapter = new com.maxistar.textpad.workspace.WorkspaceTreeAdapter(this);
+        tree.setAdapter(workspaceTreeAdapter);
+        workspacePermissionManager =
+                new com.maxistar.textpad.workspace.WorkspacePermissionManager(
+                        getContentResolver());
+        workspaceExecutor = Executors.newSingleThreadExecutor();
+        Handler mainHandler = new Handler(getMainLooper());
+        workspaceTreeController =
+                new com.maxistar.textpad.workspace.WorkspaceTreeController(
+                        new com.maxistar.textpad.workspace.AndroidWorkspaceDocumentProvider(
+                                getContentResolver()),
+                        workspaceExecutor,
+                        mainHandler::post,
+                        () -> {
+                            List<com.maxistar.textpad.workspace.WorkspaceTreeRow> rows =
+                                    workspaceTreeFlattener.flatten(
+                                            workspaceTreeController.getRoots());
+                            workspaceTreeAdapter.submit(rows, getFilename());
+                            empty.setVisibility(rows.isEmpty()
+                                    ? View.VISIBLE : View.GONE);
+                        }
+                );
+        findViewById(R.id.workspace_add_folder).setOnClickListener(
+                view -> selectWorkspaceFolder(REQUEST_WORKSPACE_FOLDER));
+        tree.setOnItemClickListener((parent, view, position, id) ->
+                openWorkspaceRow(workspaceTreeAdapter.getItem(position)));
+        tree.setOnItemLongClickListener((parent, view, position, id) -> {
+            showWorkspaceActions(workspaceTreeAdapter.getItem(position).getNode());
+            return true;
+        });
+        restoreWorkspaceRoots();
+    }
+
+    private void restoreWorkspaceRoots() {
+        List<com.maxistar.textpad.workspace.WorkspaceRoot> restored =
+                new ArrayList<>();
+        for (com.maxistar.textpad.workspace.WorkspaceRoot root
+                : workspaceFolderService.getRoots()) {
+            com.maxistar.textpad.workspace.WorkspaceRoot current =
+                    workspacePermissionManager.restored(root);
+            workspaceFolderService.updateAccess(
+                    current.getUri(),
+                    current.isAvailable(),
+                    current.isReadable(),
+                    current.isWritable());
+            restored.add(current);
+        }
+        workspaceTreeController.setRoots(restored);
+    }
+
+    private void selectWorkspaceFolder(int requestCode) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+                | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
+        startActivityForResult(intent, requestCode);
+    }
+
+    private void handleWorkspaceFolderResult(
+            Intent data,
+            String replacementUri
+    ) {
+        if (data == null || data.getData() == null) {
+            return;
+        }
+        Uri uri = data.getData();
+        String fallback = uri.getLastPathSegment();
+        if (fallback == null || fallback.isEmpty()) {
+            fallback = getString(R.string.workspace_title);
+        }
+        final com.maxistar.textpad.workspace.WorkspaceRoot permissionRoot;
+        try {
+            permissionRoot = workspacePermissionManager.takePermission(data, fallback);
+        } catch (SecurityException | IllegalArgumentException exception) {
+            showToast(R.string.workspace_unavailable);
+            return;
+        }
+        final String fallbackName = fallback;
+        workspaceExecutor.execute(() -> {
+            String displayName = fallbackName;
+            try {
+                displayName =
+                        new com.maxistar.textpad.workspace.AndroidWorkspaceDocumentProvider(
+                                getContentResolver()).getDisplayName(
+                                permissionRoot.getUri());
+            } catch (IOException ignored) {
+                // Provider metadata is optional; retain the URI-derived label.
+            }
+            com.maxistar.textpad.workspace.WorkspaceRoot root =
+                    new com.maxistar.textpad.workspace.WorkspaceRoot(
+                            permissionRoot.getUri(),
+                            displayName,
+                            permissionRoot.isAvailable(),
+                            permissionRoot.isReadable(),
+                            permissionRoot.isWritable()
+                    );
+            runOnUiThread(() -> {
+                if (replacementUri == null) {
+                    if (!workspaceFolderService.add(root)) {
+                        showToast(R.string.workspace_duplicate);
+                    }
+                } else {
+                    com.maxistar.textpad.workspace.WorkspaceRoot previous =
+                            findWorkspaceRoot(replacementUri);
+                    if (!workspaceFolderService.replace(replacementUri, root)) {
+                        showToast(R.string.workspace_duplicate);
+                    } else if (previous != null
+                            && !previous.getUri().equals(root.getUri())) {
+                        workspacePermissionManager.release(previous);
+                    }
+                }
+                workspaceReauthorizeUri = null;
+                restoreWorkspaceRoots();
+            });
+        });
+    }
+
+    private void openWorkspaceRow(
+            com.maxistar.textpad.workspace.WorkspaceTreeRow row
+    ) {
+        com.maxistar.textpad.workspace.WorkspaceTreeNode node = row.getNode();
+        if (node.isDirectory()) {
+            if (node.getState()
+                    == com.maxistar.textpad.workspace.WorkspaceTreeNode.State.UNAVAILABLE) {
+                showWorkspaceActions(node);
+            } else {
+                workspaceTreeController.toggle(node);
+            }
+            return;
+        }
+        com.maxistar.textpad.workspace.WorkspaceDocument document =
+                node.getDocument();
+        if (workspaceFileClassifier.isInternalText(document)) {
+            requestWorkspaceDocumentOpen(Uri.parse(document.getUri()));
+        } else {
+            openWorkspaceDocumentExternally(document, node.getRootUri());
+        }
+    }
+
+    private void requestWorkspaceDocumentOpen(Uri uri) {
+        Runnable open = () -> {
+            if (openNamedFile(uri)) {
+                workspaceDrawer.closeDrawer(GravityCompat.START);
+                workspaceTreeAdapter.submit(
+                        workspaceTreeFlattener.flatten(
+                                workspaceTreeController.getRoots()),
+                        getFilename());
+            }
+        };
+        requestDocumentSwitch(open);
+    }
+
+    private void requestDocumentSwitch(Runnable action) {
+        if (!changed) {
+            action.run();
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.File_not_saved)
+                .setMessage(R.string.Save_current_file)
+                .setPositiveButton(R.string.Save, (dialog, which) -> {
+                    pendingAfterSave = action;
+                    saveFile();
+                })
+                .setNegativeButton(R.string.No, (dialog, which) -> action.run())
+                .setNeutralButton(R.string.Cancel, null)
+                .show();
+    }
+
+    private void openWorkspaceDocumentExternally(
+            com.maxistar.textpad.workspace.WorkspaceDocument document,
+            String rootUri
+    ) {
+        com.maxistar.textpad.workspace.WorkspaceRoot root =
+                findWorkspaceRoot(rootUri);
+        boolean writable = document.isWritable()
+                && root != null
+                && root.isWritable();
+        com.maxistar.textpad.workspace.WorkspaceDocument grantedDocument =
+                new com.maxistar.textpad.workspace.WorkspaceDocument(
+                        document.getUri(),
+                        document.getDisplayName(),
+                        document.getMimeType(),
+                        document.isDirectory(),
+                        document.getSize(),
+                        document.getLastModified(),
+                        writable
+                );
+        Intent intent = workspaceExternalIntentFactory.create(grantedDocument);
+        if (!workspaceExternalDispatcher.dispatch(intent, this::startActivity)) {
+            showToast(R.string.workspace_no_external_handler);
+        }
+    }
+
+    private void showWorkspaceActions(
+            com.maxistar.textpad.workspace.WorkspaceTreeNode node
+    ) {
+        if (node.isRoot()) {
+            String[] actions = {
+                    getString(R.string.workspace_refresh),
+                    getString(R.string.workspace_reauthorize),
+                    getString(R.string.workspace_remove)
+            };
+            new AlertDialog.Builder(this)
+                    .setTitle(node.getDisplayName())
+                    .setItems(actions, (dialog, which) -> {
+                        if (which == 0) {
+                            workspaceTreeController.refresh(node);
+                        } else if (which == 1) {
+                            workspaceReauthorizeUri = node.getRootUri();
+                            selectWorkspaceFolder(
+                                    REQUEST_WORKSPACE_REAUTHORIZE);
+                        } else {
+                            confirmWorkspaceRemoval(node.getRootUri());
+                        }
+                    })
+                    .show();
+        } else if (node.isDirectory()) {
+            String action = node.getState()
+                    == com.maxistar.textpad.workspace.WorkspaceTreeNode.State.UNAVAILABLE
+                    ? getString(R.string.workspace_retry)
+                    : getString(R.string.workspace_refresh);
+            new AlertDialog.Builder(this)
+                    .setTitle(node.getDisplayName())
+                    .setItems(new String[]{action},
+                            (dialog, which) -> workspaceTreeController.refresh(node))
+                    .show();
+        }
+    }
+
+    private void confirmWorkspaceRemoval(String uri) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.workspace_remove_title)
+                .setMessage(R.string.workspace_remove_message)
+                .setPositiveButton(R.string.workspace_remove, (dialog, which) -> {
+                    releaseWorkspacePermission(uri);
+                    workspaceFolderService.remove(uri);
+                    restoreWorkspaceRoots();
+                })
+                .setNegativeButton(R.string.Cancel, null)
+                .show();
+    }
+
+    private void releaseWorkspacePermission(String uri) {
+        com.maxistar.textpad.workspace.WorkspaceRoot root = findWorkspaceRoot(uri);
+        if (root != null) {
+            workspacePermissionManager.release(root);
+        }
+    }
+
+    private com.maxistar.textpad.workspace.WorkspaceRoot findWorkspaceRoot(
+            String uri
+    ) {
+        for (com.maxistar.textpad.workspace.WorkspaceRoot root
+                : workspaceFolderService.getRoots()) {
+            if (root.getUri().equals(uri)) {
+                return root;
+            }
+        }
+        return null;
+    }
+
+    private void runPendingAfterSave() {
+        Runnable action = pendingAfterSave;
+        pendingAfterSave = null;
+        if (action != null) {
+            action.run();
+        }
+    }
+
+    private void cancelPendingAfterSave() {
+        pendingAfterSave = null;
     }
 
     private void openFileByUri(Uri u) {
@@ -375,12 +685,23 @@ public class EditorActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (workspaceTreeController != null) {
+            workspaceTreeController.destroy();
+        }
+        if (workspaceExecutor != null) {
+            workspaceExecutor.shutdownNow();
+        }
         syntaxHighlightController.destroy();
         super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
+        if (workspaceDrawer != null
+                && workspaceDrawer.isDrawerOpen(GravityCompat.START)) {
+            workspaceDrawer.closeDrawer(GravityCompat.START);
+            return;
+        }
         if (this.changed && !exitDialogShown) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.You_have_made_some_changes)
@@ -739,7 +1060,9 @@ public class EditorActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.menu_document_open) {
+        if (itemId == R.id.menu_workspace) {
+            workspaceDrawer.openDrawer(GravityCompat.START);
+        } else if (itemId == R.id.menu_document_open) {
             openFile();
         } else if (itemId == R.id.menu_document_open_other) {
             openFile();
@@ -885,23 +1208,7 @@ public class EditorActivity extends AppCompatActivity {
             return;
         }
         final String filename = lastFiles.get(i);
-        if (changed) {
-            new AlertDialog.Builder(this)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle(R.string.File_not_saved)
-                    .setMessage(R.string.Save_current_file)
-                    .setPositiveButton(R.string.Yes,
-                            (dialog, which) -> {
-                                // Stop the activity
-                                next_action = DO_OPEN_RECENT;
-                                next_action_filename = filename;
-                                EditorActivity.this.saveFile();
-                            })
-                    .setNegativeButton(R.string.No,
-                            (dialog, which) -> openFileByName(filename)).show();
-        } else {
-            openFileByName(filename);
-        }
+        requestDocumentSwitch(() -> openFileByName(filename));
     }
 
     private void openFileByName(String filename) {
@@ -995,22 +1302,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void openFile() {
-        if (changed) {
-            new AlertDialog.Builder(this)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle(R.string.File_not_saved)
-                    .setMessage(R.string.Save_current_file)
-                    .setPositiveButton(R.string.Yes,
-                            (dialog, which) -> {
-                                // Stop the activity
-                                next_action = DO_OPEN;
-                                saveFile();
-                            })
-                    .setNegativeButton(R.string.No,
-                            (dialog, which) -> openNewFile()).show();
-        } else {
-            openNewFile();
-        }
+        requestDocumentSwitch(this::openNewFile);
     }
 
     protected void exitApplication() {
@@ -1113,6 +1405,7 @@ public class EditorActivity extends AppCompatActivity {
             showToast(R.string.File_Written);
             initEditor();
             updateTitle();
+            runPendingAfterSave();
 
             if (next_action == DO_OPEN) {
                 // because of multithread nature
@@ -1140,10 +1433,13 @@ public class EditorActivity extends AppCompatActivity {
                 exitApplication();
             }
         } catch (FileNotFoundException e) {
+            cancelPendingAfterSave();
             this.showToast(R.string.File_not_found);
         } catch (IOException e) {
+            cancelPendingAfterSave();
             this.showToast(R.string.Can_not_write_file);
         } catch (Exception e) {
+            cancelPendingAfterSave();
             this.showToast(R.string.Can_not_write_file);
         }
     }
@@ -1174,6 +1470,7 @@ public class EditorActivity extends AppCompatActivity {
             showToast(R.string.File_Written);
             initEditor();
             updateTitle();
+            runPendingAfterSave();
 
             if (next_action == DO_OPEN) {   // because of multithread nature
                 next_action = DO_NOTHING;
@@ -1195,10 +1492,13 @@ public class EditorActivity extends AppCompatActivity {
                 exitApplication();
             }
         } catch (FileNotFoundException e) {
+            cancelPendingAfterSave();
             this.showToast(R.string.File_not_found);
         } catch (IOException e) {
+            cancelPendingAfterSave();
             this.showToast(R.string.Can_not_write_file);
         } catch (Exception e) {
+            cancelPendingAfterSave();
             this.showToast(R.string.Can_not_write_file);
         }
     }
@@ -1244,7 +1544,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    protected void openNamedFile(final Uri uri) {
+    protected boolean openNamedFile(final Uri uri) {
         try {
             ContentResolver contentResolver = getContentResolver();
 
@@ -1252,21 +1552,27 @@ public class EditorActivity extends AppCompatActivity {
             if (inputStream == null) {
                 throw new IOException();
             }
-            int size = inputStream.available();
-            DataInputStream dis = new DataInputStream(inputStream);
-            byte[] b = new byte[size];
-            int length = dis.read(b, 0, size);
-
-            String ttt = new String(b, 0, length, settingsService.getFileEncoding());
-            ttt = toUnixEndings(ttt);
-
-            inputStream.close();
-            dis.close();
+            String ttt;
+            try {
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                byte[] buffer = new byte[8192];
+                int length;
+                while ((length = inputStream.read(buffer)) != -1) {
+                    output.write(buffer, 0, length);
+                }
+                ttt = new String(
+                        output.toByteArray(), settingsService.getFileEncoding());
+                ttt = toUnixEndings(ttt);
+            } finally {
+                inputStream.close();
+            }
 
             mText.setText(ttt);
             editTextUndoRedo.clearHistory();
 
-            showToast(getBaseContext().getResources().getString(R.string.File_opened_, getFilename()));
+            showToast(getBaseContext().getResources().getString(
+                    R.string.File_opened_,
+                    FileNameHelper.getFilenameByUri(getApplicationContext(), uri)));
             initEditor();
             setFilename(uri.toString());
             if (!settingsService.getLastFilename().equals(getFilename())) {
@@ -1280,6 +1586,7 @@ public class EditorActivity extends AppCompatActivity {
             updateTitle();
             resetSyntaxDocument();
             detectReadOnlyAccess(uri);
+            return true;
         } catch (FileNotFoundException e) {
             if (isAccessDeniedException(e)) {
                 showAlternativeFileDialog(uri);
@@ -1289,6 +1596,7 @@ public class EditorActivity extends AppCompatActivity {
         } catch (Exception e) {
             this.showToast(R.string.Can_not_read_file);
         }
+        return false;
     }
 
     private void detectReadOnlyAccess(final Uri uri) {
@@ -1434,6 +1742,7 @@ public class EditorActivity extends AppCompatActivity {
                 );
                 this.saveFileWithConfirmation();
             } else if (resultCode == Activity.RESULT_CANCELED) {
+                cancelPendingAfterSave();
                 showToast(R.string.Operation_Canceled);
             }
         } else if (requestCode == REQUEST_OPEN) {
@@ -1445,6 +1754,16 @@ public class EditorActivity extends AppCompatActivity {
         } else if (requestCode == REQUEST_SETTINGS) {
             settingsService.reloadSettings(getApplicationContext());
             applyPreferences();
+        } else if (requestCode == REQUEST_WORKSPACE_FOLDER) {
+            if (resultCode == Activity.RESULT_OK) {
+                handleWorkspaceFolderResult(data, null);
+            }
+        } else if (requestCode == REQUEST_WORKSPACE_REAUTHORIZE) {
+            if (resultCode == Activity.RESULT_OK) {
+                handleWorkspaceFolderResult(data, workspaceReauthorizeUri);
+            } else {
+                workspaceReauthorizeUri = null;
+            }
         } else if (requestCode == ACTION_OPEN_FILE
                 && resultCode == Activity.RESULT_OK) {
             // The result data contains a URI for the document or directory that
@@ -1468,6 +1787,8 @@ public class EditorActivity extends AppCompatActivity {
                     setFilename(uri.toString());
                     this.saveFileWithConfirmation();
                 }
+            } else {
+                cancelPendingAfterSave();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

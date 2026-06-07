@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_title">Pastas</string>
+    <string name="workspace_add_folder">Adicionar pasta</string>
+    <string name="workspace_empty">Adicione uma pasta para navegar pelos arquivos aqui.</string>
+    <string name="workspace_loading">Carregando…</string>
+    <string name="workspace_empty_directory">Pasta vazia</string>
+    <string name="workspace_unavailable">Pasta indisponível</string>
+    <string name="workspace_retry">Tentar novamente</string>
+    <string name="workspace_refresh">Atualizar</string>
+    <string name="workspace_reauthorize">Escolher a pasta novamente</string>
+    <string name="workspace_remove">Remover pasta</string>
+    <string name="workspace_remove_title">Remover esta pasta?</string>
+    <string name="workspace_remove_message">A pasta e seus arquivos permanecerão no dispositivo. Apenas este atalho será removido.</string>
+    <string name="workspace_duplicate">Esta pasta já foi adicionada.</string>
+    <string name="workspace_no_external_handler">Nenhum aplicativo pode abrir este arquivo.</string>
+</resources>

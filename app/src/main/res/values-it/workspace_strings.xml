@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_title">Cartelle</string>
+    <string name="workspace_add_folder">Aggiungi cartella</string>
+    <string name="workspace_empty">Aggiungi una cartella per sfogliare qui i suoi file.</string>
+    <string name="workspace_loading">Caricamento…</string>
+    <string name="workspace_empty_directory">Cartella vuota</string>
+    <string name="workspace_unavailable">Cartella non disponibile</string>
+    <string name="workspace_retry">Riprova</string>
+    <string name="workspace_refresh">Aggiorna</string>
+    <string name="workspace_reauthorize">Scegli di nuovo la cartella</string>
+    <string name="workspace_remove">Rimuovi cartella</string>
+    <string name="workspace_remove_title">Rimuovere questa cartella?</string>
+    <string name="workspace_remove_message">La cartella e i suoi file resteranno sul dispositivo. Verrà rimosso solo questo collegamento.</string>
+    <string name="workspace_duplicate">Questa cartella è già stata aggiunta.</string>
+    <string name="workspace_no_external_handler">Nessuna applicazione può aprire questo file.</string>
+</resources>

@@ -7,6 +7,9 @@ import com.maxistar.textpad.service.RecentFilesService;
 import com.maxistar.textpad.service.SettingsService;
 import com.maxistar.textpad.service.ThemeService;
 import com.maxistar.textpad.service.WakeLockService;
+import com.maxistar.textpad.service.WorkspaceFolderService;
+import com.maxistar.textpad.workspace.SharedPreferencesWorkspaceRegistryStore;
+import com.maxistar.textpad.workspace.WorkspaceRegistryCodec;
 
 public class ServiceLocator {
     private static ServiceLocator instance = null;
@@ -22,6 +25,7 @@ public class ServiceLocator {
     private ThemeService themeService;
 
     private WakeLockService wakeLockService = null;
+    private WorkspaceFolderService workspaceFolderService;
 
     public static ServiceLocator getInstance() {
         if (instance == null) {
@@ -66,6 +70,16 @@ public class ServiceLocator {
             wakeLockService = new WakeLockService();
         }
         return wakeLockService;
+    }
+
+    public WorkspaceFolderService getWorkspaceFolderService(Context context) {
+        if (workspaceFolderService == null) {
+            workspaceFolderService = new WorkspaceFolderService(
+                    new SharedPreferencesWorkspaceRegistryStore(context),
+                    new WorkspaceRegistryCodec()
+            );
+        }
+        return workspaceFolderService;
     }
 
 
