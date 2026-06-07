@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="?android:attr/colorBackground"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/workspace_add_folder"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:drawableStart="@drawable/ic_folder_open"
+        android:gravity="start|center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="@string/workspace_add_folder" />
+
+    <TextView
+        android:id="@+id/workspace_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/workspace_empty"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ListView
+        android:id="@+id/workspace_tree"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:choiceMode="singleChoice"
+        android:dividerHeight="0dp" />
+</LinearLayout>

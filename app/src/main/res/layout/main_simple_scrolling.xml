@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linear_layout"
+    android:id="@+id/workspace_drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editText1"
+    <LinearLayout
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dip"
-        android:hint="@string/Type_Something_Here"
-        android:fadingEdge="none"
-        android:scrollbars="vertical"
-        android:overScrollMode="ifContentScrolls"
-        android:gravity="top"
-        android:autofillHints=""
-        android:inputType="text|textAutoComplete|textAutoCorrect"
-        />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:fadingEdge="none"
+            android:gravity="top"
+            android:hint="@string/Type_Something_Here"
+            android:inputType="text|textAutoComplete|textAutoCorrect"
+            android:overScrollMode="ifContentScrolls"
+            android:padding="5dip"
+            android:scrollbars="vertical" />
+    </LinearLayout>
+
+    <include layout="@layout/workspace_drawer" />
+</androidx.drawerlayout.widget.DrawerLayout>

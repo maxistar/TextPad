@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_title">Klasörler</string>
+    <string name="workspace_add_folder">Klasör ekle</string>
+    <string name="workspace_empty">Dosyalarına buradan göz atmak için bir klasör ekleyin.</string>
+    <string name="workspace_loading">Yükleniyor…</string>
+    <string name="workspace_empty_directory">Boş klasör</string>
+    <string name="workspace_unavailable">Klasör kullanılamıyor</string>
+    <string name="workspace_retry">Yeniden dene</string>
+    <string name="workspace_refresh">Yenile</string>
+    <string name="workspace_reauthorize">Klasörü yeniden seç</string>
+    <string name="workspace_remove">Klasörü kaldır</string>
+    <string name="workspace_remove_title">Bu klasör kaldırılsın mı?</string>
+    <string name="workspace_remove_message">Klasör ve dosyaları cihazda kalır. Yalnızca bu kısayol kaldırılır.</string>
+    <string name="workspace_duplicate">Bu klasör zaten eklenmiş.</string>
+    <string name="workspace_no_external_handler">Bu dosyayı açabilecek bir uygulama yok.</string>
+</resources>

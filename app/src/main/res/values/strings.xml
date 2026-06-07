@@ -108,6 +108,29 @@
     <string name="preferenceUseWakeLockDescription">Prevent device going to sleep mode</string>
     <string name="preferenceUseSimpleScrolling">Fix Erratic Scrolling</string>
     <string name="preferenceUseSimpleScrollingDescription">Enable this if text unexpectedly jumps to the end while scrolling</string>
+    <string name="preferenceSyntaxHighlightingTitle">Syntax highlighting</string>
+    <string name="preferenceSyntaxHighlightingDescription">Color JSON, Markdown, and JavaScript syntax</string>
+    <string name="syntaxLanguage">Syntax language</string>
+    <string name="syntaxLanguageAuto">Auto</string>
+    <string name="syntaxLanguagePlainText">Plain text</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">Syntax highlighting was skipped because this document is too large.</string>
+    <string name="workspace_title">Folders</string>
+    <string name="workspace_add_folder">Add folder</string>
+    <string name="workspace_empty">Add a folder to browse its files here.</string>
+    <string name="workspace_loading">Loading…</string>
+    <string name="workspace_empty_directory">Empty folder</string>
+    <string name="workspace_unavailable">Folder unavailable</string>
+    <string name="workspace_retry">Retry</string>
+    <string name="workspace_refresh">Refresh</string>
+    <string name="workspace_reauthorize">Choose folder again</string>
+    <string name="workspace_remove">Remove folder</string>
+    <string name="workspace_remove_title">Remove this folder?</string>
+    <string name="workspace_remove_message">The folder and its files will remain on the device. Only this shortcut will be removed.</string>
+    <string name="workspace_duplicate">This folder is already added.</string>
+    <string name="workspace_no_external_handler">No application can open this file.</string>
 
 
     <string name="readOnlyDialogMessage">This file is open in read only mode. You can save it with a different name, or you can open it again using \'Open\' command from the application menu.</string>

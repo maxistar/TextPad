@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_title">Папки</string>
+    <string name="workspace_add_folder">Додати папку</string>
+    <string name="workspace_empty">Додайте папку, щоб переглядати тут її файли.</string>
+    <string name="workspace_loading">Завантаження…</string>
+    <string name="workspace_empty_directory">Порожня папка</string>
+    <string name="workspace_unavailable">Папка недоступна</string>
+    <string name="workspace_retry">Повторити</string>
+    <string name="workspace_refresh">Оновити</string>
+    <string name="workspace_reauthorize">Вибрати папку знову</string>
+    <string name="workspace_remove">Видалити папку</string>
+    <string name="workspace_remove_title">Видалити цю папку?</string>
+    <string name="workspace_remove_message">Папка та її файли залишаться на пристрої. Буде видалено лише цей ярлик.</string>
+    <string name="workspace_duplicate">Цю папку вже додано.</string>
+    <string name="workspace_no_external_handler">Жодна програма не може відкрити цей файл.</string>
+</resources>

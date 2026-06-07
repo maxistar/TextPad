@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_title">المجلدات</string>
+    <string name="workspace_add_folder">إضافة مجلد</string>
+    <string name="workspace_empty">أضف مجلدًا لتصفح ملفاته هنا.</string>
+    <string name="workspace_loading">جارٍ التحميل…</string>
+    <string name="workspace_empty_directory">مجلد فارغ</string>
+    <string name="workspace_unavailable">المجلد غير متاح</string>
+    <string name="workspace_retry">إعادة المحاولة</string>
+    <string name="workspace_refresh">تحديث</string>
+    <string name="workspace_reauthorize">اختيار المجلد مجددًا</string>
+    <string name="workspace_remove">إزالة المجلد</string>
+    <string name="workspace_remove_title">هل تريد إزالة هذا المجلد؟</string>
+    <string name="workspace_remove_message">سيبقى المجلد وملفاته على الجهاز. ستتم إزالة هذا الاختصار فقط.</string>
+    <string name="workspace_duplicate">تمت إضافة هذا المجلد بالفعل.</string>
+    <string name="workspace_no_external_handler">لا يوجد تطبيق يمكنه فتح هذا الملف.</string>
+</resources>

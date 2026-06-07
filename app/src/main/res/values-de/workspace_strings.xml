@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="workspace_title">Ordner</string>
+    <string name="workspace_add_folder">Ordner hinzufügen</string>
+    <string name="workspace_empty">Fügen Sie einen Ordner hinzu, um seine Dateien hier zu durchsuchen.</string>
+    <string name="workspace_loading">Wird geladen…</string>
+    <string name="workspace_empty_directory">Leerer Ordner</string>
+    <string name="workspace_unavailable">Ordner nicht verfügbar</string>
+    <string name="workspace_retry">Erneut versuchen</string>
+    <string name="workspace_refresh">Aktualisieren</string>
+    <string name="workspace_reauthorize">Ordner erneut auswählen</string>
+    <string name="workspace_remove">Ordner entfernen</string>
+    <string name="workspace_remove_title">Diesen Ordner entfernen?</string>
+    <string name="workspace_remove_message">Der Ordner und seine Dateien bleiben auf dem Gerät. Nur diese Verknüpfung wird entfernt.</string>
+    <string name="workspace_duplicate">Dieser Ordner wurde bereits hinzugefügt.</string>
+    <string name="workspace_no_external_handler">Keine Anwendung kann diese Datei öffnen.</string>
+</resources>
