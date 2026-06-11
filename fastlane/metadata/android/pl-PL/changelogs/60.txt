@@ -1,0 +1,3 @@
+- Separated Chinese Traditional and Chinese Simplified translations
+- Updated wordings
+- Improved language selection

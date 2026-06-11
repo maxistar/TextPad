@@ -1,0 +1,3 @@
+- Rozdzielono tłumaczenia na chiński tradycyjny i uproszczony
+- Zaktualizowano sformułowania
+- Usprawniono wybór języka
