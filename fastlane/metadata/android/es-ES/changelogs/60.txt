@@ -1,0 +1,3 @@
+- Se separaron las traducciones al chino tradicional y al chino simplificado
+- Se actualizaron las redacciones
+- Se mejoró la selección de idioma

@@ -3,6 +3,7 @@ package com.maxistar.textpad.service;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
 import com.maxistar.textpad.TPStrings;
@@ -250,15 +251,26 @@ public class SettingsService {
     }
 
     public void applyLocale(Context context) {
-        String lang = getLanguage();
-        if ("".equals(lang)) {
-            return; //use system default
-        }
-        Locale locale2 = new Locale(lang);
+        applyLocale(context, getLanguage());
+    }
+
+    public static void applyLocale(Context context, String language) {
+        Locale locale2 = getLocale(language);
         Locale.setDefault(locale2);
         Configuration config2 = new Configuration();
         config2.locale = locale2;
         context.getResources().updateConfiguration(config2, null);
+    }
+
+    private static Locale getLocale(String language) {
+        if (language == null || TPStrings.EMPTY.equals(language)) {
+            return Resources.getSystem().getConfiguration().locale;
+        }
+        String[] parts = language.split("[-_]");
+        if (parts.length >= 2) {
+            return new Locale(parts[0], parts[1]);
+        }
+        return new Locale(language);
     }
 
     public boolean isAlternativeFileAccess() {
