@@ -114,4 +114,13 @@
     <string name="readOnlyDialogButtonContinue">Salt okunur olarak devam et</string>
 
 
+    <string name="preferenceSyntaxHighlightingTitle">Sözdizimi vurgulama</string>
+    <string name="preferenceSyntaxHighlightingDescription">JSON, Markdown ve JavaScript sözdizimini renklendir</string>
+    <string name="syntaxLanguage">Sözdizimi dili</string>
+    <string name="syntaxLanguageAuto">Otomatik</string>
+    <string name="syntaxLanguagePlainText">Düz metin</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">Bu belge çok büyük olduğu için sözdizimi vurgulama atlandı.</string>
 </resources>

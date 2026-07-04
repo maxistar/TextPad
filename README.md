@@ -12,7 +12,15 @@ the reason of it either the author did not have enough time to implement it or n
      alt="Get it on Google Play"
      height="80">](https://play.google.com/store/apps/details?id=com.maxistar.textpad)
 
-This editor can be useful for editing of small texts, write down small notes etc...  At the moment application supports only plain text files.
+This editor can be useful for editing small text files and writing short notes.
+
+### Syntax highlighting
+
+Optional syntax highlighting is available for JSON, Markdown, and JavaScript. It is disabled by default and can be enabled in **Settings > Appearance > Syntax highlighting**.
+
+The editor uses a file's extension in **Auto** mode. The editor menu also lets you select Plain text, JSON, Markdown, or JavaScript for the current document. A manual selection lasts until another document is opened or a new document is created.
+
+Highlighting is lexical and does not validate syntax. JavaScript regular-expression literals are left unstyled, and expressions inside template-string interpolation are not parsed separately. Documents larger than 256,000 characters remain plain text to keep editing responsive.
 
 The code is open so anyone can review code, send pull requests, new features, translations and so on. 
 

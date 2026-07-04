@@ -32,6 +32,7 @@ public class SettingsService {
     public static final String SETTING_SHOW_LAST_EDITED_FILES = "show_last_edited_files";
 
     public static final String SETTING_AUTO_WRAPPING = "auto_wrapping";
+    public static final String SETTING_SYNTAX_HIGHLIGHTING = "syntax_highlighting";
 
     private static final String SETTING_USE_WAKE_LOCK = "use_wake_lock";
     public static final String SETTING_USE_SIMPLE_SCROLLING = "use_simple_scrolling";
@@ -65,6 +66,7 @@ public class SettingsService {
     private boolean alternative_file_access = true;
     private boolean auto_save_current_file = false;
     private boolean auto_wrapping = true;
+    private boolean syntaxHighlighting = false;
 
     private String file_encoding = "";
     private String last_filename = "";
@@ -100,6 +102,7 @@ public class SettingsService {
         useSimpleScrolling = sharedPref.getBoolean(SETTING_USE_SIMPLE_SCROLLING, false);
         alternative_file_access = sharedPref.getBoolean(SETTING_ALTERNATIVE_FILE_ACCESS, true);
         auto_wrapping = sharedPref.getBoolean(SETTING_AUTO_WRAPPING, true);
+        syntaxHighlighting = sharedPref.getBoolean(SETTING_SYNTAX_HIGHLIGHTING, false);
         last_filename = sharedPref.getString(SETTING_LAST_FILENAME, TPStrings.EMPTY);
         file_encoding = sharedPref.getString(SETTING_FILE_ENCODING, TPStrings.UTF_8);
         delimiters = sharedPref.getString(SETTING_DELIMITERS, TPStrings.EMPTY);
@@ -302,5 +305,9 @@ public class SettingsService {
 
     public boolean isAutoWrapping() {
         return this.auto_wrapping;
+    }
+
+    public boolean isSyntaxHighlightingEnabled() {
+        return syntaxHighlighting;
     }
 }

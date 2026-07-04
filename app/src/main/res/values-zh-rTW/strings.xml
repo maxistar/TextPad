@@ -106,4 +106,13 @@
     <string name="preferenceUseSimpleScrolling">修正捲動問題</string>
     <string name="preferenceUseSimpleScrollingDescription">如果文字在捲動時意外跳到末尾，請啟用此選項</string>
     <string name="preferenceAutowrappingTitle">自動換行</string>
+    <string name="preferenceSyntaxHighlightingTitle">語法醒目提示</string>
+    <string name="preferenceSyntaxHighlightingDescription">為 JSON、Markdown 和 JavaScript 語法著色</string>
+    <string name="syntaxLanguage">語法語言</string>
+    <string name="syntaxLanguageAuto">自動</string>
+    <string name="syntaxLanguagePlainText">純文字</string>
+    <string name="syntaxLanguageJson">JSON</string>
+    <string name="syntaxLanguageMarkdown">Markdown</string>
+    <string name="syntaxLanguageJavaScript">JavaScript</string>
+    <string name="syntaxHighlightingDocumentTooLarge">此文件過大，已略過語法醒目提示。</string>
 </resources>
