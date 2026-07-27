@@ -58,6 +58,25 @@ public class BasicActivityTest {
         // assertEquals("me.maxistar.testinteractivetestingsetup", appContext.getPackageName());
     }
 
+    @Test
+    public void editorStartsBelowActionBar() {
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+
+        EditorActivity activity = intentsTestRule.getActivity();
+        View editor = activity.findViewById(R.id.editText1);
+        View actionBar = activity.findViewById(androidx.appcompat.R.id.action_bar_container);
+        int[] editorLocation = new int[2];
+        int[] actionBarLocation = new int[2];
+
+        editor.getLocationOnScreen(editorLocation);
+        actionBar.getLocationOnScreen(actionBarLocation);
+
+        assertTrue(
+                "Editor starts behind the ActionBar",
+                editorLocation[1] >= actionBarLocation[1] + actionBar.getHeight()
+        );
+    }
+
     public static ViewAction setTextInTextView(final String value){
         return new ViewAction() {
             @Override

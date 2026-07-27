@@ -10,3 +10,4 @@
 images/scaled
 scripts/artifacts
 scripts/dist
+.DS_Store

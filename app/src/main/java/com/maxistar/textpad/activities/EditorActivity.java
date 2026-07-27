@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import android.text.style.BackgroundColorSpan;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowInsets;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -161,6 +163,9 @@ public class EditorActivity extends AppCompatActivity {
         } else {
             setContentView(R.layout.main);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            applyEdgeToEdgeInsets();
+        }
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
         if (!settingsService.isAutoWrapping()) {
@@ -205,6 +210,29 @@ public class EditorActivity extends AppCompatActivity {
 
     private boolean simpleScrolling() {
         return settingsService.isUseSimpleScrolling();
+    }
+
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+    private void applyEdgeToEdgeInsets() {
+        View content = findViewById(android.R.id.content);
+        int initialPaddingLeft = content.getPaddingLeft();
+        int initialPaddingTop = content.getPaddingTop();
+        int initialPaddingRight = content.getPaddingRight();
+        int initialPaddingBottom = content.getPaddingBottom();
+
+        content.setOnApplyWindowInsetsListener((view, windowInsets) -> {
+            Insets bars = windowInsets.getInsets(
+                    WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout()
+            );
+            view.setPadding(
+                    initialPaddingLeft + bars.left,
+                    initialPaddingTop + bars.top,
+                    initialPaddingRight + bars.right,
+                    initialPaddingBottom + bars.bottom
+            );
+            return windowInsets;
+        });
+        content.requestApplyInsets();
     }
 
     private void openFileByUri(Uri u) {
