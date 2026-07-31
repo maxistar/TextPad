@@ -59,21 +59,21 @@ public class BasicActivityTest {
     }
 
     @Test
-    public void editorStartsBelowActionBar() {
+    public void editorStartsBelowToolbar() {
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
 
         EditorActivity activity = intentsTestRule.getActivity();
         View editor = activity.findViewById(R.id.editText1);
-        View actionBar = activity.findViewById(androidx.appcompat.R.id.action_bar_container);
+        View toolbar = activity.findViewById(R.id.editor_toolbar);
         int[] editorLocation = new int[2];
-        int[] actionBarLocation = new int[2];
+        int[] toolbarLocation = new int[2];
 
         editor.getLocationOnScreen(editorLocation);
-        actionBar.getLocationOnScreen(actionBarLocation);
+        toolbar.getLocationOnScreen(toolbarLocation);
 
         assertTrue(
-                "Editor starts behind the ActionBar",
-                editorLocation[1] >= actionBarLocation[1] + actionBar.getHeight()
+                "Editor starts behind the Toolbar",
+                editorLocation[1] >= toolbarLocation[1] + toolbar.getHeight()
         );
     }
 

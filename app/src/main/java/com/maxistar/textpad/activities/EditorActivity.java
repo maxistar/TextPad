@@ -69,6 +69,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.widget.Toolbar;
 
 
 import android.content.DialogInterface;
@@ -163,6 +164,8 @@ public class EditorActivity extends AppCompatActivity {
         } else {
             setContentView(R.layout.main);
         }
+        Toolbar toolbar = findViewById(R.id.editor_toolbar);
+        setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             applyEdgeToEdgeInsets();
         }
@@ -214,25 +217,20 @@ public class EditorActivity extends AppCompatActivity {
 
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private void applyEdgeToEdgeInsets() {
-        View content = findViewById(android.R.id.content);
-        int initialPaddingLeft = content.getPaddingLeft();
-        int initialPaddingTop = content.getPaddingTop();
-        int initialPaddingRight = content.getPaddingRight();
-        int initialPaddingBottom = content.getPaddingBottom();
-
-        content.setOnApplyWindowInsetsListener((view, windowInsets) -> {
+        View editorRoot = findViewById(R.id.editor_root);
+        editorRoot.setOnApplyWindowInsetsListener((view, windowInsets) -> {
             Insets bars = windowInsets.getInsets(
                     WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout()
             );
             view.setPadding(
-                    initialPaddingLeft + bars.left,
-                    initialPaddingTop + bars.top,
-                    initialPaddingRight + bars.right,
-                    initialPaddingBottom + bars.bottom
+                    bars.left,
+                    bars.top,
+                    bars.right,
+                    bars.bottom
             );
             return windowInsets;
         });
-        content.requestApplyInsets();
+        editorRoot.requestApplyInsets();
     }
 
     private void openFileByUri(Uri u) {

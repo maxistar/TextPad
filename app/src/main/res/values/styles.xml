@@ -3,4 +3,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="android:colorBackground">@color/textColorPrimary</item>
     </style>
+
+    <style name="AppTheme.Editor" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorBackground">@color/textColorPrimary</item>
+    </style>
 </resources>
