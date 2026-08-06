@@ -107,4 +107,8 @@
     <string name="readOnlyDialogButtonContinue">以只读模式继续</string>
     <string name="preferenceUseSimpleScrolling">修复滚动问题</string>
     <string name="preferenceUseSimpleScrollingDescription">如果文本在滚动时意外跳转到末尾，请启用此选项</string>
+    <string name="Recovery_draft_found">未保存的恢复草稿</string>
+    <string name="Recovery_draft_message">发现“%1$s”在 %2$s 的未保存版本。</string>
+    <string name="Restore">恢复</string>
+    <string name="Discard_draft">丢弃草稿</string>
 </resources>

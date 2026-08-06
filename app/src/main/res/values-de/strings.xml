@@ -113,4 +113,8 @@
     <string name="readOnlyDialogButtonContinue">Im Nur-Lese-Modus fortfahren</string>
 
 
+    <string name="Recovery_draft_found">Ungespeicherter Entwurf</string>
+    <string name="Recovery_draft_message">Eine ungespeicherte Version von „%1$s“ vom %2$s wurde gefunden.</string>
+    <string name="Restore">Wiederherstellen</string>
+    <string name="Discard_draft">Entwurf verwerfen</string>
 </resources>

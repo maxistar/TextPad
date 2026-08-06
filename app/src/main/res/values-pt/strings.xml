@@ -113,4 +113,8 @@
     <string name="readOnlyDialogButtonContinue">Continuar em modo somente leitura</string>
 
 
+    <string name="Recovery_draft_found">Rascunho não guardado</string>
+    <string name="Recovery_draft_message">Foi encontrada uma versão não guardada de «%1$s» de %2$s.</string>
+    <string name="Restore">Restaurar</string>
+    <string name="Discard_draft">Descartar rascunho</string>
 </resources>

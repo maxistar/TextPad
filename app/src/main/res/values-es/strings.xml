@@ -111,4 +111,8 @@
     <string name="readOnlyDialogButtonContinue">Continuar en modo solo lectura</string>
     <string name="preferenceUseSimpleScrolling">Corregir desplazamiento errático</string>
     <string name="preferenceUseSimpleScrollingDescription">Activa esto si el texto salta inesperadamente al final durante el desplazamiento</string>
+    <string name="Recovery_draft_found">Borrador sin guardar</string>
+    <string name="Recovery_draft_message">Se encontró una versión sin guardar de «%1$s» del %2$s.</string>
+    <string name="Restore">Restaurar</string>
+    <string name="Discard_draft">Descartar borrador</string>
 </resources>

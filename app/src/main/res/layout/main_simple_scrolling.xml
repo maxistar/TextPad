@@ -26,6 +26,7 @@
             android:inputType="text|textAutoComplete|textAutoCorrect"
             android:overScrollMode="ifContentScrolls"
             android:padding="5dip"
+            android:saveEnabled="false"
             android:scrollbars="vertical" />
     </LinearLayout>
 </LinearLayout>

@@ -24,6 +24,10 @@
     <string name="File_not_found">File not found</string>
     <string name="Can_not_read_file">Can not read file</string>
     <string name="Operation_Canceled">Operation Canceled</string>
+    <string name="Recovery_draft_found">Unsaved recovery draft</string>
+    <string name="Recovery_draft_message">An unsaved version of “%1$s” from %2$s was found.</string>
+    <string name="Restore">Restore</string>
+    <string name="Discard_draft">Discard draft</string>
     <string name="Settings">Settings</string>
     <string name="About">About</string>
     <string name="Continue">Continue</string>

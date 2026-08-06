@@ -114,4 +114,8 @@
     <string name="readOnlyDialogButtonContinue">المتابعة في وضع القراءة فقط</string>
 
 
+    <string name="Recovery_draft_found">مسودة استرداد غير محفوظة</string>
+    <string name="Recovery_draft_message">تم العثور على نسخة غير محفوظة من «%1$s» بتاريخ %2$s.</string>
+    <string name="Restore">استرداد</string>
+    <string name="Discard_draft">تجاهل المسودة</string>
 </resources>

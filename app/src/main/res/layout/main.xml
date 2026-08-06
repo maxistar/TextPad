@@ -24,6 +24,7 @@
             android:hint="@string/Type_Something_Here"
             android:inputType="textMultiLine|textAutoComplete|textAutoCorrect"
             android:minLines="10"
-            android:padding="5dp" />
+            android:padding="5dp"
+            android:saveEnabled="false" />
     </ScrollView>
 </LinearLayout>
