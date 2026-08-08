@@ -7,14 +7,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.function.Supplier;
-
 public class TextConverterTest {
 
     @org.junit.jupiter.api.Test
     public void getInstance() {
         TextConverter converter = TextConverter.getInstance();
-        assertNotNull((Object) "Should return instance", (Supplier<String>) converter);
+        assertNotNull(converter, "Should return instance");
     }
 
     @org.junit.jupiter.api.Test

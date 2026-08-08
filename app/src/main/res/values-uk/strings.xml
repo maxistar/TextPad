@@ -109,4 +109,8 @@
     <string name="readOnlyDialogButtonContinue">Продовжити в режимі лише для читання</string>
 
 
+    <string name="Recovery_draft_found">Незбережена чернетка</string>
+    <string name="Recovery_draft_message">Знайдено незбережену версію «%1$s» від %2$s.</string>
+    <string name="Restore">Відновити</string>
+    <string name="Discard_draft">Видалити чернетку</string>
 </resources>

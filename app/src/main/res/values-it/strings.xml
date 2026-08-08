@@ -111,4 +111,8 @@
     <string name="readOnlyDialogButtonContinue">Continua in sola lettura</string>
     <string name="preferenceUseSimpleScrolling">Correggi scorrimento irregolare</string>
     <string name="preferenceUseSimpleScrollingDescription">Attiva questa opzione se il testo salta inaspettatamente alla fine durante lo scorrimento</string>
+    <string name="Recovery_draft_found">Bozza non salvata</string>
+    <string name="Recovery_draft_message">È stata trovata una versione non salvata di «%1$s» del %2$s.</string>
+    <string name="Restore">Ripristina</string>
+    <string name="Discard_draft">Elimina bozza</string>
 </resources>

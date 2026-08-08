@@ -58,6 +58,25 @@ public class BasicActivityTest {
         // assertEquals("me.maxistar.testinteractivetestingsetup", appContext.getPackageName());
     }
 
+    @Test
+    public void editorStartsBelowToolbar() {
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+
+        EditorActivity activity = intentsTestRule.getActivity();
+        View editor = activity.findViewById(R.id.editText1);
+        View toolbar = activity.findViewById(R.id.editor_toolbar);
+        int[] editorLocation = new int[2];
+        int[] toolbarLocation = new int[2];
+
+        editor.getLocationOnScreen(editorLocation);
+        toolbar.getLocationOnScreen(toolbarLocation);
+
+        assertTrue(
+                "Editor starts behind the Toolbar",
+                editorLocation[1] >= toolbarLocation[1] + toolbar.getHeight()
+        );
+    }
+
     public static ViewAction setTextInTextView(final String value){
         return new ViewAction() {
             @Override

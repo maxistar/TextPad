@@ -30,9 +30,98 @@ platform :android do
     # You can also use other beta testing services here
   end
 
-  desc "Deploy a new version to the Google Play"
+  desc "Fail when a version code already exists on a Google Play track"
+  lane :validate_play_version_code do |options|
+    version_code = Integer(options.fetch(:version_code))
+    json_key = options.fetch(:json_key)
+    tracks = %w[internal alpha beta production]
+    existing = tracks.to_h do |track|
+      codes = google_play_track_version_codes(
+        package_name: "com.maxistar.textpad",
+        json_key: json_key,
+        track: track
+      ).map(&:to_i)
+      [track, codes]
+    end
+    duplicates = existing.select { |_track, codes| codes.include?(version_code) }.keys
+    UI.user_error!("versionCode #{version_code} already exists on: #{duplicates.join(', ')}") unless duplicates.empty?
+  end
+
+  desc "Require a version code to exist on one explicit Google Play track"
+  lane :assert_track_version_code do |options|
+    version_code = Integer(options.fetch(:version_code))
+    track = options.fetch(:track)
+    codes = google_play_track_version_codes(
+      package_name: "com.maxistar.textpad",
+      json_key: options.fetch(:json_key),
+      track: track
+    ).map(&:to_i)
+    UI.user_error!("versionCode #{version_code} does not exist on #{track}") unless codes.include?(version_code)
+  end
+
+  desc "Upload one already-built AAB and localized metadata to an explicit track"
+  lane :upload_release do |options|
+    apk = File.expand_path(options.fetch(:apk))
+    aab = File.expand_path(options.fetch(:aab))
+    version_code = Integer(options.fetch(:version_code))
+    json_key = File.expand_path(options.fetch(:json_key))
+    track = options.fetch(:track)
+    UI.user_error!("APK does not exist: #{apk}") unless File.file?(apk)
+    UI.user_error!("AAB does not exist: #{aab}") unless File.file?(aab)
+    existing = google_play_track_version_codes(
+      package_name: "com.maxistar.textpad",
+      json_key: json_key,
+      track: track
+    ).map(&:to_i)
+    if existing.include?(version_code)
+      UI.message("versionCode #{version_code} already exists on #{track}; upload is complete")
+      next
+    end
+    upload_to_play_store(
+      package_name: "com.maxistar.textpad",
+      aab: aab,
+      json_key: json_key,
+      metadata_path: File.expand_path(options.fetch(:metadata_path)),
+      track: track,
+      release_status: "completed",
+      skip_upload_apk: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Promote an existing internal version to a completed production release"
+  lane :promote_release do |options|
+    version_code = Integer(options.fetch(:version_code))
+    json_key = File.expand_path(options.fetch(:json_key))
+    production_codes = google_play_track_version_codes(
+      package_name: "com.maxistar.textpad",
+      json_key: json_key,
+      track: "production"
+    ).map(&:to_i)
+    if production_codes.include?(version_code)
+      UI.message("versionCode #{version_code} already exists on production; promotion is complete")
+      next
+    end
+    upload_to_play_store(
+      package_name: "com.maxistar.textpad",
+      json_key: json_key,
+      track: "internal",
+      track_promote_to: "production",
+      version_code: version_code,
+      track_promote_release_status: "completed",
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Legacy direct production deploy retained only until the protected release rehearsal succeeds"
   lane :deploy do
+    UI.user_error!("Set ALLOW_LEGACY_PRODUCTION=true only for the documented emergency path") unless ENV["ALLOW_LEGACY_PRODUCTION"] == "true"
     gradle(task: "clean assembleRelease")
-    upload_to_play_store
+    upload_to_play_store(track: "production", release_status: "completed")
   end
 end

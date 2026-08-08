@@ -1,0 +1,54 @@
+name: Promote Android Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Immutable v<versionName> release tag
+        required: true
+        type: string
+      version_code:
+        description: Existing internal-track versionCode
+        required: true
+        type: number
+
+permissions:
+  contents: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.6
+          bundler-cache: true
+      - name: Verify tag, commit, and versionCode
+        env:
+          TAG: ${{ inputs.tag }}
+          EXPECTED_CODE: ${{ inputs.version_code }}
+        run: |
+          git fetch origin --tags
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$TAG")"
+          test "$(python3 scripts/release_tool.py metadata | python3 -c 'import json,sys; print(json.load(sys.stdin)["tag"])')" = "$TAG"
+          test "$(python3 scripts/release_tool.py metadata | python3 -c 'import json,sys; print(json.load(sys.stdin)["versionCode"])')" = "$EXPECTED_CODE"
+      - name: Decode Google Play service account
+        env:
+          SERVICE_ACCOUNT_BASE64: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
+        run: printf '%s' "$SERVICE_ACCOUNT_BASE64" | base64 --decode > service-account.json
+      - name: Require the exact version on internal
+        run: >-
+          bundle exec fastlane android assert_track_version_code
+          version_code:${{ inputs.version_code }} track:internal
+          json_key:${{ github.workspace }}/service-account.json
+      - name: Promote existing internal artifact to completed production
+        run: >-
+          bundle exec fastlane android promote_release
+          version_code:${{ inputs.version_code }}
+          json_key:${{ github.workspace }}/service-account.json
+

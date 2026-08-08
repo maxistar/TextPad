@@ -114,4 +114,8 @@
     <string name="readOnlyDialogButtonContinue">Salt okunur olarak devam et</string>
 
 
+    <string name="Recovery_draft_found">Kaydedilmemiş taslak</string>
+    <string name="Recovery_draft_message">“%1$s” belgesinin %2$s tarihli kaydedilmemiş bir sürümü bulundu.</string>
+    <string name="Restore">Geri yükle</string>
+    <string name="Discard_draft">Taslağı sil</string>
 </resources>

@@ -1,0 +1,3 @@
+- nueva función de recuperación si el archivo actual no está guardado
+- corregido el cierre inesperado al editar archivos grandes
+- SDK de Android actualizado

@@ -111,4 +111,8 @@
     <string name="readOnlyDialogButtonContinue">Continuer en lecture seule</string>
     <string name="preferenceUseSimpleScrolling">Corriger le défilement erratique</string>
     <string name="preferenceUseSimpleScrollingDescription">Activez ceci si le texte saute de manière inattendue à la fin pendant le défilement</string>
+    <string name="Recovery_draft_found">Brouillon non enregistré</string>
+    <string name="Recovery_draft_message">Une version non enregistrée de « %1$s » datant du %2$s a été trouvée.</string>
+    <string name="Restore">Restaurer</string>
+    <string name="Discard_draft">Supprimer le brouillon</string>
 </resources>

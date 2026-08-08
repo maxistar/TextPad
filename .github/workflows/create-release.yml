@@ -1,0 +1,73 @@
+name: Create Android Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Expected versionName without the v prefix
+        required: true
+        type: string
+      commit_sha:
+        description: Exact merged master commit to tag
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    environment: release
+    outputs:
+      tag: ${{ steps.identity.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: master
+          fetch-depth: 0
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.6
+          bundler-cache: true
+      - name: Verify exact master commit
+        env:
+          EXPECTED_SHA: ${{ inputs.commit_sha }}
+        run: |
+          git fetch origin master --tags
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test "$(git rev-parse origin/master)" = "$EXPECTED_SHA"
+      - name: Resolve and verify identity
+        id: identity
+        env:
+          EXPECTED_VERSION: ${{ inputs.version }}
+        run: |
+          python3 scripts/release_tool.py metadata > release-metadata.json
+          ACTUAL_VERSION=$(python3 -c 'import json; print(json.load(open("release-metadata.json"))["versionName"])')
+          TAG=$(python3 -c 'import json; print(json.load(open("release-metadata.json"))["tag"])')
+          test "$ACTUAL_VERSION" = "$EXPECTED_VERSION"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+      - name: Decode Google Play service account
+        env:
+          SERVICE_ACCOUNT_BASE64: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
+        run: printf '%s' "$SERVICE_ACCOUNT_BASE64" | base64 --decode > service-account.json
+      - name: Repeat repository and Google Play validation
+        run: >-
+          python3 scripts/release_tool.py validate --skip-branch --check-play
+          --service-account service-account.json
+      - name: Create immutable annotated tag
+        env:
+          TAG: ${{ steps.identity.outputs.tag }}
+          EXPECTED_SHA: ${{ inputs.commit_sha }}
+        run: |
+          test -z "$(git tag --list "$TAG")"
+          git tag -a "$TAG" "$EXPECTED_SHA" -m "Release $TAG"
+          git push origin "refs/tags/$TAG"
+
+  publish:
+    needs: create-tag
+    uses: ./.github/workflows/tagged-release.yml
+    with:
+      tag: ${{ needs.create-tag.outputs.tag }}
+    secrets: inherit
+
