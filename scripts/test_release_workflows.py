@@ -48,6 +48,12 @@ class ReleaseWorkflowTest(unittest.TestCase):
         self.assertNotIn("gradlew", workflow)
         self.assertNotIn("ANDROID_KEYSTORE", workflow)
 
+    def test_master_sync_accepts_post_tag_release_fixes(self):
+        workflow = self.read("sync-master-to-dev.yml")
+        self.assertIn('test "$(git cat-file -t "$TAG")" = "tag"', workflow)
+        self.assertIn('git merge-base --is-ancestor "$TAG^{}" origin/master', workflow)
+        self.assertNotIn('git rev-list -n 1 "$TAG")" = "$(git rev-parse origin/master)', workflow)
+
     def test_actions_are_versioned(self):
         for path in WORKFLOWS.glob("*.yml"):
             for action in re.findall(r"uses:\s*([^\s]+)", path.read_text(encoding="utf-8")):

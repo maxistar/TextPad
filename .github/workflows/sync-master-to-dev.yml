@@ -25,7 +25,8 @@ jobs:
           TAG: ${{ inputs.tag }}
         run: |
           git fetch origin master dev --tags
-          test "$(git rev-list -n 1 "$TAG")" = "$(git rev-parse origin/master)"
+          test "$(git cat-file -t "$TAG")" = "tag"
+          git merge-base --is-ancestor "$TAG^{}" origin/master
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git merge --no-ff origin/master -m "Merge released $TAG back into dev"
