@@ -100,7 +100,12 @@ jobs:
         env:
           SERVICE_ACCOUNT_BASE64: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
         run: printf '%s' "$SERVICE_ACCOUNT_BASE64" | base64 --decode > service-account.json
-      - name: Upload the published AAB to Play internal
+      - name: Use current delivery lane for manual recovery
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git fetch origin master
+          git show origin/master:fastlane/Fastfile > fastlane/Fastfile
+      - name: Upload the published APK to Play internal
         env:
           TAG: ${{ steps.requested.outputs.tag }}
         run: |

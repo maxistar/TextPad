@@ -59,7 +59,7 @@ platform :android do
     UI.user_error!("versionCode #{version_code} does not exist on #{track}") unless codes.include?(version_code)
   end
 
-  desc "Upload one already-built AAB and localized metadata to an explicit track"
+  desc "Upload one already-built APK and localized metadata to an explicit track"
   lane :upload_release do |options|
     apk = File.expand_path(options.fetch(:apk))
     aab = File.expand_path(options.fetch(:aab))
@@ -79,12 +79,12 @@ platform :android do
     end
     upload_to_play_store(
       package_name: "com.maxistar.textpad",
-      aab: aab,
+      apk: apk,
       json_key: json_key,
       metadata_path: File.expand_path(options.fetch(:metadata_path)),
       track: track,
       release_status: "completed",
-      skip_upload_apk: true,
+      skip_upload_aab: true,
       skip_upload_images: true,
       skip_upload_screenshots: true
     )
