@@ -35,6 +35,8 @@ class ReleaseWorkflowTest(unittest.TestCase):
         self.assertIn("workflow_dispatch:", workflow)
         self.assertIn('if [ -n "$INPUT_TAG" ]', workflow)
         self.assertNotIn('EVENT_NAME: ${{ github.event_name }}', workflow)
+        self.assertIn("if: github.event_name == 'workflow_dispatch'", workflow)
+        self.assertIn("git show origin/master:fastlane/Fastfile > fastlane/Fastfile", workflow)
         self.assertIn("sha256sum --check SHA256SUMS", workflow)
         self.assertIn("environment: release", workflow)
 
@@ -57,6 +59,8 @@ class ReleaseWorkflowTest(unittest.TestCase):
         fastfile = (ROOT / "fastlane" / "Fastfile").read_text(encoding="utf-8")
         for token in ("aab:", "apk =", "metadata_path:", "json_key:", "track:"):
             self.assertIn(token, fastfile)
+        self.assertIn("apk: apk", fastfile)
+        self.assertIn("skip_upload_aab: true", fastfile)
         self.assertIn('track_promote_release_status: "completed"', fastfile)
         self.assertNotIn("rollout:", fastfile)
 
