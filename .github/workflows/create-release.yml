@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 0
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.6
+          ruby-version: '3.3'
           bundler-cache: true
       - name: Verify exact master commit
         env:
@@ -70,4 +70,3 @@ jobs:
     with:
       tag: ${{ needs.create-tag.outputs.tag }}
     secrets: inherit
-
