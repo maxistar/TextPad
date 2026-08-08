@@ -18,6 +18,7 @@
             android:name=".activities.EditorActivity"
             android:launchMode="singleTop"
             android:configChanges="locale"
+            android:theme="@style/AppTheme.Editor"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

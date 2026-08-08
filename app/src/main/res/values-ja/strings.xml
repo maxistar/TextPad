@@ -111,4 +111,8 @@
     <string name="readOnlyDialogButtonContinue">読み取り専用で続行</string>
     <string name="preferenceUseSimpleScrolling">不安定なスクロールを修正</string>
     <string name="preferenceUseSimpleScrollingDescription">スクロール中にテキストが予期せず最後までジャンプする場合に有効にしてください</string>
+    <string name="Recovery_draft_found">未保存の復元用下書き</string>
+    <string name="Recovery_draft_message">%2$s に保存された「%1$s」の未保存バージョンが見つかりました。</string>
+    <string name="Restore">復元</string>
+    <string name="Discard_draft">下書きを破棄</string>
 </resources>

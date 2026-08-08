@@ -1,6 +1,7 @@
 package com.maxistar.textpad.activities;
 
 import java.io.DataInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,6 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.security.MessageDigest;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -23,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +45,7 @@ import android.text.style.BackgroundColorSpan;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowInsets;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -58,6 +64,11 @@ import com.maxistar.textpad.TPStrings;
 import com.maxistar.textpad.service.AlternativeUrlsService;
 import com.maxistar.textpad.service.RecentFilesService;
 import com.maxistar.textpad.service.ThemeService;
+import com.maxistar.textpad.recovery.RecoveryDraft;
+import com.maxistar.textpad.recovery.RecoveryKeys;
+import com.maxistar.textpad.recovery.RecoveryMetadata;
+import com.maxistar.textpad.recovery.RecoveryRepository;
+import com.maxistar.textpad.recovery.RecoveryWriter;
 import com.maxistar.textpad.utils.EditTextUndoRedo;
 import com.maxistar.textpad.utils.FileNameHelper;
 import com.maxistar.textpad.utils.System;
@@ -67,6 +78,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.widget.Toolbar;
 
 
 import android.content.DialogInterface;
@@ -82,6 +94,8 @@ public class EditorActivity extends AppCompatActivity {
     private static final String STATE_FILENAME = "filename";
     private static final String STATE_CHANGED = "changed";
     private static final String STATE_CURSOR_POSITION = "cursor-position";
+    private static final String STATE_CURSOR_END = "cursor-end";
+    private static final String STATE_RECOVERY_KEY = "recovery-key";
 
     private static final int REQUEST_OPEN = 1;
     private static final int REQUEST_SAVE = 2;
@@ -130,6 +144,16 @@ public class EditorActivity extends AppCompatActivity {
     private String next_action_filename = "";
 
     static int selectionStart = 0;
+    private int selectionEnd = 0;
+
+    private RecoveryRepository recoveryRepository;
+    private RecoveryWriter recoveryWriter;
+    private String recoveryKey;
+    private long editorGeneration = 0;
+    private boolean suppressRecoveryTracking = false;
+    private Long originalSize;
+    private Long originalLastModified;
+    private String originalContentSha256;
 
     SettingsService settingsService;
 
@@ -155,11 +179,19 @@ public class EditorActivity extends AppCompatActivity {
         settingsService = ServiceLocator.getInstance().getSettingsService(this.getApplicationContext());
         recentFilesService = ServiceLocator.getInstance().getRecentFilesService();
         alternativeUrlsService = ServiceLocator.getInstance().getAlternativeUrlsService();
+        recoveryRepository = new RecoveryRepository(getApplicationContext());
+        recoveryRepository.cleanupIncompleteArtifacts();
+        recoveryWriter = new RecoveryWriter(recoveryRepository);
 
         if (simpleScrolling()) {
             setContentView(R.layout.main_simple_scrolling);
         } else {
             setContentView(R.layout.main);
+        }
+        Toolbar toolbar = findViewById(R.id.editor_toolbar);
+        setSupportActionBar(toolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            applyEdgeToEdgeInsets();
         }
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
@@ -167,6 +199,7 @@ public class EditorActivity extends AppCompatActivity {
             disableEditorAutowrapping();
         }
         editTextUndoRedo = new EditTextUndoRedo(mText, this);
+        setTextWatcher();
 
         if (simpleScrolling()) {
             linearLayout = findViewById(R.id.linear_layout);
@@ -177,6 +210,7 @@ public class EditorActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             restoreState(savedInstanceState);
+            restoreEditorContent();
         } else {
 
             verifyPermissions(this);
@@ -191,12 +225,13 @@ public class EditorActivity extends AppCompatActivity {
                 if (isFilenameEmpty()) {
                     if (settingsService.isOpenLastFile()) {
                         openLastFile();
+                    } else {
+                        offerActiveUntitledRecovery();
                     }
                 }
             }
         }
 
-        setTextWatcher();
         updateTitle();
         mText.requestFocus();
 
@@ -205,6 +240,24 @@ public class EditorActivity extends AppCompatActivity {
 
     private boolean simpleScrolling() {
         return settingsService.isUseSimpleScrolling();
+    }
+
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+    private void applyEdgeToEdgeInsets() {
+        View editorRoot = findViewById(R.id.editor_root);
+        editorRoot.setOnApplyWindowInsetsListener((view, windowInsets) -> {
+            Insets bars = windowInsets.getInsets(
+                    WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout()
+            );
+            view.setPadding(
+                    bars.left,
+                    bars.top,
+                    bars.right,
+                    bars.bottom
+            );
+            return windowInsets;
+        });
+        editorRoot.requestApplyInsets();
     }
 
     private void openFileByUri(Uri u) {
@@ -226,6 +279,9 @@ public class EditorActivity extends AppCompatActivity {
         textWatcher = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
+                if (!suppressRecoveryTracking && changed) {
+                    scheduleRecoverySnapshot();
+                }
             }
 
             @Override
@@ -234,11 +290,14 @@ public class EditorActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (changed) {
+                if (suppressRecoveryTracking) {
                     return;
                 }
-                changed = true;
-                updateTitle();
+                editorGeneration++;
+                if (!changed) {
+                    changed = true;
+                    updateTitle();
+                }
             }
         };
     }
@@ -291,11 +350,8 @@ public class EditorActivity extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
-        String t = mText.getText().toString().toLowerCase(Locale.getDefault());
         mText.addTextChangedListener(textWatcher);
-        if (selectionStart < t.length()) {
-            mText.setSelection(selectionStart, selectionStart);
-        }
+        applyStoredSelection();
 
         if (SettingsService.isLanguageWasChanged()) {
             Intent intent = getIntent();
@@ -315,6 +371,10 @@ public class EditorActivity extends AppCompatActivity {
 
         mText.removeTextChangedListener(textWatcher);
         selectionStart = mText.getSelectionStart();
+        selectionEnd = mText.getSelectionEnd();
+        if (changed) {
+            flushRecoverySnapshot();
+        }
         if (settingsService.useWakeLock()) {
             ServiceLocator.getInstance().getWakeLockService().releaseLock();
         }
@@ -332,20 +392,214 @@ public class EditorActivity extends AppCompatActivity {
         urlFilename = state.getString(STATE_FILENAME);
         changed = state.getBoolean(STATE_CHANGED);
         selectionStart = state.getInt(STATE_CURSOR_POSITION);
+        selectionEnd = state.getInt(STATE_CURSOR_END, selectionStart);
+        recoveryKey = state.getString(STATE_RECOVERY_KEY);
+    }
+
+    private void restoreEditorContent() {
+        if (changed && recoveryKey != null) {
+            RecoveryDraft draft = recoveryRepository.load(recoveryKey, documentIdentityUri());
+            if (draft != null) {
+                showRecoveryDialog(draft, this::loadStoredDocumentAfterDiscard);
+                return;
+            }
+        }
+        loadStoredDocumentAfterDiscard();
+    }
+
+    private void loadStoredDocumentAfterDiscard() {
+        if (isFilenameEmpty()) {
+            setEditorText(TPStrings.EMPTY, false);
+            return;
+        }
+        if (useAndroidManager()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                openNamedFileDirect(Uri.parse(urlFilename));
+            }
+        } else {
+            openNamedFileLegacyDirect(urlFilename);
+        }
+    }
+
+    private void offerActiveUntitledRecovery() {
+        RecoveryDraft draft = recoveryRepository.loadActive();
+        if (draft != null && draft.metadata.untitled) {
+            recoveryKey = draft.metadata.recoveryKey;
+            showRecoveryDialog(draft, () -> setEditorText(TPStrings.EMPTY, false));
+        }
+    }
+
+    private void showRecoveryDialog(RecoveryDraft draft, Runnable discardLoader) {
+        String timestamp = DateFormat.getDateTimeInstance().format(new Date(draft.metadata.draftUpdatedAt));
+        String name = draft.metadata.displayName == null || draft.metadata.displayName.isEmpty()
+                ? TPStrings.NEW_FILE_TXT
+                : draft.metadata.displayName;
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.Recovery_draft_found)
+                .setMessage(getString(R.string.Recovery_draft_message, name, timestamp))
+                .setPositiveButton(R.string.Restore, (dialog, which) -> restoreDraft(draft))
+                .setNegativeButton(R.string.Discard_draft, (dialog, which) -> {
+                    recoveryRepository.delete(draft.metadata.recoveryKey);
+                    if (draft.metadata.recoveryKey.equals(recoveryKey)) {
+                        recoveryKey = null;
+                    }
+                    discardLoader.run();
+                })
+                .setOnCancelListener(dialog -> { })
+                .show();
+    }
+
+    private void restoreDraft(RecoveryDraft draft) {
+        recoveryKey = draft.metadata.recoveryKey;
+        urlFilename = draft.metadata.documentUri == null ? TPStrings.EMPTY : filenameFromIdentity(draft.metadata.documentUri);
+        editorGeneration = draft.metadata.generation;
+        selectionStart = draft.metadata.cursorStart;
+        selectionEnd = draft.metadata.cursorEnd;
+        originalSize = draft.metadata.originalSize;
+        originalLastModified = draft.metadata.originalLastModified;
+        originalContentSha256 = draft.metadata.originalContentSha256;
+        setEditorText(draft.text, true);
+        updateTitle();
+    }
+
+    private void applyStoredSelection() {
+        int length = mText.length();
+        int start = Math.max(0, Math.min(selectionStart, length));
+        int end = Math.max(0, Math.min(selectionEnd, length));
+        mText.setSelection(Math.min(start, end), Math.max(start, end));
+    }
+
+    private void setEditorText(String text, boolean markChanged) {
+        suppressRecoveryTracking = true;
+        mText.setText(text);
+        editTextUndoRedo.clearHistory();
+        suppressRecoveryTracking = false;
+        changed = markChanged;
+        applyStoredSelection();
+    }
+
+    private void scheduleRecoverySnapshot() {
+        RecoveryWriter.Snapshot snapshot = createRecoverySnapshot();
+        if (snapshot != null) {
+            recoveryWriter.schedule(snapshot);
+        }
+    }
+
+    private void flushRecoverySnapshot() {
+        RecoveryWriter.Snapshot snapshot = createRecoverySnapshot();
+        if (snapshot != null) {
+            recoveryWriter.flushAndWait(snapshot, 2000);
+        }
+    }
+
+    private RecoveryWriter.Snapshot createRecoverySnapshot() {
+        if (!changed) {
+            return null;
+        }
+        String identity = documentIdentityUri();
+        if (recoveryKey == null) {
+            recoveryKey = identity == null
+                    ? RecoveryKeys.forUntitledDocument()
+                    : RecoveryKeys.forDocumentUri(identity);
+        }
+        int start = Math.max(0, mText.getSelectionStart());
+        int end = Math.max(0, mText.getSelectionEnd());
+        RecoveryMetadata metadata = new RecoveryMetadata(
+                recoveryKey,
+                identity,
+                currentDisplayName(),
+                identity == null,
+                settingsService.getFileEncoding(),
+                false,
+                originalSize,
+                originalLastModified,
+                originalContentSha256,
+                0,
+                0,
+                start,
+                end,
+                editorGeneration
+        );
+        return new RecoveryWriter.Snapshot(metadata, mText.getText().toString());
+    }
+
+    private String documentIdentityUri() {
+        if (isFilenameEmpty()) {
+            return null;
+        }
+        if (useAndroidManager()) {
+            return urlFilename;
+        }
+        return Uri.fromFile(new File(urlFilename)).toString();
+    }
+
+    private String filenameFromIdentity(String identity) {
+        if (useAndroidManager()) {
+            return identity;
+        }
+        String path = Uri.parse(identity).getPath();
+        return path == null ? TPStrings.EMPTY : path;
+    }
+
+    private String currentDisplayName() {
+        if (isFilenameEmpty()) {
+            return TPStrings.NEW_FILE_TXT;
+        }
+        if (useAndroidManager()) {
+            return FileNameHelper.getFilenameByUri(this, Uri.parse(urlFilename));
+        }
+        return new File(urlFilename).getName();
+    }
+
+    private void recordLoadedDocument(byte[] originalBytes, Long lastModified) {
+        originalSize = (long) originalBytes.length;
+        originalLastModified = lastModified;
+        originalContentSha256 = sha256(originalBytes);
+        String identity = documentIdentityUri();
+        recoveryKey = identity == null ? null : RecoveryKeys.forDocumentUri(identity);
+        editorGeneration = 0;
+        selectionStart = 0;
+        selectionEnd = 0;
+    }
+
+    private static String sha256(byte[] value) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(value);
+            StringBuilder result = new StringBuilder();
+            for (byte item : hash) {
+                result.append(String.format(Locale.ROOT, "%02x", item & 0xff));
+            }
+            return result.toString();
+        } catch (Exception error) {
+            return null;
+        }
     }
 
     /**
      * @param outState Bundle
      */
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        if (changed) {
+            flushRecoverySnapshot();
+        }
         super.onSaveInstanceState(outState);
         outState.putString(STATE_FILENAME, urlFilename);
         outState.putBoolean(STATE_CHANGED, changed);
         outState.putInt(STATE_CURSOR_POSITION, mText.getSelectionStart());
+        outState.putInt(STATE_CURSOR_END, mText.getSelectionEnd());
+        outState.putString(STATE_RECOVERY_KEY, recoveryKey);
     }
 
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        recoveryWriter.shutdown();
+        editTextUndoRedo.disconnect();
+        super.onDestroy();
     }
 
     @Override
@@ -355,6 +609,7 @@ public class EditorActivity extends AppCompatActivity {
                     .setTitle(R.string.You_have_made_some_changes)
                     .setMessage(R.string.Are_you_sure_to_quit)
                     .setNegativeButton(R.string.Yes, (arg0, arg1) -> {
+                        discardCurrentRecovery();
                         EditorActivity.super.onBackPressed();
                         exitDialogShown = false;
                     })
@@ -398,6 +653,8 @@ public class EditorActivity extends AppCompatActivity {
                 this.openNamedFileLegacy(settingsService.getLastFilename());
             }
             showToast(formatString(R.string.opened_last_edited_file, settingsService.getLastFilename()));
+        } else {
+            offerActiveUntitledRecovery();
         }
     }
 
@@ -786,7 +1043,10 @@ public class EditorActivity extends AppCompatActivity {
                                 EditorActivity.this.saveFile();
                             })
                     .setNegativeButton(R.string.No,
-                            (dialog, which) -> openFileByName(filename)).show();
+                            (dialog, which) -> {
+                                discardCurrentRecovery();
+                                openFileByName(filename);
+                            }).show();
         } else {
             openFileByName(filename);
         }
@@ -823,10 +1083,23 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     public void clearFile() {
-        mText.setText(TPStrings.EMPTY);
+        discardCurrentRecovery();
+        editorGeneration = 0;
+        originalSize = null;
+        originalLastModified = null;
+        originalContentSha256 = null;
+        selectionStart = 0;
+        selectionEnd = 0;
+        setEditorText(TPStrings.EMPTY, false);
         setFilename(TPStrings.EMPTY);
         initEditor();
         updateTitle();
+    }
+
+    private void discardCurrentRecovery() {
+        recoveryWriter.cancelAndWait(editorGeneration, 2000);
+        recoveryRepository.delete(recoveryKey);
+        recoveryKey = null;
     }
 
     private void setFilename(String value) {
@@ -886,7 +1159,10 @@ public class EditorActivity extends AppCompatActivity {
                                 saveFile();
                             })
                     .setNegativeButton(R.string.No,
-                            (dialog, which) -> openNewFile()).show();
+                            (dialog, which) -> {
+                                discardCurrentRecovery();
+                                openNewFile();
+                            }).show();
         } else {
             openNewFile();
         }
@@ -905,7 +1181,10 @@ public class EditorActivity extends AppCompatActivity {
                                 EditorActivity.this.saveFile();
                             })
                     .setNegativeButton(R.string.No,
-                            (dialog, which) -> System.exitFromApp(EditorActivity.this)).show();
+                            (dialog, which) -> {
+                                discardCurrentRecovery();
+                                System.exitFromApp(EditorActivity.this);
+                            }).show();
         } else {
             System.exitFromApp(EditorActivity.this);
         }
@@ -973,6 +1252,8 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void saveNamedFileLegacy() {
+        long savedGeneration = editorGeneration;
+        String previousRecoveryKey = recoveryKey;
         try {
             File f = new File(getFilename());
             if (!f.exists()) {
@@ -989,8 +1270,11 @@ public class EditorActivity extends AppCompatActivity {
 
             fos.write(s.getBytes(settingsService.getFileEncoding()));
             fos.close();
+            completeSuccessfulSave(savedGeneration, previousRecoveryKey, s.getBytes(settingsService.getFileEncoding()), f.lastModified());
             showToast(R.string.File_Written);
-            initEditor();
+            if (editorGeneration == savedGeneration) {
+                initEditor();
+            }
             updateTitle();
 
             if (next_action == DO_OPEN) {
@@ -1046,12 +1330,23 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void saveNamedFile() {
+        long savedGeneration = editorGeneration;
+        String previousRecoveryKey = recoveryKey;
         try {
             Uri uri = Uri.parse(getFilename());
             saveFile(uri);
+            String persistedText = applyEndings(mText.getText().toString());
+            completeSuccessfulSave(
+                    savedGeneration,
+                    previousRecoveryKey,
+                    persistedText.getBytes(settingsService.getFileEncoding()),
+                    null
+            );
 
             showToast(R.string.File_Written);
-            initEditor();
+            if (editorGeneration == savedGeneration) {
+                initEditor();
+            }
             updateTitle();
 
             if (next_action == DO_OPEN) {   // because of multithread nature
@@ -1082,7 +1377,50 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
+    private void completeSuccessfulSave(
+            long savedGeneration,
+            String previousRecoveryKey,
+            byte[] persistedBytes,
+            Long lastModified
+    ) {
+        String identity = documentIdentityUri();
+        String targetKey = identity == null ? null : RecoveryKeys.forDocumentUri(identity);
+        originalSize = (long) persistedBytes.length;
+        originalLastModified = lastModified;
+        originalContentSha256 = sha256(persistedBytes);
+
+        if (editorGeneration == savedGeneration) {
+            recoveryWriter.cancelAndWait(savedGeneration, 2000);
+            recoveryRepository.delete(previousRecoveryKey);
+            if (targetKey != null && !targetKey.equals(previousRecoveryKey)) {
+                recoveryRepository.delete(targetKey);
+            }
+            recoveryKey = targetKey;
+            return;
+        }
+
+        if (previousRecoveryKey != null && identity != null && !targetKey.equals(previousRecoveryKey)) {
+            try {
+                recoveryRepository.migrate(previousRecoveryKey, identity, currentDisplayName());
+            } catch (Exception ignored) {
+                // The previous valid draft remains available if migration fails.
+            }
+        }
+        recoveryKey = targetKey;
+        scheduleRecoverySnapshot();
+    }
+
     protected void openNamedFileLegacy(String filename) {
+        String identity = Uri.fromFile(new File(filename)).toString();
+        RecoveryDraft draft = recoveryRepository.load(RecoveryKeys.forDocumentUri(identity), identity);
+        if (draft != null) {
+            showRecoveryDialog(draft, () -> openNamedFileLegacyDirect(filename));
+        } else {
+            openNamedFileLegacyDirect(filename);
+        }
+    }
+
+    private void openNamedFileLegacyDirect(String filename) {
         try {
             File f = new File(filename);
             FileInputStream fis = new FileInputStream(f);
@@ -1100,16 +1438,15 @@ public class EditorActivity extends AppCompatActivity {
 
             ttt = toUnixEndings(ttt);
 
-            mText.setText(ttt);
-            editTextUndoRedo.clearHistory();
+            setEditorText(ttt, false);
 
             showToast(getBaseContext().getResources().getString(R.string.File_opened_, filename));
             initEditor();
             this.setFilename(filename);
+            recordLoadedDocument(b, f.lastModified());
             if (!settingsService.getLastFilename().equals(filename)) {
                 settingsService.setLastFilename(filename, this.getApplicationContext());
             }
-            selectionStart = 0;
             updateTitle();
         } catch (FileNotFoundException e) {
             this.showToast(R.string.File_not_found);
@@ -1123,6 +1460,17 @@ public class EditorActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     protected void openNamedFile(final Uri uri) {
+        String identity = uri.toString();
+        RecoveryDraft draft = recoveryRepository.load(RecoveryKeys.forDocumentUri(identity), identity);
+        if (draft != null) {
+            showRecoveryDialog(draft, () -> openNamedFileDirect(uri));
+        } else {
+            openNamedFileDirect(uri);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void openNamedFileDirect(final Uri uri) {
         try {
             ContentResolver contentResolver = getContentResolver();
 
@@ -1130,27 +1478,28 @@ public class EditorActivity extends AppCompatActivity {
             if (inputStream == null) {
                 throw new IOException();
             }
-            int size = inputStream.available();
-            DataInputStream dis = new DataInputStream(inputStream);
-            byte[] b = new byte[size];
-            int length = dis.read(b, 0, size);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream(Math.max(8192, inputStream.available()));
+            byte[] buffer = new byte[8192];
+            int count;
+            while ((count = inputStream.read(buffer)) != -1) {
+                bytes.write(buffer, 0, count);
+            }
+            byte[] b = bytes.toByteArray();
 
-            String ttt = new String(b, 0, length, settingsService.getFileEncoding());
+            String ttt = new String(b, settingsService.getFileEncoding());
             ttt = toUnixEndings(ttt);
 
             inputStream.close();
-            dis.close();
 
-            mText.setText(ttt);
-            editTextUndoRedo.clearHistory();
+            setEditorText(ttt, false);
 
             showToast(getBaseContext().getResources().getString(R.string.File_opened_, getFilename()));
             initEditor();
             setFilename(uri.toString());
+            recordLoadedDocument(b, null);
             if (!settingsService.getLastFilename().equals(getFilename())) {
                 settingsService.setLastFilename(getFilename(), this.getApplicationContext());
             }
-            selectionStart = 0;
             if (lastTriedSystemUri != null) {
                 alternativeUrlsService.addAlternativeUrl(lastTriedSystemUri, uri, getApplicationContext());
                 lastTriedSystemUri = null;

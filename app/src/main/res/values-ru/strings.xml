@@ -111,4 +111,8 @@
     <string name="readOnlyDialogButtonContinue">Продолжить в режиме только для чтения</string>
     <string name="preferenceUseSimpleScrolling">Исправить нестабильную прокрутку</string>
     <string name="preferenceUseSimpleScrollingDescription">Включите, если текст неожиданно перепрыгивает в конец при прокрутке</string>
+    <string name="Recovery_draft_found">Найден несохранённый черновик</string>
+    <string name="Recovery_draft_message">Найдена несохранённая версия «%1$s» от %2$s.</string>
+    <string name="Restore">Восстановить</string>
+    <string name="Discard_draft">Удалить черновик</string>
 </resources>
