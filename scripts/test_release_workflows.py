@@ -22,6 +22,8 @@ class ReleaseWorkflowTest(unittest.TestCase):
         workflow = self.read("create-release.yml")
         self.assertIn('git rev-parse origin/master', workflow)
         self.assertIn('git tag -a', workflow)
+        self.assertIn('git config user.name "github-actions[bot]"', workflow)
+        self.assertIn('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"', workflow)
         self.assertIn("--check-play", workflow)
         self.assertIn("environment: release", workflow)
 
