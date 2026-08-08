@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 0
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.6
+          ruby-version: '3.3'
           bundler-cache: true
       - name: Verify exact master commit
         env:
@@ -61,6 +61,8 @@ jobs:
           EXPECTED_SHA: ${{ inputs.commit_sha }}
         run: |
           test -z "$(git tag --list "$TAG")"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag -a "$TAG" "$EXPECTED_SHA" -m "Release $TAG"
           git push origin "refs/tags/$TAG"
 
@@ -70,4 +72,3 @@ jobs:
     with:
       tag: ${{ needs.create-tag.outputs.tag }}
     secrets: inherit
-

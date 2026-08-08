@@ -1,0 +1,3 @@
+- new recovery feature if the current file is not stored
+- fixed crash when editing large files
+- updated android sdk

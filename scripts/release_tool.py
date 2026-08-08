@@ -316,7 +316,7 @@ def validate(args: argparse.Namespace) -> None:
     validate_history(version, config, require_absent_tag=not args.allow_existing_tag)
     validate_changelogs(version, config)
     if not args.skip_branch:
-        validate_branch(version, config, args.mode)
+        validate_branch(version, config, mode=args.mode)
     if args.check_play:
         if not args.service_account:
             raise ReleaseError("--check-play requires --service-account")

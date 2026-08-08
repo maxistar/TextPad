@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 0
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.6
+          ruby-version: '3.3'
           bundler-cache: true
       - name: Verify tag, commit, and versionCode
         env:
@@ -51,4 +51,3 @@ jobs:
           bundle exec fastlane android promote_release
           version_code:${{ inputs.version_code }}
           json_key:${{ github.workspace }}/service-account.json
-

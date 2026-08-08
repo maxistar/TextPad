@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 android {
     defaultConfig {
         applicationId "com.maxistar.textpad"
-        versionCode 60
-        versionName "1.30.0"
+        versionCode 61
+        versionName "1.31.0"
         minSdkVersion 21
         compileSdkVersion 36
         targetSdkVersion 36
