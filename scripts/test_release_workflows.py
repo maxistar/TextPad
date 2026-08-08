@@ -81,9 +81,13 @@ class ReleaseWorkflowTest(unittest.TestCase):
             "create-release.yml",
             "tagged-release.yml",
             "promote-production.yml",
-            "android-deploy.yml",
         ):
             self.assertIn("ruby-version: '3.3'", self.read(name))
+
+    def test_legacy_direct_production_deploy_is_removed(self):
+        self.assertFalse((WORKFLOWS / "android-deploy.yml").exists())
+        fastfile = (ROOT / "fastlane" / "Fastfile").read_text(encoding="utf-8")
+        self.assertNotIn("ALLOW_LEGACY_PRODUCTION", fastfile)
 
 
 if __name__ == "__main__":
