@@ -1,0 +1,60 @@
+import re
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+WORKFLOWS = ROOT / ".github" / "workflows"
+
+
+class ReleaseWorkflowTest(unittest.TestCase):
+    def read(self, name):
+        return (WORKFLOWS / name).read_text(encoding="utf-8")
+
+    def test_release_pr_is_read_only_and_has_no_protected_secrets(self):
+        workflow = self.read("release-pr.yml")
+        self.assertIn("contents: read", workflow)
+        self.assertNotIn("secrets.", workflow)
+        self.assertNotIn("git tag", workflow)
+        self.assertIn("assembleRelease bundleRelease", workflow)
+
+    def test_create_release_checks_exact_master_before_annotated_tag(self):
+        workflow = self.read("create-release.yml")
+        self.assertIn('git rev-parse origin/master', workflow)
+        self.assertIn('git tag -a', workflow)
+        self.assertIn("--check-play", workflow)
+        self.assertIn("environment: release", workflow)
+
+    def test_tagged_publication_orders_github_before_play(self):
+        workflow = self.read("tagged-release.yml")
+        github = workflow.index('gh release create')
+        play = workflow.index('fastlane android upload_release')
+        self.assertLess(github, play)
+        self.assertIn("sha256sum --check SHA256SUMS", workflow)
+        self.assertIn("environment: release", workflow)
+
+    def test_production_has_approval_but_no_build_or_keystore(self):
+        workflow = self.read("promote-production.yml")
+        self.assertIn("environment: production", workflow)
+        self.assertIn("assert_track_version_code", workflow)
+        self.assertIn("promote_release", workflow)
+        self.assertNotIn("gradlew", workflow)
+        self.assertNotIn("ANDROID_KEYSTORE", workflow)
+
+    def test_actions_are_versioned(self):
+        for path in WORKFLOWS.glob("*.yml"):
+            for action in re.findall(r"uses:\s*([^\s]+)", path.read_text(encoding="utf-8")):
+                if action.startswith("./"):
+                    continue
+                self.assertRegex(action, r"@v\d+(?:\.\d+\.\d+)?$", path.name)
+
+    def test_fastlane_release_arguments_are_explicit(self):
+        fastfile = (ROOT / "fastlane" / "Fastfile").read_text(encoding="utf-8")
+        for token in ("aab:", "apk =", "metadata_path:", "json_key:", "track:"):
+            self.assertIn(token, fastfile)
+        self.assertIn('track_promote_release_status: "completed"', fastfile)
+        self.assertNotIn("rollout:", fastfile)
+
+
+if __name__ == "__main__":
+    unittest.main()

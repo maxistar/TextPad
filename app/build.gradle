@@ -3,6 +3,8 @@ apply plugin: 'com.android.application'
 android {
     defaultConfig {
         applicationId "com.maxistar.textpad"
+        versionCode 60
+        versionName "1.30.0"
         minSdkVersion 21
         compileSdkVersion 36
         targetSdkVersion 36
@@ -37,7 +39,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.txt'
-            signingConfig signingConfigs.release
+            if (System.getenv("ANDROID_KEYSTORE")) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 
