@@ -3,14 +3,18 @@ name: Android Build & Deploy
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: release
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -39,6 +43,7 @@ jobs:
       - name: Build & deploy Android release
         run: bundle exec fastlane android deploy
         env:
+          ALLOW_LEGACY_PRODUCTION: "true"
           ANDROID_KEYSTORE: "../android_keystore.jks"
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS}}
