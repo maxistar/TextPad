@@ -177,6 +177,7 @@ GEM
     logger (1.7.0)
     mini_magick (4.13.2)
     mini_mime (1.1.5)
+    multi_json (1.21.1)
     multipart-post (2.4.1)
     mutex_m (0.3.0)
     nanaimo (0.4.0)
@@ -238,6 +239,7 @@ PLATFORMS
 
 DEPENDENCIES
   fastlane (= 2.235.0)
+  multi_json (~> 1.15)
 
 BUNDLED WITH
   4.0.11
