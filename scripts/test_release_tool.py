@@ -108,6 +108,25 @@ class ReleaseToolTest(unittest.TestCase):
         with self.assertRaises(release_tool.ReleaseError):
             release_tool.validate_branch(release_tool.Version("1.31.0", 61), config)
 
+    @mock.patch.object(release_tool, "validate_branch")
+    @mock.patch.object(release_tool, "validate_changelogs")
+    @mock.patch.object(release_tool, "validate_history")
+    @mock.patch.object(release_tool, "read_version")
+    @mock.patch.object(release_tool, "load_config")
+    def test_validate_passes_explicit_mode_as_keyword(
+        self, config, version, history, notes, branch
+    ):
+        config.return_value = {}
+        version.return_value = release_tool.Version("1.31.0", 61)
+        args = SimpleNamespace(
+            allow_existing_tag=False, skip_branch=False, mode="release",
+            check_play=False, service_account=None,
+        )
+
+        release_tool.validate(args)
+
+        branch.assert_called_once_with(version.return_value, config.return_value, mode="release")
+
     @mock.patch.object(release_tool, "run")
     @mock.patch.object(release_tool, "validate_changelogs")
     @mock.patch.object(release_tool, "validate_history")
