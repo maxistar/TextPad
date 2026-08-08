@@ -55,6 +55,19 @@ class ReleaseWorkflowTest(unittest.TestCase):
         self.assertIn('track_promote_release_status: "completed"', fastfile)
         self.assertNotIn("rollout:", fastfile)
 
+    def test_fastlane_handles_empty_google_play_tracks(self):
+        gemfile = (ROOT / "Gemfile").read_text(encoding="utf-8")
+        lockfile = (ROOT / "Gemfile.lock").read_text(encoding="utf-8")
+        self.assertIn('gem "fastlane", "2.235.0"', gemfile)
+        self.assertIn("fastlane (2.235.0)", lockfile)
+        for name in (
+            "create-release.yml",
+            "tagged-release.yml",
+            "promote-production.yml",
+            "android-deploy.yml",
+        ):
+            self.assertIn("ruby-version: '3.3'", self.read(name))
+
 
 if __name__ == "__main__":
     unittest.main()
