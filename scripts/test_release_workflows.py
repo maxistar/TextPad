@@ -32,6 +32,9 @@ class ReleaseWorkflowTest(unittest.TestCase):
         github = workflow.index('gh release create')
         play = workflow.index('fastlane android upload_release')
         self.assertLess(github, play)
+        self.assertIn("workflow_dispatch:", workflow)
+        self.assertIn('if [ -n "$INPUT_TAG" ]', workflow)
+        self.assertNotIn('EVENT_NAME: ${{ github.event_name }}', workflow)
         self.assertIn("sha256sum --check SHA256SUMS", workflow)
         self.assertIn("environment: release", workflow)
 

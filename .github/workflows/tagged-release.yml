@@ -3,6 +3,12 @@ name: Publish Tagged Android Release
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing immutable release tag to publish
+        required: true
+        type: string
   workflow_call:
     inputs:
       tag:
@@ -22,9 +28,8 @@ jobs:
         env:
           INPUT_TAG: ${{ inputs.tag }}
           REF_TAG: ${{ github.ref_name }}
-          EVENT_NAME: ${{ github.event_name }}
         run: |
-          if [ "$EVENT_NAME" = "workflow_call" ]; then TAG="$INPUT_TAG"; else TAG="$REF_TAG"; fi
+          if [ -n "$INPUT_TAG" ]; then TAG="$INPUT_TAG"; else TAG="$REF_TAG"; fi
           case "$TAG" in v[0-9]*.[0-9]*.[0-9]*) ;; *) exit 2 ;; esac
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v6
