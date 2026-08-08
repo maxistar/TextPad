@@ -59,7 +59,9 @@ class ReleaseWorkflowTest(unittest.TestCase):
         gemfile = (ROOT / "Gemfile").read_text(encoding="utf-8")
         lockfile = (ROOT / "Gemfile.lock").read_text(encoding="utf-8")
         self.assertIn('gem "fastlane", "2.235.0"', gemfile)
+        self.assertIn('gem "multi_json", "~> 1.15"', gemfile)
         self.assertIn("fastlane (2.235.0)", lockfile)
+        self.assertIn("multi_json (", lockfile)
         for name in (
             "create-release.yml",
             "tagged-release.yml",
