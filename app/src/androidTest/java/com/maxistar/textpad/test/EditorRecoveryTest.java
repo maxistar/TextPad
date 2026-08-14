@@ -4,6 +4,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
@@ -106,6 +107,7 @@ public class EditorRecoveryTest {
                 editor.setText(content);
                 editor.setSelection(1234);
             });
+            android.os.SystemClock.sleep(800);
 
             scenario.recreate();
             onView(withText(R.string.Restore)).perform(click());
@@ -145,13 +147,15 @@ public class EditorRecoveryTest {
         String content = "recoverable after recreation";
         try (ActivityScenario<EditorActivity> scenario = ActivityScenario.launch(EditorActivity.class)) {
             scenario.onActivity(activity -> ((EditText) activity.findViewById(R.id.editText1)).setText(content));
+            Thread.sleep(800);
             scenario.recreate();
-            onView(withText(R.string.Restore)).check(matches(androidx.test.espresso.matcher.ViewMatchers.isDisplayed()));
+            onView(withText(R.string.Restore)).inRoot(isDialog())
+                    .check(matches(androidx.test.espresso.matcher.ViewMatchers.isDisplayed()));
             pressBack();
             scenario.moveToState(Lifecycle.State.CREATED);
             scenario.moveToState(Lifecycle.State.RESUMED);
             assertEquals(content, new RecoveryRepository(context).loadActive().text);
-            onView(withText(R.string.Restore)).perform(click());
+            onView(withText(R.string.Restore)).inRoot(isDialog()).perform(click());
             onView(withId(R.id.editText1)).check(matches(withText(content)));
         }
     }

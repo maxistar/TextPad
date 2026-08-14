@@ -151,6 +151,9 @@ public class EditorActivity extends AppCompatActivity {
     private long editorGeneration = 0;
     private boolean suppressRecoveryTracking = false;
     private boolean recoveryDecisionPending = false;
+    private boolean recoveryDialogShowing = false;
+    private RecoveryDraft pendingRecoveryDraft;
+    private Runnable pendingRecoveryDiscardLoader;
     private Long originalSize;
     private Long originalLastModified;
     private String originalContentSha256;
@@ -382,6 +385,10 @@ public class EditorActivity extends AppCompatActivity {
             });
         }
 
+        if (recoveryDecisionPending && !recoveryDialogShowing && pendingRecoveryDraft != null) {
+            mText.post(this::showPendingRecoveryDialog);
+        }
+
         if (SettingsService.isLanguageWasChanged()) {
             Intent intent = getIntent();
             finish();
@@ -460,6 +467,9 @@ public class EditorActivity extends AppCompatActivity {
 
     private void showRecoveryDialog(RecoveryDraft draft, Runnable discardLoader) {
         recoveryDecisionPending = true;
+        pendingRecoveryDraft = draft;
+        pendingRecoveryDiscardLoader = discardLoader;
+        recoveryDialogShowing = true;
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(draft.metadata.draftUpdatedAt));
         String name = draft.metadata.displayName == null || draft.metadata.displayName.isEmpty()
                 ? TPStrings.NEW_FILE_TXT
@@ -469,7 +479,7 @@ public class EditorActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.Recovery_draft_message, name, timestamp))
                 .setPositiveButton(R.string.Restore, (dialog, which) -> restoreDraft(draft))
                 .setNegativeButton(R.string.Discard_draft, (dialog, which) -> {
-                    recoveryDecisionPending = false;
+                    clearPendingRecoveryDecision();
                     recoveryRepository.delete(draft.metadata.recoveryKey);
                     if (draft.metadata.recoveryKey.equals(recoveryKey)) {
                         recoveryKey = null;
@@ -477,11 +487,18 @@ public class EditorActivity extends AppCompatActivity {
                     discardLoader.run();
                 })
                 .setCancelable(false)
+                .setOnDismissListener(dialog -> recoveryDialogShowing = false)
                 .show();
     }
 
+    private void showPendingRecoveryDialog() {
+        if (recoveryDecisionPending && !recoveryDialogShowing && pendingRecoveryDraft != null) {
+            showRecoveryDialog(pendingRecoveryDraft, pendingRecoveryDiscardLoader);
+        }
+    }
+
     private void restoreDraft(RecoveryDraft draft) {
-        recoveryDecisionPending = false;
+        clearPendingRecoveryDecision();
         recoveryKey = draft.metadata.recoveryKey;
         urlFilename = draft.metadata.documentUri == null ? TPStrings.EMPTY : filenameFromIdentity(draft.metadata.documentUri);
         editorGeneration = draft.metadata.generation;
@@ -495,6 +512,12 @@ public class EditorActivity extends AppCompatActivity {
         if (!draft.metadata.untitled) {
             mText.post(this::validateRestoredDraft);
         }
+    }
+
+    private void clearPendingRecoveryDecision() {
+        recoveryDecisionPending = false;
+        pendingRecoveryDraft = null;
+        pendingRecoveryDiscardLoader = null;
     }
 
     private void applyStoredSelection() {
