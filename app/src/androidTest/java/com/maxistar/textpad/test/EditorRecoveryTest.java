@@ -141,6 +141,22 @@ public class EditorRecoveryTest {
     }
 
     @Test
+    public void pendingRecoveryDecisionCannotOverwriteDraftDuringRecreation() throws Exception {
+        String content = "recoverable after recreation";
+        try (ActivityScenario<EditorActivity> scenario = ActivityScenario.launch(EditorActivity.class)) {
+            scenario.onActivity(activity -> ((EditText) activity.findViewById(R.id.editText1)).setText(content));
+            scenario.recreate();
+            onView(withText(R.string.Restore)).check(matches(androidx.test.espresso.matcher.ViewMatchers.isDisplayed()));
+            pressBack();
+            scenario.moveToState(Lifecycle.State.CREATED);
+            scenario.moveToState(Lifecycle.State.RESUMED);
+            assertEquals(content, new RecoveryRepository(context).loadActive().text);
+            onView(withText(R.string.Restore)).perform(click());
+            onView(withId(R.id.editText1)).check(matches(withText(content)));
+        }
+    }
+
+    @Test
     public void namedDraftIsDetectedByExactDocumentUri() throws Exception {
         String documentUri = "content://recovery-test/document/notes.txt";
         String key = RecoveryKeys.forDocumentUri(documentUri);

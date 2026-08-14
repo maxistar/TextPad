@@ -10,11 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,6 +68,7 @@ import com.maxistar.textpad.recovery.RecoveryMetadata;
 import com.maxistar.textpad.recovery.RecoveryRepository;
 import com.maxistar.textpad.recovery.RecoveryWriter;
 import com.maxistar.textpad.utils.EditTextUndoRedo;
+import com.maxistar.textpad.utils.DocumentSaveValidator;
 import com.maxistar.textpad.utils.FileNameHelper;
 import com.maxistar.textpad.utils.System;
 import com.maxistar.textpad.utils.TextConverter;
@@ -151,9 +150,25 @@ public class EditorActivity extends AppCompatActivity {
     private String recoveryKey;
     private long editorGeneration = 0;
     private boolean suppressRecoveryTracking = false;
+    private boolean recoveryDecisionPending = false;
     private Long originalSize;
     private Long originalLastModified;
     private String originalContentSha256;
+    private SaveRequest pendingExternalConflict;
+    private boolean nextSaveCreatesDocument;
+    private boolean hasEnteredForeground;
+
+    private static final class SaveRequest {
+        final long generation;
+        final String recoveryKey;
+        final byte[] bytes;
+
+        SaveRequest(long generation, String recoveryKey, byte[] bytes) {
+            this.generation = generation;
+            this.recoveryKey = recoveryKey;
+            this.bytes = bytes;
+        }
+    }
 
     SettingsService settingsService;
 
@@ -350,8 +365,22 @@ public class EditorActivity extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
+
+        if (hasEnteredForeground && pendingExternalConflict == null) {
+            validateOpenDocumentOnForeground();
+        }
+        hasEnteredForeground = true;
+
         mText.addTextChangedListener(textWatcher);
         applyStoredSelection();
+
+        if (pendingExternalConflict != null) {
+            mText.post(() -> {
+                if (pendingExternalConflict != null && !isFinishing()) {
+                    showExternalChangeDialog(pendingExternalConflict);
+                }
+            });
+        }
 
         if (SettingsService.isLanguageWasChanged()) {
             Intent intent = getIntent();
@@ -366,7 +395,7 @@ public class EditorActivity extends AppCompatActivity {
 
     protected void onPause() {
         if (settingsService.isAutosavingActive() && !isFilenameEmpty() && isChanged()) {
-            this.saveFileIfNamed();
+            this.saveFileIfNamed(true);
         }
 
         mText.removeTextChangedListener(textWatcher);
@@ -430,6 +459,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void showRecoveryDialog(RecoveryDraft draft, Runnable discardLoader) {
+        recoveryDecisionPending = true;
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(draft.metadata.draftUpdatedAt));
         String name = draft.metadata.displayName == null || draft.metadata.displayName.isEmpty()
                 ? TPStrings.NEW_FILE_TXT
@@ -439,17 +469,19 @@ public class EditorActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.Recovery_draft_message, name, timestamp))
                 .setPositiveButton(R.string.Restore, (dialog, which) -> restoreDraft(draft))
                 .setNegativeButton(R.string.Discard_draft, (dialog, which) -> {
+                    recoveryDecisionPending = false;
                     recoveryRepository.delete(draft.metadata.recoveryKey);
                     if (draft.metadata.recoveryKey.equals(recoveryKey)) {
                         recoveryKey = null;
                     }
                     discardLoader.run();
                 })
-                .setOnCancelListener(dialog -> { })
+                .setCancelable(false)
                 .show();
     }
 
     private void restoreDraft(RecoveryDraft draft) {
+        recoveryDecisionPending = false;
         recoveryKey = draft.metadata.recoveryKey;
         urlFilename = draft.metadata.documentUri == null ? TPStrings.EMPTY : filenameFromIdentity(draft.metadata.documentUri);
         editorGeneration = draft.metadata.generation;
@@ -460,6 +492,9 @@ public class EditorActivity extends AppCompatActivity {
         originalContentSha256 = draft.metadata.originalContentSha256;
         setEditorText(draft.text, true);
         updateTitle();
+        if (!draft.metadata.untitled) {
+            mText.post(this::validateRestoredDraft);
+        }
     }
 
     private void applyStoredSelection() {
@@ -493,7 +528,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private RecoveryWriter.Snapshot createRecoverySnapshot() {
-        if (!changed) {
+        if (!changed || recoveryDecisionPending) {
             return null;
         }
         String identity = documentIdentityUri();
@@ -554,26 +589,12 @@ public class EditorActivity extends AppCompatActivity {
     private void recordLoadedDocument(byte[] originalBytes, Long lastModified) {
         originalSize = (long) originalBytes.length;
         originalLastModified = lastModified;
-        originalContentSha256 = sha256(originalBytes);
+        originalContentSha256 = DocumentSaveValidator.sha256(originalBytes);
         String identity = documentIdentityUri();
         recoveryKey = identity == null ? null : RecoveryKeys.forDocumentUri(identity);
         editorGeneration = 0;
         selectionStart = 0;
         selectionEnd = 0;
-    }
-
-    private static String sha256(byte[] value) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(value);
-            StringBuilder result = new StringBuilder();
-            for (byte item : hash) {
-                result.append(String.format(Locale.ROOT, "%02x", item & 0xff));
-            }
-            return result.toString();
-        } catch (Exception error) {
-            return null;
-        }
     }
 
     /**
@@ -1097,7 +1118,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void discardCurrentRecovery() {
-        recoveryWriter.cancelAndWait(editorGeneration, 2000);
+        recoveryWriter.cancelAndWait(recoveryKey, editorGeneration, 2000);
         recoveryRepository.delete(recoveryKey);
         recoveryKey = null;
     }
@@ -1219,11 +1240,11 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void saveFileIfNamed() {
-        if (useAndroidManager()) {
-            saveNamedFile();
-        } else {
-            saveNamedFileLegacy();
-        }
+        saveFileIfNamed(false);
+    }
+
+    private void saveFileIfNamed(boolean autosave) {
+        guardedSaveNamedFile(autosave);
     }
 
     protected void saveFileWithConfirmation() {
@@ -1239,8 +1260,10 @@ public class EditorActivity extends AppCompatActivity {
                                 EditorActivity.this.saveFile();
                             }).setNegativeButton(R.string.No,
                             (dialog, which) -> {
-                                //do nothing!!
-                            }).show();
+                                nextSaveCreatesDocument = false;
+                            })
+                    .setOnCancelListener(dialog -> nextSaveCreatesDocument = false)
+                    .show();
         } else {
             saveFileIfNamed();
         }
@@ -1252,63 +1275,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void saveNamedFileLegacy() {
-        long savedGeneration = editorGeneration;
-        String previousRecoveryKey = recoveryKey;
-        try {
-            File f = new File(getFilename());
-            if (!f.exists()) {
-                if (!f.createNewFile()) {
-                    showToast(R.string.Can_not_write_file);
-                    return;
-                }
-            }
-
-            FileOutputStream fos = new FileOutputStream(f);
-            String s = this.mText.getText().toString();
-
-            s = applyEndings(s);
-
-            fos.write(s.getBytes(settingsService.getFileEncoding()));
-            fos.close();
-            completeSuccessfulSave(savedGeneration, previousRecoveryKey, s.getBytes(settingsService.getFileEncoding()), f.lastModified());
-            showToast(R.string.File_Written);
-            if (editorGeneration == savedGeneration) {
-                initEditor();
-            }
-            updateTitle();
-
-            if (next_action == DO_OPEN) {
-                // because of multithread nature
-                // figure out better way to do
-                // it
-                next_action = DO_NOTHING;
-                openNewFile();
-            }
-            if (next_action == DO_NEW) {
-                // because of multithread nature
-                // figure out better way to do
-                // it
-                next_action = DO_NOTHING;
-                clearFile();
-            }
-            if (next_action == DO_SHOW_SETTINGS) { // because of multithread nature
-                next_action = DO_NOTHING;
-                showSettingsActivity();
-            }
-            if (next_action == DO_OPEN_RECENT) {
-                next_action = DO_NOTHING;
-                openFileByName(next_action_filename);
-            }
-            if (next_action == DO_EXIT) {
-                exitApplication();
-            }
-        } catch (FileNotFoundException e) {
-            this.showToast(R.string.File_not_found);
-        } catch (IOException e) {
-            this.showToast(R.string.Can_not_write_file);
-        } catch (Exception e) {
-            this.showToast(R.string.Can_not_write_file);
-        }
+        guardedSaveNamedFile(false);
     }
 
     protected void saveFile(Uri uri) throws IOException {
@@ -1330,43 +1297,42 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void saveNamedFile() {
-        long savedGeneration = editorGeneration;
-        String previousRecoveryKey = recoveryKey;
+        guardedSaveNamedFile(false);
+    }
+
+    private void guardedSaveNamedFile(boolean autosave) {
         try {
-            Uri uri = Uri.parse(getFilename());
-            saveFile(uri);
             String persistedText = applyEndings(mText.getText().toString());
-            completeSuccessfulSave(
-                    savedGeneration,
-                    previousRecoveryKey,
-                    persistedText.getBytes(settingsService.getFileEncoding()),
-                    null
+            SaveRequest request = new SaveRequest(
+                    editorGeneration,
+                    recoveryKey,
+                    persistedText.getBytes(settingsService.getFileEncoding())
             );
+            boolean creatingDocument = nextSaveCreatesDocument || originalContentSha256 == null;
+            nextSaveCreatesDocument = false;
+            if (creatingDocument) {
+                writeAndComplete(request);
+                return;
+            }
 
-            showToast(R.string.File_Written);
-            if (editorGeneration == savedGeneration) {
-                initEditor();
-            }
-            updateTitle();
-
-            if (next_action == DO_OPEN) {   // because of multithread nature
-                next_action = DO_NOTHING;
-                openNewFile();
-            }
-            if (next_action == DO_NEW) { // because of multithread nature
-                next_action = DO_NOTHING;
-                clearFile();
-            }
-            if (next_action == DO_SHOW_SETTINGS) { // because of multithread nature
-                next_action = DO_NOTHING;
-                showSettingsActivity();
-            }
-            if (next_action == DO_OPEN_RECENT) {
-                next_action = DO_NOTHING;
-                openFileByName(next_action_filename);
-            }
-            if (next_action == DO_EXIT) {
-                exitApplication();
+            byte[] currentBytes = readNamedDocumentBytes();
+            DocumentSaveValidator.Outcome outcome = DocumentSaveValidator.classify(
+                    currentBytes,
+                    originalContentSha256,
+                    request.bytes
+            );
+            if (outcome == DocumentSaveValidator.Outcome.BASELINE_MATCH) {
+                writeAndComplete(request);
+            } else if (outcome == DocumentSaveValidator.Outcome.INTENDED_CONTENT_MATCH) {
+                completeEquivalentSave(request, currentBytes);
+            } else if (outcome == DocumentSaveValidator.Outcome.CONFLICT) {
+                pendingExternalConflict = request;
+                flushRecoverySnapshot();
+                if (!autosave) {
+                    showExternalChangeDialog(request);
+                }
+            } else {
+                showToast(R.string.Can_not_read_file);
             }
         } catch (FileNotFoundException e) {
             this.showToast(R.string.File_not_found);
@@ -1374,6 +1340,221 @@ public class EditorActivity extends AppCompatActivity {
             this.showToast(R.string.Can_not_write_file);
         } catch (Exception e) {
             this.showToast(R.string.Can_not_write_file);
+        }
+    }
+
+    private byte[] readNamedDocumentBytes() throws IOException {
+        InputStream inputStream;
+        if (useAndroidManager()) {
+            inputStream = getContentResolver().openInputStream(Uri.parse(getFilename()));
+        } else {
+            inputStream = new FileInputStream(new File(getFilename()));
+        }
+        if (inputStream == null) {
+            throw new IOException("Document cannot be opened for validation");
+        }
+        try (InputStream input = inputStream;
+             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[8192];
+            int count;
+            while ((count = input.read(buffer)) != -1) {
+                output.write(buffer, 0, count);
+            }
+            return output.toByteArray();
+        }
+    }
+
+    private void writeNamedDocumentBytes(byte[] bytes) throws IOException {
+        if (useAndroidManager()) {
+            OutputStream output = getContentResolver().openOutputStream(Uri.parse(getFilename()), "wt");
+            if (output == null) {
+                throw new IOException("Document cannot be opened for writing");
+            }
+            try (OutputStream closeable = output) {
+                closeable.write(bytes);
+            }
+            return;
+        }
+
+        File file = new File(getFilename());
+        if (!file.exists() && !file.createNewFile()) {
+            throw new IOException("Document cannot be created");
+        }
+        try (FileOutputStream output = new FileOutputStream(file)) {
+            output.write(bytes);
+        }
+    }
+
+    private void writeAndComplete(SaveRequest request) throws IOException {
+        writeNamedDocumentBytes(request.bytes);
+        Long lastModified = useAndroidManager() ? null : new File(getFilename()).lastModified();
+        completeSuccessfulSave(request.generation, request.recoveryKey, request.bytes, lastModified);
+        pendingExternalConflict = null;
+        finishSuccessfulSave(request.generation);
+    }
+
+    private void completeEquivalentSave(SaveRequest request, byte[] currentBytes) {
+        Long lastModified = useAndroidManager() ? null : new File(getFilename()).lastModified();
+        completeSuccessfulSave(request.generation, request.recoveryKey, currentBytes, lastModified);
+        pendingExternalConflict = null;
+        finishSuccessfulSave(request.generation);
+    }
+
+    private void finishSuccessfulSave(long savedGeneration) {
+        showToast(R.string.File_Written);
+        if (editorGeneration == savedGeneration) {
+            initEditor();
+        }
+        updateTitle();
+
+        if (next_action == DO_OPEN) {
+            next_action = DO_NOTHING;
+            openNewFile();
+        } else if (next_action == DO_NEW) {
+            next_action = DO_NOTHING;
+            clearFile();
+        } else if (next_action == DO_SHOW_SETTINGS) {
+            next_action = DO_NOTHING;
+            showSettingsActivity();
+        } else if (next_action == DO_OPEN_RECENT) {
+            next_action = DO_NOTHING;
+            openFileByName(next_action_filename);
+        } else if (next_action == DO_EXIT) {
+            next_action = DO_NOTHING;
+            exitApplication();
+        }
+    }
+
+    private void showExternalChangeDialog(SaveRequest request) {
+        if (isFinishing() || request != pendingExternalConflict) {
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.External_change_detected)
+                .setMessage(getString(R.string.External_change_message, currentDisplayName()))
+                .setPositiveButton(R.string.Overwrite, (dialog, which) -> overwriteAfterConflict(request))
+                .setNegativeButton(R.string.Reload, (dialog, which) -> confirmReloadExternal(request))
+                .setNeutralButton(R.string.Save_As, (dialog, which) -> saveAs())
+                .setOnCancelListener(dialog -> {
+                    pendingExternalConflict = request;
+                    flushRecoverySnapshot();
+                })
+                .show();
+    }
+
+    private void overwriteAfterConflict(SaveRequest request) {
+        try {
+            // Confirm that the target is still readable immediately before the authorized overwrite.
+            readNamedDocumentBytes();
+            writeAndComplete(request);
+        } catch (FileNotFoundException error) {
+            showToast(R.string.File_not_found);
+        } catch (IOException error) {
+            showToast(R.string.Can_not_write_file);
+        }
+    }
+
+    private void confirmReloadExternal(SaveRequest request) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.Reload_external_title)
+                .setMessage(R.string.Reload_external_message)
+                .setPositiveButton(R.string.Reload, (dialog, which) -> reloadExternalDocument(request))
+                .setNegativeButton(R.string.Cancel, (dialog, which) -> {
+                    pendingExternalConflict = request;
+                    flushRecoverySnapshot();
+                })
+                .setOnCancelListener(dialog -> {
+                    pendingExternalConflict = request;
+                    flushRecoverySnapshot();
+                })
+                .show();
+    }
+
+    private void reloadExternalDocument(SaveRequest request) {
+        try {
+            byte[] externalBytes = readNamedDocumentBytes();
+            recoveryWriter.cancelAndWait(request.recoveryKey, editorGeneration, 2000);
+            recoveryRepository.delete(request.recoveryKey);
+            pendingExternalConflict = null;
+            applyExternalDocument(externalBytes);
+        } catch (FileNotFoundException error) {
+            showToast(R.string.File_not_found);
+            pendingExternalConflict = request;
+        } catch (Exception error) {
+            showToast(R.string.Can_not_read_file);
+            pendingExternalConflict = request;
+        }
+    }
+
+    private void validateOpenDocumentOnForeground() {
+        if (isFilenameEmpty() || originalContentSha256 == null || pendingExternalConflict != null) {
+            return;
+        }
+        try {
+            byte[] currentBytes = readNamedDocumentBytes();
+            if (originalContentSha256.equals(DocumentSaveValidator.sha256(currentBytes))) {
+                return;
+            }
+            if (!changed) {
+                applyExternalDocument(currentBytes);
+                showToast(R.string.File_reloaded_after_external_change);
+                return;
+            }
+
+            byte[] intendedBytes = applyEndings(mText.getText().toString())
+                    .getBytes(settingsService.getFileEncoding());
+            SaveRequest request = new SaveRequest(editorGeneration, recoveryKey, intendedBytes);
+            DocumentSaveValidator.Outcome outcome = DocumentSaveValidator.classify(
+                    currentBytes,
+                    originalContentSha256,
+                    intendedBytes
+            );
+            if (outcome == DocumentSaveValidator.Outcome.INTENDED_CONTENT_MATCH) {
+                completeEquivalentSave(request, currentBytes);
+            } else if (outcome == DocumentSaveValidator.Outcome.CONFLICT) {
+                pendingExternalConflict = request;
+                flushRecoverySnapshot();
+                mText.post(() -> showExternalChangeDialog(request));
+            }
+        } catch (Exception error) {
+            // Foreground validation is best effort. Save repeats the mandatory validation.
+        }
+    }
+
+    private void applyExternalDocument(byte[] externalBytes) throws Exception {
+        String externalText = new String(externalBytes, settingsService.getFileEncoding());
+        externalText = toUnixEndings(externalText);
+        setEditorText(externalText, false);
+        initEditor();
+        recordLoadedDocument(
+                externalBytes,
+                useAndroidManager() ? null : new File(getFilename()).lastModified()
+        );
+        updateTitle();
+    }
+
+    private void validateRestoredDraft() {
+        if (!changed || isFilenameEmpty() || originalContentSha256 == null) {
+            return;
+        }
+        try {
+            byte[] intendedBytes = applyEndings(mText.getText().toString())
+                    .getBytes(settingsService.getFileEncoding());
+            SaveRequest request = new SaveRequest(editorGeneration, recoveryKey, intendedBytes);
+            byte[] currentBytes = readNamedDocumentBytes();
+            DocumentSaveValidator.Outcome outcome = DocumentSaveValidator.classify(
+                    currentBytes,
+                    originalContentSha256,
+                    intendedBytes
+            );
+            if (outcome == DocumentSaveValidator.Outcome.INTENDED_CONTENT_MATCH) {
+                completeEquivalentSave(request, currentBytes);
+            } else if (outcome == DocumentSaveValidator.Outcome.CONFLICT) {
+                pendingExternalConflict = request;
+                showExternalChangeDialog(request);
+            }
+        } catch (Exception error) {
+            // Keep the restored local draft; a later Save will retry validation and report failure.
         }
     }
 
@@ -1387,10 +1568,10 @@ public class EditorActivity extends AppCompatActivity {
         String targetKey = identity == null ? null : RecoveryKeys.forDocumentUri(identity);
         originalSize = (long) persistedBytes.length;
         originalLastModified = lastModified;
-        originalContentSha256 = sha256(persistedBytes);
+        originalContentSha256 = DocumentSaveValidator.sha256(persistedBytes);
 
         if (editorGeneration == savedGeneration) {
-            recoveryWriter.cancelAndWait(savedGeneration, 2000);
+            recoveryWriter.cancelAndWait(previousRecoveryKey, savedGeneration, 2000);
             recoveryRepository.delete(previousRecoveryKey);
             if (targetKey != null && !targetKey.equals(previousRecoveryKey)) {
                 recoveryRepository.delete(targetKey);
@@ -1658,6 +1839,7 @@ public class EditorActivity extends AppCompatActivity {
                 setFilename(
                         data.getStringExtra(TPStrings.RESULT_PATH)
                 );
+                nextSaveCreatesDocument = true;
                 this.saveFileWithConfirmation();
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 showToast(R.string.Operation_Canceled);
@@ -1691,6 +1873,7 @@ public class EditorActivity extends AppCompatActivity {
                 Uri uri = data.getData();
                 if (uri != null) {
                     setFilename(uri.toString());
+                    nextSaveCreatesDocument = true;
                     this.saveFileWithConfirmation();
                 }
             }
