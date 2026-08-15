@@ -115,4 +115,11 @@
     <string name="Recovery_draft_message">Se encontró una versión sin guardar de «%1$s» del %2$s.</string>
     <string name="Restore">Restaurar</string>
     <string name="Discard_draft">Descartar borrador</string>
+    <string name="External_change_detected">Se detectó un cambio externo</string>
+    <string name="External_change_message">“%1$s” se modificó fuera de TextPad. Vuelve a cargar la versión externa, sobrescríbela con tus cambios, guarda tus cambios en otro archivo o cancela para seguir editando.</string>
+    <string name="Overwrite">Sobrescribir</string>
+    <string name="Reload">Volver a cargar</string>
+    <string name="Reload_external_title">¿Volver a cargar la versión externa?</string>
+    <string name="Reload_external_message">Los cambios no guardados en TextPad se descartarán después de cargar correctamente la versión externa.</string>
+    <string name="File_reloaded_after_external_change">Archivo actualizado después de un cambio externo</string>
 </resources>

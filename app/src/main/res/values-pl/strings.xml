@@ -117,4 +117,11 @@
     <string name="Recovery_draft_message">Znaleziono niezapisaną wersję „%1$s” z %2$s.</string>
     <string name="Restore">Przywróć</string>
     <string name="Discard_draft">Odrzuć wersję roboczą</string>
+    <string name="External_change_detected">Wykryto zmianę zewnętrzną</string>
+    <string name="External_change_message">Plik „%1$s” został zmieniony poza aplikacją TextPad. Wczytaj ponownie wersję zewnętrzną, zastąp ją swoimi zmianami, zapisz zmiany w innym pliku albo anuluj, aby kontynuować edycję.</string>
+    <string name="Overwrite">Zastąp</string>
+    <string name="Reload">Wczytaj ponownie</string>
+    <string name="Reload_external_title">Wczytać ponownie wersję zewnętrzną?</string>
+    <string name="Reload_external_message">Niezapisane zmiany w TextPad zostaną odrzucone po pomyślnym wczytaniu wersji zewnętrznej.</string>
+    <string name="File_reloaded_after_external_change">Plik wczytano ponownie po zmianie zewnętrznej</string>
 </resources>

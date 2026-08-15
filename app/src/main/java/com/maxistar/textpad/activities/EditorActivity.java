@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.Insets;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -263,19 +264,45 @@ public class EditorActivity extends AppCompatActivity {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private void applyEdgeToEdgeInsets() {
         View editorRoot = findViewById(R.id.editor_root);
+        int initialPaddingLeft = editorRoot.getPaddingLeft();
+        int initialPaddingTop = editorRoot.getPaddingTop();
+        int initialPaddingRight = editorRoot.getPaddingRight();
+        int initialPaddingBottom = editorRoot.getPaddingBottom();
         editorRoot.setOnApplyWindowInsetsListener((view, windowInsets) -> {
             Insets bars = windowInsets.getInsets(
                     WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout()
             );
+            Insets ime = windowInsets.getInsets(WindowInsets.Type.ime());
             view.setPadding(
-                    bars.left,
-                    bars.top,
-                    bars.right,
-                    bars.bottom
+                    initialPaddingLeft + bars.left,
+                    initialPaddingTop + bars.top,
+                    initialPaddingRight + bars.right,
+                    initialPaddingBottom + Math.max(bars.bottom, ime.bottom)
             );
+            view.post(() -> requestFocusedCaretOnScreen(view));
             return windowInsets;
         });
         editorRoot.requestApplyInsets();
+    }
+
+    private void requestFocusedCaretOnScreen(View editorRoot) {
+        EditText editor = editorRoot.findViewById(R.id.editText1);
+        if (editor == null || !editor.isFocused() || editor.getLayout() == null) {
+            return;
+        }
+        int selection = editor.getSelectionStart();
+        if (selection < 0) {
+            return;
+        }
+        int line = editor.getLayout().getLineForOffset(selection);
+        Rect caret = new Rect(
+                editor.getTotalPaddingLeft(),
+                editor.getTotalPaddingTop() + editor.getLayout().getLineTop(line),
+                Math.max(editor.getTotalPaddingLeft() + 1,
+                        editor.getWidth() - editor.getTotalPaddingRight()),
+                editor.getTotalPaddingTop() + editor.getLayout().getLineBottom(line)
+        );
+        editor.requestRectangleOnScreen(caret, false);
     }
 
     private void openFileByUri(Uri u) {

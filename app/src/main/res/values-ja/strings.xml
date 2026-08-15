@@ -115,4 +115,11 @@
     <string name="Recovery_draft_message">%2$s に保存された「%1$s」の未保存バージョンが見つかりました。</string>
     <string name="Restore">復元</string>
     <string name="Discard_draft">下書きを破棄</string>
+    <string name="External_change_detected">外部での変更を検出しました</string>
+    <string name="External_change_message">「%1$s」はTextPadの外部で変更されました。外部バージョンを再読み込みするか、編集内容で上書きするか、別のファイルに保存するか、キャンセルして編集を続けてください。</string>
+    <string name="Overwrite">上書き</string>
+    <string name="Reload">再読み込み</string>
+    <string name="Reload_external_title">外部バージョンを再読み込みしますか？</string>
+    <string name="Reload_external_message">外部バージョンが正常に読み込まれた後、TextPadの未保存の編集内容は破棄されます。</string>
+    <string name="File_reloaded_after_external_change">外部での変更後にファイルを再読み込みしました</string>
 </resources>

@@ -117,4 +117,11 @@
     <string name="Recovery_draft_message">Eine ungespeicherte Version von „%1$s“ vom %2$s wurde gefunden.</string>
     <string name="Restore">Wiederherstellen</string>
     <string name="Discard_draft">Entwurf verwerfen</string>
+    <string name="External_change_detected">Externe Änderung erkannt</string>
+    <string name="External_change_message">„%1$s“ wurde außerhalb von TextPad geändert. Laden Sie die externe Version neu, überschreiben Sie sie mit Ihren Änderungen, speichern Sie Ihre Änderungen in einer anderen Datei oder brechen Sie ab, um weiterzuarbeiten.</string>
+    <string name="Overwrite">Überschreiben</string>
+    <string name="Reload">Neu laden</string>
+    <string name="Reload_external_title">Externe Version neu laden?</string>
+    <string name="Reload_external_message">Ihre nicht gespeicherten TextPad-Änderungen werden verworfen, nachdem die externe Version erfolgreich geladen wurde.</string>
+    <string name="File_reloaded_after_external_change">Datei nach externer Änderung neu geladen</string>
 </resources>

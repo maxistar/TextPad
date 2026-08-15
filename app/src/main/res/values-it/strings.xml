@@ -115,4 +115,11 @@
     <string name="Recovery_draft_message">È stata trovata una versione non salvata di «%1$s» del %2$s.</string>
     <string name="Restore">Ripristina</string>
     <string name="Discard_draft">Elimina bozza</string>
+    <string name="External_change_detected">Rilevata una modifica esterna</string>
+    <string name="External_change_message">“%1$s” è stato modificato al di fuori di TextPad. Ricarica la versione esterna, sovrascrivila con le tue modifiche, salva le modifiche in un altro file oppure annulla per continuare a modificare.</string>
+    <string name="Overwrite">Sovrascrivi</string>
+    <string name="Reload">Ricarica</string>
+    <string name="Reload_external_title">Ricaricare la versione esterna?</string>
+    <string name="Reload_external_message">Le modifiche non salvate in TextPad verranno eliminate dopo il caricamento corretto della versione esterna.</string>
+    <string name="File_reloaded_after_external_change">File ricaricato dopo una modifica esterna</string>
 </resources>
