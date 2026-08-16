@@ -118,4 +118,11 @@
     <string name="Recovery_draft_message">تم العثور على نسخة غير محفوظة من «%1$s» بتاريخ %2$s.</string>
     <string name="Restore">استرداد</string>
     <string name="Discard_draft">تجاهل المسودة</string>
+    <string name="External_change_detected">تم اكتشاف تغيير خارجي</string>
+    <string name="External_change_message">تم تغيير ”%1$s“ خارج TextPad. أعد تحميل الإصدار الخارجي، أو استبدله بتعديلاتك، أو احفظ تعديلاتك في ملف آخر، أو ألغِ للمتابعة في التحرير.</string>
+    <string name="Overwrite">استبدال</string>
+    <string name="Reload">إعادة تحميل</string>
+    <string name="Reload_external_title">إعادة تحميل الإصدار الخارجي؟</string>
+    <string name="Reload_external_message">سيتم تجاهل تعديلات TextPad غير المحفوظة بعد تحميل الإصدار الخارجي بنجاح.</string>
+    <string name="File_reloaded_after_external_change">تمت إعادة تحميل الملف بعد تغيير خارجي</string>
 </resources>

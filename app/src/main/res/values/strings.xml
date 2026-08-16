@@ -28,6 +28,13 @@
     <string name="Recovery_draft_message">An unsaved version of “%1$s” from %2$s was found.</string>
     <string name="Restore">Restore</string>
     <string name="Discard_draft">Discard draft</string>
+    <string name="External_change_detected">External change detected</string>
+    <string name="External_change_message">“%1$s” changed outside TextPad. Reload the external version, overwrite it with your edits, save your edits as another file, or cancel to keep editing.</string>
+    <string name="Overwrite">Overwrite</string>
+    <string name="Reload">Reload</string>
+    <string name="Reload_external_title">Reload external version?</string>
+    <string name="Reload_external_message">Your unsaved TextPad edits will be discarded after the external version is loaded successfully.</string>
+    <string name="File_reloaded_after_external_change">File reloaded after an external change</string>
     <string name="Settings">Settings</string>
     <string name="About">About</string>
     <string name="Continue">Continue</string>

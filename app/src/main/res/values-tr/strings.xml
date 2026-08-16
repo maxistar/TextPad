@@ -118,4 +118,11 @@
     <string name="Recovery_draft_message">“%1$s” belgesinin %2$s tarihli kaydedilmemiş bir sürümü bulundu.</string>
     <string name="Restore">Geri yükle</string>
     <string name="Discard_draft">Taslağı sil</string>
+    <string name="External_change_detected">Harici değişiklik algılandı</string>
+    <string name="External_change_message">“%1$s” TextPad dışında değiştirildi. Harici sürümü yeniden yükleyin, kendi değişikliklerinizle üzerine yazın, değişikliklerinizi başka bir dosyaya kaydedin veya düzenlemeye devam etmek için iptal edin.</string>
+    <string name="Overwrite">Üzerine yaz</string>
+    <string name="Reload">Yeniden yükle</string>
+    <string name="Reload_external_title">Harici sürüm yeniden yüklensin mi?</string>
+    <string name="Reload_external_message">Harici sürüm başarıyla yüklendikten sonra kaydedilmemiş TextPad değişiklikleriniz silinecektir.</string>
+    <string name="File_reloaded_after_external_change">Harici değişiklikten sonra dosya yeniden yüklendi</string>
 </resources>

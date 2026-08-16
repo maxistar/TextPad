@@ -115,4 +115,11 @@
     <string name="Recovery_draft_message">Найдена несохранённая версия «%1$s» от %2$s.</string>
     <string name="Restore">Восстановить</string>
     <string name="Discard_draft">Удалить черновик</string>
+    <string name="External_change_detected">Обнаружено внешнее изменение</string>
+    <string name="External_change_message">Файл «%1$s» изменён вне TextPad. Можно загрузить внешнюю версию, перезаписать её вашими правками, сохранить правки в другой файл или отменить действие и продолжить редактирование.</string>
+    <string name="Overwrite">Перезаписать</string>
+    <string name="Reload">Загрузить заново</string>
+    <string name="Reload_external_title">Загрузить внешнюю версию?</string>
+    <string name="Reload_external_message">Несохранённые правки TextPad будут удалены только после успешной загрузки внешней версии.</string>
+    <string name="File_reloaded_after_external_change">Файл обновлён после внешнего изменения</string>
 </resources>
