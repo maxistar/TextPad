@@ -1,0 +1,3 @@
+- chroni Twoje zmiany, gdy otwarty plik zostanie zmieniony poza TextPad
+- zwiększa niezawodność odzyskiwania niezapisanych wersji roboczych
+- utrzymuje kursor w widocznym miejscu po otwarciu klawiatury
