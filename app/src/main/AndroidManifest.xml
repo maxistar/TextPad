@@ -17,6 +17,7 @@
             android:launchMode="singleTop"
             android:configChanges="locale"
             android:theme="@style/AppTheme.Editor"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

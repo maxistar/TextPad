@@ -1,0 +1,3 @@
+- protects your edits when an open file changes outside TextPad
+- makes recovery of unsaved drafts more reliable
+- keeps the cursor visible when the keyboard is open

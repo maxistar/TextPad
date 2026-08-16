@@ -118,10 +118,4 @@ platform :android do
     )
   end
 
-  desc "Legacy direct production deploy retained only until the protected release rehearsal succeeds"
-  lane :deploy do
-    UI.user_error!("Set ALLOW_LEGACY_PRODUCTION=true only for the documented emergency path") unless ENV["ALLOW_LEGACY_PRODUCTION"] == "true"
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store(track: "production", release_status: "completed")
-  end
 end

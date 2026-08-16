@@ -117,4 +117,11 @@
     <string name="Recovery_draft_message">Foi encontrada uma versão não guardada de «%1$s» de %2$s.</string>
     <string name="Restore">Restaurar</string>
     <string name="Discard_draft">Descartar rascunho</string>
+    <string name="External_change_detected">Alteração externa detetada</string>
+    <string name="External_change_message">“%1$s” foi alterado fora do TextPad. Recarregue a versão externa, substitua-a pelas suas alterações, guarde as alterações noutro ficheiro ou cancele para continuar a editar.</string>
+    <string name="Overwrite">Substituir</string>
+    <string name="Reload">Recarregar</string>
+    <string name="Reload_external_title">Recarregar a versão externa?</string>
+    <string name="Reload_external_message">As alterações não guardadas no TextPad serão descartadas depois de a versão externa ser carregada com sucesso.</string>
+    <string name="File_reloaded_after_external_change">Ficheiro recarregado após uma alteração externa</string>
 </resources>

@@ -76,15 +76,16 @@ public class RecoveryRepositoryTest {
         assertNotNull(loaded);
         assertEquals("recover me", loaded.text);
         assertEquals(3, loaded.metadata.generation);
-        assertTrue(new File(repository.getDirectoryForTests(), key + ".draft").isFile());
-        assertTrue(new File(repository.getDirectoryForTests(), key + ".json").isFile());
+        File generation = publishedGeneration(key);
+        assertTrue(new File(generation, "draft.draft").isFile());
+        assertTrue(new File(generation, "metadata.json").isFile());
     }
 
     @Test
     public void invalidLengthAndMissingPairAreRejected() throws Exception {
         String key = RecoveryKeys.forUntitledDocument();
         repository.write(metadata(key, null, 1), "valid");
-        File draft = new File(repository.getDirectoryForTests(), key + ".draft");
+        File draft = new File(publishedGeneration(key), "draft.draft");
         try (FileOutputStream output = new FileOutputStream(draft, true)) {
             output.write('x');
         }
@@ -98,7 +99,7 @@ public class RecoveryRepositoryTest {
     public void sameLengthContentMismatchIsRejected() throws Exception {
         String key = RecoveryKeys.forUntitledDocument();
         repository.write(metadata(key, null, 1), "first");
-        File draft = new File(repository.getDirectoryForTests(), key + ".draft");
+        File draft = new File(publishedGeneration(key), "draft.draft");
         try (FileOutputStream output = new FileOutputStream(draft, false)) {
             output.write("other".getBytes(StandardCharsets.UTF_8));
         }
@@ -110,7 +111,7 @@ public class RecoveryRepositoryTest {
     public void staleActivePointerIsCleared() throws Exception {
         String key = RecoveryKeys.forUntitledDocument();
         repository.write(metadata(key, null, 1), "draft");
-        new File(repository.getDirectoryForTests(), key + ".draft").delete();
+        deleteRecursively(publishedGeneration(key));
 
         assertNull(repository.loadActive());
         assertNull(ApplicationProvider.<Context>getApplicationContext()
@@ -140,8 +141,49 @@ public class RecoveryRepositoryTest {
         repository.delete(key);
 
         assertNull(repository.load(key, null));
-        assertFalse(new File(repository.getDirectoryForTests(), key + ".draft").exists());
-        assertFalse(new File(repository.getDirectoryForTests(), key + ".json").exists());
+        assertFalse(new File(repository.getDirectoryForTests(), key + ".current").exists());
+        assertFalse(new File(repository.getDirectoryForTests(), key + ".generations").exists());
+    }
+
+    @Test
+    public void incompleteUnpublishedGenerationDoesNotReplaceCurrentDraft() throws Exception {
+        String key = RecoveryKeys.forUntitledDocument();
+        repository.write(metadata(key, null, 1), "previous");
+        File generations = new File(repository.getDirectoryForTests(), key + ".generations");
+        File incomplete = new File(generations, "generation-interrupted.tmp");
+        assertTrue(incomplete.mkdir());
+        try (FileOutputStream output = new FileOutputStream(new File(incomplete, "draft.draft"))) {
+            output.write("newer".getBytes(StandardCharsets.UTF_8));
+        }
+
+        repository.cleanupIncompleteArtifacts();
+
+        RecoveryDraft draft = repository.loadActive();
+        assertNotNull(draft);
+        assertEquals("previous", draft.text);
+        assertFalse(incomplete.exists());
+    }
+
+    @Test
+    public void cleanupRestoresLegacyBackupBeforeLoading() throws Exception {
+        String key = RecoveryKeys.forUntitledDocument();
+        RecoveryMetadata published = metadata(key, null, 1).published(
+                "valid".getBytes(StandardCharsets.UTF_8).length,
+                sha256("valid".getBytes(StandardCharsets.UTF_8)),
+                123L
+        );
+        File directory = repository.getDirectoryForTests();
+        assertTrue(directory.mkdirs());
+        write(new File(directory, key + ".draft"), "broken");
+        write(new File(directory, key + ".draft.bak"), "valid");
+        write(new File(directory, key + ".json"), published.toJson().toString());
+
+        repository.cleanupIncompleteArtifacts();
+
+        RecoveryDraft draft = repository.load(key, null);
+        assertNotNull(draft);
+        assertEquals("valid", draft.text);
+        assertFalse(new File(directory, key + ".draft.bak").exists());
     }
 
     private RecoveryMetadata metadata(String key, String uri, long generation) {
@@ -149,6 +191,29 @@ public class RecoveryRepositoryTest {
                 key, uri, "notes.txt", uri == null, "UTF-8", false,
                 12L, null, "fingerprint", 0, 0, 2, 4, generation
         );
+    }
+
+    private File publishedGeneration(String key) {
+        File generations = new File(repository.getDirectoryForTests(), key + ".generations");
+        File[] children = generations.listFiles(file -> file.isDirectory() && !file.getName().endsWith(".tmp"));
+        assertNotNull(children);
+        assertEquals(1, children.length);
+        return children[0];
+    }
+
+    private static void write(File file, String value) throws Exception {
+        try (FileOutputStream output = new FileOutputStream(file)) {
+            output.write(value.getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    private static String sha256(byte[] value) throws Exception {
+        java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+        StringBuilder result = new StringBuilder();
+        for (byte item : digest.digest(value)) {
+            result.append(String.format(java.util.Locale.ROOT, "%02x", item & 0xff));
+        }
+        return result.toString();
     }
 
     private static void deleteRecursively(File file) {

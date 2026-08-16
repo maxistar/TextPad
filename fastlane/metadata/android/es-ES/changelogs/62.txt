@@ -1,0 +1,3 @@
+- protege tus cambios cuando un archivo abierto se modifica fuera de TextPad
+- mejora la recuperación de borradores sin guardar
+- mantiene el cursor visible cuando el teclado está abierto

@@ -93,7 +93,7 @@ public class RecoveryWriterTest {
     public void cancellationBarrierPreventsQueuedDraftFromReappearingAfterDelete() {
         String key = RecoveryKeys.forUntitledDocument();
         writer.schedule(snapshot(key, 3, "queued"));
-        writer.cancelAndWait(3, 2000);
+        writer.cancelAndWait(key, 3, 2000);
         repository.delete(key);
 
         try {
@@ -102,6 +102,19 @@ public class RecoveryWriterTest {
             Thread.currentThread().interrupt();
         }
         assertEquals(null, repository.load(key, null));
+    }
+
+    @Test
+    public void lowerGenerationForAnotherKeyIsNotRejected() {
+        String firstKey = RecoveryKeys.forUntitledDocument();
+        String secondKey = RecoveryKeys.forUntitledDocument();
+        writer.flushAndWait(snapshot(firstKey, 9, "first"), 2000);
+        writer.flushAndWait(snapshot(secondKey, 1, "second"), 2000);
+
+        RecoveryDraft draft = repository.load(secondKey, null);
+        assertNotNull(draft);
+        assertEquals("second", draft.text);
+        assertEquals(1, draft.metadata.generation);
     }
 
     private RecoveryWriter.Snapshot snapshot(String key, long generation, String text) {

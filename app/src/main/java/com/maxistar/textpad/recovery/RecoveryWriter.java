@@ -2,6 +2,8 @@ package com.maxistar.textpad.recovery;
 
 import android.util.Log;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -19,26 +21,29 @@ public final class RecoveryWriter {
         return thread;
     });
     private ScheduledFuture<?> pending;
-    private long newestGeneration;
+    private String pendingRecoveryKey;
+    private final Map<String, Long> newestGenerations = new HashMap<>();
 
     public RecoveryWriter(RecoveryRepository repository) {
         this.repository = repository;
     }
 
     public synchronized void schedule(Snapshot snapshot) {
-        newestGeneration = Math.max(newestGeneration, snapshot.metadata.generation);
+        recordGeneration(snapshot.metadata.recoveryKey, snapshot.metadata.generation);
         if (pending != null) {
             pending.cancel(false);
         }
+        pendingRecoveryKey = snapshot.metadata.recoveryKey;
         pending = executor.schedule(() -> writeIfCurrent(snapshot), DEBOUNCE_MILLIS, TimeUnit.MILLISECONDS);
     }
 
     public boolean flushAndWait(Snapshot snapshot, long timeoutMillis) {
         synchronized (this) {
-            newestGeneration = Math.max(newestGeneration, snapshot.metadata.generation);
-            if (pending != null) {
+            recordGeneration(snapshot.metadata.recoveryKey, snapshot.metadata.generation);
+            if (pending != null && snapshot.metadata.recoveryKey.equals(pendingRecoveryKey)) {
                 pending.cancel(false);
                 pending = null;
+                pendingRecoveryKey = null;
             }
         }
         Future<?> future = executor.submit(() -> writeIfCurrent(snapshot));
@@ -55,15 +60,17 @@ public final class RecoveryWriter {
         if (pending != null) {
             pending.cancel(false);
             pending = null;
+            pendingRecoveryKey = null;
         }
     }
 
-    public boolean cancelAndWait(long generation, long timeoutMillis) {
+    public boolean cancelAndWait(String recoveryKey, long generation, long timeoutMillis) {
         synchronized (this) {
-            newestGeneration = Math.max(newestGeneration, generation);
-            if (pending != null) {
+            recordGeneration(recoveryKey, generation);
+            if (pending != null && recoveryKey != null && recoveryKey.equals(pendingRecoveryKey)) {
                 pending.cancel(false);
                 pending = null;
+                pendingRecoveryKey = null;
             }
         }
         Future<?> barrier = executor.submit(() -> { });
@@ -82,7 +89,8 @@ public final class RecoveryWriter {
 
     private void writeIfCurrent(Snapshot snapshot) {
         synchronized (this) {
-            if (snapshot.metadata.generation < newestGeneration) {
+            Long newestGeneration = newestGenerations.get(snapshot.metadata.recoveryKey);
+            if (newestGeneration != null && snapshot.metadata.generation < newestGeneration) {
                 return;
             }
         }
@@ -91,6 +99,14 @@ public final class RecoveryWriter {
         } catch (Exception error) {
             Log.e(LOG_TAG, "Unable to write recovery draft", error);
         }
+    }
+
+    private void recordGeneration(String recoveryKey, long generation) {
+        if (recoveryKey == null) {
+            return;
+        }
+        Long newest = newestGenerations.get(recoveryKey);
+        newestGenerations.put(recoveryKey, newest == null ? generation : Math.max(newest, generation));
     }
 
     public static final class Snapshot {

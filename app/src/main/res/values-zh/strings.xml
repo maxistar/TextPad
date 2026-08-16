@@ -111,4 +111,11 @@
     <string name="Recovery_draft_message">发现“%1$s”在 %2$s 的未保存版本。</string>
     <string name="Restore">恢复</string>
     <string name="Discard_draft">丢弃草稿</string>
+    <string name="External_change_detected">检测到外部更改</string>
+    <string name="External_change_message">“%1$s”已在 TextPad 外部被更改。请重新加载外部版本、用您的编辑内容覆盖它、将编辑内容另存为其他文件，或取消并继续编辑。</string>
+    <string name="Overwrite">覆盖</string>
+    <string name="Reload">重新加载</string>
+    <string name="Reload_external_title">重新加载外部版本？</string>
+    <string name="Reload_external_message">成功加载外部版本后，TextPad 中未保存的编辑内容将被丢弃。</string>
+    <string name="File_reloaded_after_external_change">已在外部更改后重新加载文件</string>
 </resources>
