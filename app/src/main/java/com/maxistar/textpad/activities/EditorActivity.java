@@ -70,6 +70,7 @@ import com.maxistar.textpad.recovery.RecoveryRepository;
 import com.maxistar.textpad.recovery.RecoveryWriter;
 import com.maxistar.textpad.utils.EditTextUndoRedo;
 import com.maxistar.textpad.utils.DocumentSaveValidator;
+import com.maxistar.textpad.utils.FileEncoding;
 import com.maxistar.textpad.utils.FileNameHelper;
 import com.maxistar.textpad.utils.System;
 import com.maxistar.textpad.utils.TextConverter;
@@ -129,6 +130,8 @@ public class EditorActivity extends AppCompatActivity {
     private EditText mText;
     private ScrollView scrollView;
     private LinearLayout linearLayout;
+
+    private FileEncoding documentEncoding;
 
     String urlFilename = TPStrings.EMPTY;
 
@@ -259,6 +262,13 @@ public class EditorActivity extends AppCompatActivity {
 
     private boolean simpleScrolling() {
         return settingsService.isUseSimpleScrolling();
+    }
+
+    private String resolveFileEncodingName() {
+        if (documentEncoding != null) {
+            return documentEncoding.getCharsetName();
+        }
+        return settingsService.getFileEncoding();
     }
 
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -594,7 +604,7 @@ public class EditorActivity extends AppCompatActivity {
                 identity,
                 currentDisplayName(),
                 identity == null,
-                settingsService.getFileEncoding(),
+                resolveFileEncodingName(),
                 false,
                 originalSize,
                 originalLastModified,
@@ -1159,6 +1169,7 @@ public class EditorActivity extends AppCompatActivity {
         originalSize = null;
         originalLastModified = null;
         originalContentSha256 = null;
+        documentEncoding = null;
         selectionStart = 0;
         selectionEnd = 0;
         setEditorText(TPStrings.EMPTY, false);
@@ -1340,7 +1351,7 @@ public class EditorActivity extends AppCompatActivity {
 
             s = applyEndings(s);
 
-            outputStream.write(s.getBytes(settingsService.getFileEncoding()));
+            outputStream.write(FileEncoding.encode(s, documentEncoding, settingsService.getFileEncoding()));
         } finally {
             outputStream.close();
         }
@@ -1356,7 +1367,7 @@ public class EditorActivity extends AppCompatActivity {
             SaveRequest request = new SaveRequest(
                     editorGeneration,
                     recoveryKey,
-                    persistedText.getBytes(settingsService.getFileEncoding())
+                    FileEncoding.encode(persistedText, documentEncoding, settingsService.getFileEncoding())
             );
             boolean creatingDocument = nextSaveCreatesDocument || originalContentSha256 == null;
             nextSaveCreatesDocument = false;
@@ -1551,8 +1562,11 @@ public class EditorActivity extends AppCompatActivity {
                 return;
             }
 
-            byte[] intendedBytes = applyEndings(mText.getText().toString())
-                    .getBytes(settingsService.getFileEncoding());
+            byte[] intendedBytes = FileEncoding.encode(
+                    applyEndings(mText.getText().toString()),
+                    documentEncoding,
+                    settingsService.getFileEncoding()
+            );
             SaveRequest request = new SaveRequest(editorGeneration, recoveryKey, intendedBytes);
             DocumentSaveValidator.Outcome outcome = DocumentSaveValidator.classify(
                     currentBytes,
@@ -1572,7 +1586,8 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void applyExternalDocument(byte[] externalBytes) throws Exception {
-        String externalText = new String(externalBytes, settingsService.getFileEncoding());
+        documentEncoding = FileEncoding.detect(externalBytes);
+        String externalText = FileEncoding.decode(externalBytes, documentEncoding, settingsService.getFileEncoding());
         externalText = toUnixEndings(externalText);
         setEditorText(externalText, false);
         initEditor();
@@ -1588,8 +1603,11 @@ public class EditorActivity extends AppCompatActivity {
             return;
         }
         try {
-            byte[] intendedBytes = applyEndings(mText.getText().toString())
-                    .getBytes(settingsService.getFileEncoding());
+            byte[] intendedBytes = FileEncoding.encode(
+                    applyEndings(mText.getText().toString()),
+                    documentEncoding,
+                    settingsService.getFileEncoding()
+            );
             SaveRequest request = new SaveRequest(editorGeneration, recoveryKey, intendedBytes);
             byte[] currentBytes = readNamedDocumentBytes();
             DocumentSaveValidator.Outcome outcome = DocumentSaveValidator.classify(
@@ -1664,9 +1682,8 @@ public class EditorActivity extends AppCompatActivity {
             dis.close();
             fis.close();
 
-            String ttt = new String(b, 0, length,
-                    settingsService.getFileEncoding());
-
+            documentEncoding = FileEncoding.detect(b);
+            String ttt = FileEncoding.decode(b, documentEncoding, settingsService.getFileEncoding());
             ttt = toUnixEndings(ttt);
 
             setEditorText(ttt, false);
@@ -1717,7 +1734,8 @@ public class EditorActivity extends AppCompatActivity {
             }
             byte[] b = bytes.toByteArray();
 
-            String ttt = new String(b, settingsService.getFileEncoding());
+            documentEncoding = FileEncoding.detect(b);
+            String ttt = FileEncoding.decode(b, documentEncoding, settingsService.getFileEncoding());
             ttt = toUnixEndings(ttt);
 
             inputStream.close();
