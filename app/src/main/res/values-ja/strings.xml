@@ -7,6 +7,11 @@
     <string name="New">新規作成</string>
     <string name="Save">上書き保存</string>
     <string name="Save_As">別名で保存</string>
+    <string name="Go_To">移動</string>
+    <string name="Go_To_Title">位置に移動</string>
+    <string name="Go_To_Description">カーソルをどこに移動しますか？</string>
+    <string name="Go_To_Beginning">先頭</string>
+    <string name="Go_To_End">末尾</string>
     <string name="Location">パス: %s</string>
     <string name="Select">改行コードを選択</string>
     <string name="File_Name">ファイル名:</string>

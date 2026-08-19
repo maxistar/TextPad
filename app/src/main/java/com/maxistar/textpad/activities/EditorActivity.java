@@ -993,6 +993,8 @@ public class EditorActivity extends AppCompatActivity {
             saveFile();
         } else if (itemId == R.id.menu_document_save_as) {
             saveAs();
+        } else if (itemId == R.id.menu_document_go_to) {
+            moveCaretPosition();
         } else if (itemId == R.id.menu_edit_undo) {
             editUndo();
         } else if (itemId == R.id.menu_edit_redo) {
@@ -2071,6 +2073,23 @@ public class EditorActivity extends AppCompatActivity {
             mText.requestFocus();
             queryTextListener = null;
             return true;
+        }
+    }
+
+    private void moveCaretPosition() {
+        if (mText.length() != 0) {
+            new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_menu_directions)
+                .setTitle(R.string.Go_To_Title)
+                .setMessage(R.string.Go_To_Description)
+                .setPositiveButton(R.string.Go_To_End,
+                        (dialog, which) -> {
+                            mText.setSelection(mText.length());
+                        })
+                .setNegativeButton(R.string.Go_To_Beginning,
+                        (dialog, which) -> {
+                            mText.setSelection(0);
+                        }).show();
         }
     }
 }

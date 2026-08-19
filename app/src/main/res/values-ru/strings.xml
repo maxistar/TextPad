@@ -6,6 +6,11 @@
     <string name="New">Новый</string>
     <string name="Save">Сохранить</string>
     <string name="Save_As">Сохранить Как</string>
+    <string name="Go_To">Перейти</string>
+    <string name="Go_To_Title">Перейти к позиции</string>
+    <string name="Go_To_Description">Куда вы хотите переместить курсор?</string>
+    <string name="Go_To_Beginning">Начало</string>
+    <string name="Go_To_End">Конец</string>
     <string name="Location">Путь: %s</string>
     <string name="Select">Выбрать</string>
     <string name="File_Name">Имя файла:</string>
