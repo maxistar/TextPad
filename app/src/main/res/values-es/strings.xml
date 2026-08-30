@@ -6,6 +6,11 @@
     <string name="New">Nuevo</string>
     <string name="Save">Guardar</string>
     <string name="Save_As">Guardar como</string>
+    <string name="Go_To">Ir a</string>
+    <string name="Go_To_Title">Ir a la posición</string>
+    <string name="Go_To_Description">¿Dónde quieres mover el cursor?</string>
+    <string name="Go_To_Beginning">Principio</string>
+    <string name="Go_To_End">Final</string>
     <string name="Location">Ubicación: %s</string>
     <string name="Select">Seleccionar</string>
     <string name="File_Name">Nombre del archivo:</string>

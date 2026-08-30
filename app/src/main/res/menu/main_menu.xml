@@ -86,6 +86,11 @@
         android:icon="@drawable/ic_save_as"
         app:iconTint="@color/colorIcon" />
     <item
+        android:id="@+id/menu_document_go_to"
+        android:title="@string/Go_To"
+        android:icon="@drawable/ic_arrow_forward"
+        app:iconTint="@color/colorIcon" />
+    <item
         android:id="@+id/menu_document_share"
         android:title="@string/Menu_Share"
         android:icon="@drawable/ic_share"

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- credits: https://github.com/akarshit-1609 -->
     <string name="app_name">Simple Text Editor</string>
     <string name="app_name_settings">Simple Text Editor - सेटिंग्स</string>
     <string name="Open">खोलें</string>
@@ -7,6 +8,11 @@
     <string name="New">नया</string>
     <string name="Save">सहेजें</string>
     <string name="Save_As">इस रूप में सहेजें</string>
+    <string name="Go_To">पर जाएँ</string>
+    <string name="Go_To_Title">स्थिति पर जाएँ</string>
+    <string name="Go_To_Description">आप कर्सर को कहाँ ले जाना चाहते हैं?</string>
+    <string name="Go_To_Beginning">शुरुआत</string>
+    <string name="Go_To_End">अंत</string>
     <string name="Location">स्थान: %s</string>
     <string name="Select">चुनें</string>
     <string name="File_Name">फ़ाइल का नाम:</string>

@@ -6,6 +6,11 @@
     <string name="New">جديد</string>
     <string name="Save">حفظ</string>
     <string name="Save_As">حفظ كـ</string>
+    <string name="Go_To">الانتقال إلى</string>
+    <string name="Go_To_Title">الانتقال إلى الموضع</string>
+    <string name="Go_To_Description">إلى أين تريد نقل المؤشر؟</string>
+    <string name="Go_To_Beginning">البداية</string>
+    <string name="Go_To_End">النهاية</string>
     <string name="Location">الموقع: %s</string>
     <string name="Select">تحديد</string>
     <string name="File_Name">إسم الملف:</string>
