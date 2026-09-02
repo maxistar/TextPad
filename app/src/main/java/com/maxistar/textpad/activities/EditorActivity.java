@@ -544,6 +544,9 @@ public class EditorActivity extends AppCompatActivity {
         originalSize = draft.metadata.originalSize;
         originalLastModified = draft.metadata.originalLastModified;
         originalContentSha256 = draft.metadata.originalContentSha256;
+        if (draft.metadata.encoding != null && !draft.metadata.encoding.isEmpty()) {
+            documentEncoding = FileEncoding.fromCharset(draft.metadata.encoding, draft.metadata.hasBom);
+        }
         setEditorText(draft.text, true);
         updateTitle();
         if (!draft.metadata.untitled) {
@@ -605,7 +608,7 @@ public class EditorActivity extends AppCompatActivity {
                 currentDisplayName(),
                 identity == null,
                 resolveFileEncodingName(),
-                false,
+                documentEncoding != null && documentEncoding.hasBom(),
                 originalSize,
                 originalLastModified,
                 originalContentSha256,

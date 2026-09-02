@@ -144,7 +144,7 @@ public final class RecoveryMetadata {
         value.put("documentUri", documentUri == null ? JSONObject.NULL : documentUri);
         value.put("displayName", displayName);
         value.put("isUntitled", untitled);
-        value.put("encoding", encoding);
+        value.put("encoding", encoding == null ? "" : encoding);
         value.put("hasBom", hasBom);
         value.put("originalSize", originalSize == null ? JSONObject.NULL : originalSize);
         value.put("originalLastModified", originalLastModified == null ? JSONObject.NULL : originalLastModified);
@@ -169,7 +169,7 @@ public final class RecoveryMetadata {
                 nullableString(value, "documentUri"),
                 value.optString("displayName", ""),
                 value.getBoolean("isUntitled"),
-                value.optString("encoding", "UTF-8"),
+                nullableStringWithFallback(value, "encoding", "UTF-8"),
                 value.optBoolean("hasBom", false),
                 nullableLong(value, "originalSize"),
                 nullableLong(value, "originalLastModified"),
@@ -185,6 +185,14 @@ public final class RecoveryMetadata {
 
     private static String nullableString(JSONObject value, String name) throws JSONException {
         return value.isNull(name) ? null : value.getString(name);
+    }
+
+    private static String nullableStringWithFallback(JSONObject value, String name, String fallback) throws JSONException {
+        if (value.isNull(name) || !value.has(name)) {
+            return fallback;
+        }
+        String result = value.getString(name);
+        return result == null || result.isEmpty() ? fallback : result;
     }
 
     private static Long nullableLong(JSONObject value, String name) throws JSONException {

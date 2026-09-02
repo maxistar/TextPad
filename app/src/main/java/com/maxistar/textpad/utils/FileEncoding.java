@@ -62,6 +62,26 @@ public class FileEncoding {
         return null;
     }
 
+    public static FileEncoding fromCharset(String charsetName, boolean hasBom) {
+        if (charsetName == null || charsetName.isEmpty()) {
+            return null;
+        }
+        if (!hasBom) {
+            return new FileEncoding(charsetName, null);
+        }
+        byte[] bom = bomForCharset(charsetName);
+        return new FileEncoding(charsetName, bom);
+    }
+
+    private static byte[] bomForCharset(String charsetName) {
+        if (UTF_32LE.equals(charsetName)) return BOM_UTF_32LE;
+        if (UTF_32BE.equals(charsetName)) return BOM_UTF_32BE;
+        if (UTF_8.equals(charsetName)) return BOM_UTF_8;
+        if (UTF_16BE.equals(charsetName)) return BOM_UTF_16BE;
+        if (UTF_16LE.equals(charsetName)) return BOM_UTF_16LE;
+        return null;
+    }
+
     public static String decode(byte[] bytes, FileEncoding encoding, String fallbackCharsetName) {
         if (bytes == null) {
             return "";
