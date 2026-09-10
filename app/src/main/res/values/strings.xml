@@ -7,6 +7,11 @@
     <string name="New">New</string>
     <string name="Save">Save</string>
     <string name="Save_As">Save As</string>
+    <string name="Go_To">Go To</string>
+    <string name="Go_To_Title">Go to Position</string>
+    <string name="Go_To_Description">Where would you like to move the cursor?</string>
+    <string name="Go_To_Beginning">Beginning</string>
+    <string name="Go_To_End">End</string>
     <string name="Location">Location: %s</string>
     <string name="Select">Select</string>
     <string name="File_Name">File Name:</string>

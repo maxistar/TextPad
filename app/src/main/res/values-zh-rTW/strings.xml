@@ -7,6 +7,11 @@
     <string name="New">開啟新檔</string>
     <string name="Save">儲存</string>
     <string name="Save_As">另存新檔</string>
+    <string name="Go_To">前往</string>
+    <string name="Go_To_Title">前往位置</string>
+    <string name="Go_To_Description">您要將游標移動到哪裡？</string>
+    <string name="Go_To_Beginning">開頭</string>
+    <string name="Go_To_End">結尾</string>
     <string name="Location">位置：%s</string>
     <string name="Select">選擇</string>
     <string name="File_Name">檔案名稱：</string>

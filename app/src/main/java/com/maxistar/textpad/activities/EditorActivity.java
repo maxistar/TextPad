@@ -38,10 +38,12 @@ import android.print.PrintJob;
 import android.print.PrintManager;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.Layout;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowInsets;
@@ -214,6 +216,7 @@ public class EditorActivity extends AppCompatActivity {
         }
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
+        mText.setOnTouchListener(new TwoFingerPanTouchListener());
         if (!settingsService.isAutoWrapping()) {
             disableEditorAutowrapping();
         }
@@ -993,6 +996,8 @@ public class EditorActivity extends AppCompatActivity {
             saveFile();
         } else if (itemId == R.id.menu_document_save_as) {
             saveAs();
+        } else if (itemId == R.id.menu_document_go_to) {
+            moveCaretPosition();
         } else if (itemId == R.id.menu_edit_undo) {
             editUndo();
         } else if (itemId == R.id.menu_edit_redo) {
@@ -1960,6 +1965,105 @@ public class EditorActivity extends AppCompatActivity {
         toast.show();
     }
 
+    // TwoFingerPanTouchListener
+    private class TwoFingerPanTouchListener implements View.OnTouchListener {
+
+        private boolean panningActive = false;
+        private float lastFocalX;
+        private float lastFocalY;
+
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            switch (event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    panningActive = false;
+                    return false;
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    if (event.getPointerCount() == 2) {
+                        panningActive = true;
+                        view.getParent().requestDisallowInterceptTouchEvent(true);
+                        lastFocalX = focalX(event);
+                        lastFocalY = focalY(event);
+                    }
+                    return panningActive;
+                case MotionEvent.ACTION_MOVE:
+                    if (!panningActive) {
+                        return false;
+                    }
+                    float focalX = focalX(event);
+                    float focalY = focalY(event);
+                    panContent(
+                            Math.round(focalX - lastFocalX),
+                            Math.round(focalY - lastFocalY)
+                    );
+                    lastFocalX = focalX;
+                    lastFocalY = focalY;
+                    return true;
+                case MotionEvent.ACTION_POINTER_UP:
+                    if (panningActive) {
+                        view.getParent().requestDisallowInterceptTouchEvent(false);
+                    }
+                    return panningActive;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    boolean wasPanning = panningActive;
+                    panningActive = false;
+                    view.getParent().requestDisallowInterceptTouchEvent(false);
+                    return wasPanning;
+                default:
+                    return panningActive;
+            }
+        }
+
+        private float focalX(MotionEvent event) {
+            float sum = 0;
+            for (int i = 0; i < event.getPointerCount(); i++) {
+                sum += event.getX(i);
+            }
+            return sum / event.getPointerCount();
+        }
+
+        private float focalY(MotionEvent event) {
+            float sum = 0;
+            for (int i = 0; i < event.getPointerCount(); i++) {
+                sum += event.getY(i);
+            }
+            return sum / event.getPointerCount();
+        }
+    }
+
+    private void panContent(int deltaX, int deltaY) {
+        Layout layout = mText.getLayout();
+        int maxX = layout == null ? 0 :
+                layout.getWidth() + mText.getTotalPaddingLeft() + mText.getTotalPaddingRight()
+                        - mText.getWidth();
+        int newX = clampScroll(mText.getScrollX() - deltaX, maxX);
+
+        if (simpleScrolling()) {
+            int maxY = layout == null ? 0 :
+                    layout.getHeight() + mText.getTotalPaddingTop() + mText.getTotalPaddingBottom()
+                            - mText.getHeight();
+            int newY = clampScroll(mText.getScrollY() - deltaY, maxY);
+            mText.scrollTo(newX, newY);
+            return;
+        }
+
+        if (scrollView != null) {
+            scrollView.scrollBy(0, -deltaY);
+        }
+        mText.scrollTo(newX, mText.getScrollY());
+    }
+
+    private int clampScroll(int value, int max) {
+        if (value < 0) {
+            return 0;
+        }
+        if (max > 0 && value > max) {
+            return max;
+        }
+        return value;
+    }
+
     // QueryTextListener
     private class QueryTextListener
             implements SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
@@ -2071,6 +2175,23 @@ public class EditorActivity extends AppCompatActivity {
             mText.requestFocus();
             queryTextListener = null;
             return true;
+        }
+    }
+
+    private void moveCaretPosition() {
+        if (mText.length() != 0) {
+            new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_menu_directions)
+                .setTitle(R.string.Go_To_Title)
+                .setMessage(R.string.Go_To_Description)
+                .setPositiveButton(R.string.Go_To_End,
+                        (dialog, which) -> {
+                            mText.setSelection(mText.length());
+                        })
+                .setNegativeButton(R.string.Go_To_Beginning,
+                        (dialog, which) -> {
+                            mText.setSelection(0);
+                        }).show();
         }
     }
 }

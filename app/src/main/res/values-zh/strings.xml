@@ -8,6 +8,11 @@
     <string name="New">新建</string>
     <string name="Save">保存</string>
     <string name="Save_As">另存为</string>
+    <string name="Go_To">转到</string>
+    <string name="Go_To_Title">转到位置</string>
+    <string name="Go_To_Description">您要将光标移动到哪里？</string>
+    <string name="Go_To_Beginning">开头</string>
+    <string name="Go_To_End">结尾</string>
     <string name="Location">位置: %s</string>
     <string name="Select">选择</string>
     <string name="File_Name">文件名:</string>
