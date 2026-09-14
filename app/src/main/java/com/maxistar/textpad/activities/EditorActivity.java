@@ -191,6 +191,11 @@ public class EditorActivity extends AppCompatActivity {
 
     WebView mWebView;
 
+    private int cachedMaxHorizontalScroll = 0;
+    private int cachedHorizontalScrollEditorWidth = -1;
+    private boolean horizontalScrollBoundsDirty = true;
+    private int horizontalScrollBoundsCalculationCount = 0;
+
     /**
      * Called when the activity is first created.
      */
@@ -218,6 +223,13 @@ public class EditorActivity extends AppCompatActivity {
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
         mText.setOnTouchListener(new TwoFingerPanTouchListener());
+        mText.addOnLayoutChangeListener((view, left, top, right, bottom,
+                                         oldLeft, oldTop, oldRight, oldBottom) -> {
+            if ((right - left) != (oldRight - oldLeft)
+                    || (bottom - top) != (oldBottom - oldTop)) {
+                invalidateHorizontalScrollBounds();
+            }
+        });
         editTextUndoRedo = new EditTextUndoRedo(mText, this);
         setTextWatcher();
 
@@ -339,6 +351,7 @@ public class EditorActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                invalidateHorizontalScrollBounds();
                 if (suppressRecoveryTracking) {
                     return;
                 }
@@ -760,12 +773,14 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     void applyPreferences() {
+        invalidateHorizontalScrollBounds();
         applyFontFace();
         applyFontSize();
         applyColors();
     }
 
     private void disableEditorAutowrapping() {
+        invalidateHorizontalScrollBounds();
         mText.setHorizontallyScrolling(true);
         mText.setHorizontalScrollBarEnabled(true);
         mText.setMaxLines(Integer.MAX_VALUE);
@@ -1975,6 +1990,7 @@ public class EditorActivity extends AppCompatActivity {
     private class TwoFingerPanTouchListener implements View.OnTouchListener {
 
         private boolean panningActive = false;
+        private boolean panGestureOwned = false;
         private float lastFocalX;
         private float lastFocalY;
         private int maxScrollX;
@@ -1984,21 +2000,25 @@ public class EditorActivity extends AppCompatActivity {
         public boolean onTouch(View view, MotionEvent event) {
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
-                    stopPanning(view);
+                    endPanGesture(view);
                     return false;
                 case MotionEvent.ACTION_POINTER_DOWN:
                     if (event.getPointerCount() == 2) {
                         startPanning(view, event);
                     } else {
-                        return stopPanning(view);
+                        stopActivePanning(view);
                     }
-                    return panningActive;
+                    return panGestureOwned;
                 case MotionEvent.ACTION_MOVE:
-                    if (!panningActive) {
+                    if (!panGestureOwned) {
                         return false;
                     }
+                    if (!panningActive) {
+                        return true;
+                    }
                     if (event.getPointerCount() != 2) {
-                        return stopPanning(view);
+                        stopActivePanning(view);
+                        return true;
                     }
                     float focalX = focalX(event);
                     float focalY = focalY(event);
@@ -2012,32 +2032,42 @@ public class EditorActivity extends AppCompatActivity {
                     lastFocalY = focalY;
                     return true;
                 case MotionEvent.ACTION_POINTER_UP:
-                    return stopPanning(view);
+                    if (panGestureOwned) {
+                        stopActivePanning(view);
+                        return true;
+                    }
+                    return false;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    return stopPanning(view);
+                    return endPanGesture(view);
                 default:
-                    return panningActive;
+                    return panGestureOwned;
             }
         }
 
         private void startPanning(View view, MotionEvent event) {
             panningActive = true;
+            panGestureOwned = true;
             requestParentInterception(view, true);
             lastFocalX = focalX(event);
             lastFocalY = focalY(event);
             Layout layout = mText.getLayout();
-            maxScrollX = calculateMaxHorizontalScroll(layout);
+            maxScrollX = getMaxHorizontalScroll(layout);
             maxScrollY = calculateMaxVerticalScroll(layout);
         }
 
-        private boolean stopPanning(View view) {
-            boolean wasPanning = panningActive;
-            panningActive = false;
-            if (wasPanning) {
+        private void stopActivePanning(View view) {
+            if (panningActive) {
                 requestParentInterception(view, false);
             }
-            return wasPanning;
+            panningActive = false;
+        }
+
+        private boolean endPanGesture(View view) {
+            boolean shouldConsume = panGestureOwned || panningActive;
+            stopActivePanning(view);
+            panGestureOwned = false;
+            return shouldConsume;
         }
 
         private void requestParentInterception(View view, boolean disallow) {
@@ -2079,17 +2109,36 @@ public class EditorActivity extends AppCompatActivity {
         mText.scrollTo(newX, mText.getScrollY());
     }
 
-    private int calculateMaxHorizontalScroll(Layout layout) {
-        if (layout == null) {
+    private int getMaxHorizontalScroll(Layout layout) {
+        int editorWidth = mText.getWidth();
+        if (layout == null || editorWidth <= 0) {
             return 0;
         }
+        if (horizontalScrollBoundsDirty || cachedHorizontalScrollEditorWidth != editorWidth) {
+            cachedMaxHorizontalScroll = calculateMaxHorizontalScroll(layout, editorWidth);
+            cachedHorizontalScrollEditorWidth = editorWidth;
+            horizontalScrollBoundsDirty = false;
+        }
+        return cachedMaxHorizontalScroll;
+    }
+
+    private void invalidateHorizontalScrollBounds() {
+        horizontalScrollBoundsDirty = true;
+    }
+
+    public int getHorizontalScrollBoundsCalculationCountForTests() {
+        return horizontalScrollBoundsCalculationCount;
+    }
+
+    private int calculateMaxHorizontalScroll(Layout layout, int editorWidth) {
+        horizontalScrollBoundsCalculationCount++;
         float maxLineWidth = 0;
         for (int line = 0; line < layout.getLineCount(); line++) {
             maxLineWidth = Math.max(maxLineWidth, layout.getLineWidth(line));
         }
         int contentWidth = (int) Math.ceil(maxLineWidth)
                 + mText.getTotalPaddingLeft() + mText.getTotalPaddingRight();
-        return Math.max(0, contentWidth - mText.getWidth());
+        return Math.max(0, contentWidth - editorWidth);
     }
 
     private int calculateMaxVerticalScroll(Layout layout) {
