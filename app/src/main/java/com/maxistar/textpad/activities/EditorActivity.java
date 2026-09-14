@@ -46,6 +46,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewParent;
 import android.view.WindowInsets;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebView;
@@ -217,9 +218,6 @@ public class EditorActivity extends AppCompatActivity {
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
         mText.setOnTouchListener(new TwoFingerPanTouchListener());
-        if (!settingsService.isAutoWrapping()) {
-            disableEditorAutowrapping();
-        }
         editTextUndoRedo = new EditTextUndoRedo(mText, this);
         setTextWatcher();
 
@@ -229,6 +227,9 @@ public class EditorActivity extends AppCompatActivity {
             scrollView = findViewById(R.id.vscroll);
         }
         applyPreferences();
+        if (!settingsService.isAutoWrapping()) {
+            disableEditorAutowrapping();
+        }
 
         if (savedInstanceState != null) {
             restoreState(savedInstanceState);
@@ -865,6 +866,9 @@ public class EditorActivity extends AppCompatActivity {
         MenuItem redoMenu = menu.findItem(R.id.menu_edit_redo);
         redoMenu.setEnabled(editTextUndoRedo.getCanRedo());
 
+        MenuItem goToMenu = menu.findItem(R.id.menu_document_go_to);
+        goToMenu.setEnabled(mText.length() > 0);
+
         updateRecentFiles(menu);
 
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -996,8 +1000,10 @@ public class EditorActivity extends AppCompatActivity {
             saveFile();
         } else if (itemId == R.id.menu_document_save_as) {
             saveAs();
-        } else if (itemId == R.id.menu_document_go_to) {
-            moveCaretPosition();
+        } else if (itemId == R.id.menu_document_go_to_beginning) {
+            moveCaretPosition(0);
+        } else if (itemId == R.id.menu_document_go_to_end) {
+            moveCaretPosition(mText.length());
         } else if (itemId == R.id.menu_edit_undo) {
             editUndo();
         } else if (itemId == R.id.menu_edit_redo) {
@@ -1971,47 +1977,73 @@ public class EditorActivity extends AppCompatActivity {
         private boolean panningActive = false;
         private float lastFocalX;
         private float lastFocalY;
+        private int maxScrollX;
+        private int maxScrollY;
 
         @Override
         public boolean onTouch(View view, MotionEvent event) {
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
-                    panningActive = false;
+                    stopPanning(view);
                     return false;
                 case MotionEvent.ACTION_POINTER_DOWN:
                     if (event.getPointerCount() == 2) {
-                        panningActive = true;
-                        view.getParent().requestDisallowInterceptTouchEvent(true);
-                        lastFocalX = focalX(event);
-                        lastFocalY = focalY(event);
+                        startPanning(view, event);
+                    } else {
+                        return stopPanning(view);
                     }
                     return panningActive;
                 case MotionEvent.ACTION_MOVE:
                     if (!panningActive) {
                         return false;
                     }
+                    if (event.getPointerCount() != 2) {
+                        return stopPanning(view);
+                    }
                     float focalX = focalX(event);
                     float focalY = focalY(event);
                     panContent(
                             Math.round(focalX - lastFocalX),
-                            Math.round(focalY - lastFocalY)
+                            Math.round(focalY - lastFocalY),
+                            maxScrollX,
+                            maxScrollY
                     );
                     lastFocalX = focalX;
                     lastFocalY = focalY;
                     return true;
                 case MotionEvent.ACTION_POINTER_UP:
-                    if (panningActive) {
-                        view.getParent().requestDisallowInterceptTouchEvent(false);
-                    }
-                    return panningActive;
+                    return stopPanning(view);
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    boolean wasPanning = panningActive;
-                    panningActive = false;
-                    view.getParent().requestDisallowInterceptTouchEvent(false);
-                    return wasPanning;
+                    return stopPanning(view);
                 default:
                     return panningActive;
+            }
+        }
+
+        private void startPanning(View view, MotionEvent event) {
+            panningActive = true;
+            requestParentInterception(view, true);
+            lastFocalX = focalX(event);
+            lastFocalY = focalY(event);
+            Layout layout = mText.getLayout();
+            maxScrollX = calculateMaxHorizontalScroll(layout);
+            maxScrollY = calculateMaxVerticalScroll(layout);
+        }
+
+        private boolean stopPanning(View view) {
+            boolean wasPanning = panningActive;
+            panningActive = false;
+            if (wasPanning) {
+                requestParentInterception(view, false);
+            }
+            return wasPanning;
+        }
+
+        private void requestParentInterception(View view, boolean disallow) {
+            ViewParent parent = view.getParent();
+            if (parent != null) {
+                parent.requestDisallowInterceptTouchEvent(disallow);
             }
         }
 
@@ -2032,18 +2064,11 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    private void panContent(int deltaX, int deltaY) {
-        Layout layout = mText.getLayout();
-        int maxX = layout == null ? 0 :
-                layout.getWidth() + mText.getTotalPaddingLeft() + mText.getTotalPaddingRight()
-                        - mText.getWidth();
-        int newX = clampScroll(mText.getScrollX() - deltaX, maxX);
+    private void panContent(int deltaX, int deltaY, int maxScrollX, int maxScrollY) {
+        int newX = clampScroll(mText.getScrollX() - deltaX, maxScrollX);
 
         if (simpleScrolling()) {
-            int maxY = layout == null ? 0 :
-                    layout.getHeight() + mText.getTotalPaddingTop() + mText.getTotalPaddingBottom()
-                            - mText.getHeight();
-            int newY = clampScroll(mText.getScrollY() - deltaY, maxY);
+            int newY = clampScroll(mText.getScrollY() - deltaY, maxScrollY);
             mText.scrollTo(newX, newY);
             return;
         }
@@ -2054,14 +2079,31 @@ public class EditorActivity extends AppCompatActivity {
         mText.scrollTo(newX, mText.getScrollY());
     }
 
-    private int clampScroll(int value, int max) {
-        if (value < 0) {
+    private int calculateMaxHorizontalScroll(Layout layout) {
+        if (layout == null) {
             return 0;
         }
-        if (max > 0 && value > max) {
-            return max;
+        float maxLineWidth = 0;
+        for (int line = 0; line < layout.getLineCount(); line++) {
+            maxLineWidth = Math.max(maxLineWidth, layout.getLineWidth(line));
         }
-        return value;
+        int contentWidth = (int) Math.ceil(maxLineWidth)
+                + mText.getTotalPaddingLeft() + mText.getTotalPaddingRight();
+        return Math.max(0, contentWidth - mText.getWidth());
+    }
+
+    private int calculateMaxVerticalScroll(Layout layout) {
+        if (layout == null) {
+            return 0;
+        }
+        int contentHeight = layout.getHeight()
+                + mText.getTotalPaddingTop() + mText.getTotalPaddingBottom();
+        return Math.max(0, contentHeight - mText.getHeight());
+    }
+
+    private int clampScroll(int value, int max) {
+        int boundedMax = Math.max(0, max);
+        return Math.max(0, Math.min(value, boundedMax));
     }
 
     // QueryTextListener
@@ -2178,20 +2220,10 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    private void moveCaretPosition() {
-        if (mText.length() != 0) {
-            new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_menu_directions)
-                .setTitle(R.string.Go_To_Title)
-                .setMessage(R.string.Go_To_Description)
-                .setPositiveButton(R.string.Go_To_End,
-                        (dialog, which) -> {
-                            mText.setSelection(mText.length());
-                        })
-                .setNegativeButton(R.string.Go_To_Beginning,
-                        (dialog, which) -> {
-                            mText.setSelection(0);
-                        }).show();
-        }
+    private void moveCaretPosition(int position) {
+        mText.requestFocus();
+        mText.setSelection(position);
+        View editorRoot = findViewById(R.id.editor_root);
+        mText.post(() -> requestFocusedCaretOnScreen(editorRoot));
     }
 }
