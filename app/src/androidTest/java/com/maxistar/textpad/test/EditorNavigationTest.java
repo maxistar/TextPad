@@ -125,6 +125,39 @@ public class EditorNavigationTest {
     }
 
     @Test
+    public void finalUpAfterPanDoesNotMoveCaret() {
+        setEditorPreferences(true, false);
+
+        try (ActivityScenario<EditorActivity> scenario = launchWithContent(longDocument())) {
+            scenario.onActivity(activity -> {
+                EditText editor = activity.findViewById(R.id.editText1);
+                resetScroll(editor, null);
+                editor.setSelection(0);
+                long downTime = SystemClock.uptimeMillis();
+
+                dispatch(editor, event(downTime, downTime, MotionEvent.ACTION_DOWN,
+                        point(300, 300)));
+                dispatch(editor, event(downTime, downTime + 10,
+                        pointerAction(MotionEvent.ACTION_POINTER_DOWN, 1),
+                        point(300, 300), point(500, 500)));
+                dispatch(editor, event(downTime, downTime + 20, MotionEvent.ACTION_MOVE,
+                        point(250, 250), point(450, 450)));
+                dispatch(editor, event(downTime, downTime + 30,
+                        pointerAction(MotionEvent.ACTION_POINTER_UP, 1),
+                        point(250, 250), point(450, 450)));
+
+                int selectionStart = editor.getSelectionStart();
+                int selectionEnd = editor.getSelectionEnd();
+                dispatch(editor, event(downTime, downTime + 40, MotionEvent.ACTION_UP,
+                        point(450, 450)));
+
+                assertEquals(selectionStart, editor.getSelectionStart());
+                assertEquals(selectionEnd, editor.getSelectionEnd());
+            });
+        }
+    }
+
+    @Test
     public void cancelAndThirdPointerTransitionsStopPan() {
         setEditorPreferences(true, false);
 
@@ -197,6 +230,39 @@ public class EditorNavigationTest {
                         maxX + 300, maxY + 300, maxX + 400, maxY + 400);
                 assertEquals(0, editor.getScrollX());
                 assertEquals(0, editor.getScrollY());
+            });
+        }
+    }
+
+    @Test
+    public void horizontalPanBoundsAreCachedAndInvalidatedByTextChanges() {
+        setEditorPreferences(true, false);
+
+        try (ActivityScenario<EditorActivity> scenario = launchWithContent(longDocument())) {
+            scenario.onActivity(activity -> {
+                EditText editor = activity.findViewById(R.id.editText1);
+                resetScroll(editor, null);
+
+                int initialCalculations = activity.getHorizontalScrollBoundsCalculationCountForTests();
+                performCompletedPan(editor, 600, 600, 800, 800, 500, 500, 700, 700);
+                int afterFirstPan = activity.getHorizontalScrollBoundsCalculationCountForTests();
+                assertEquals(initialCalculations + 1, afterFirstPan);
+
+                resetScroll(editor, null);
+                performCompletedPan(editor, 600, 600, 800, 800, 500, 500, 700, 700);
+                assertEquals(afterFirstPan,
+                        activity.getHorizontalScrollBoundsCalculationCountForTests());
+
+                editor.setText(longDocument() + "extra text invalidates horizontal bounds");
+            });
+            waitForIdle();
+            scenario.onActivity(activity -> {
+                EditText editor = activity.findViewById(R.id.editText1);
+                resetScroll(editor, null);
+                int beforeInvalidatedPan = activity.getHorizontalScrollBoundsCalculationCountForTests();
+                performCompletedPan(editor, 600, 600, 800, 800, 500, 500, 700, 700);
+                assertEquals(beforeInvalidatedPan + 1,
+                        activity.getHorizontalScrollBoundsCalculationCountForTests());
             });
         }
     }
