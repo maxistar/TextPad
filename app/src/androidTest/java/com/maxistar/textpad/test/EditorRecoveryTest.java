@@ -10,6 +10,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.ServiceLocator;
@@ -39,6 +41,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.Assume;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 
 import java.io.File;
@@ -50,6 +53,11 @@ import java.nio.charset.StandardCharsets;
 @RunWith(AndroidJUnit4.class)
 public class EditorRecoveryTest {
     private Context context;
+
+    @Rule
+    public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule.grant(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE);
 
     @Before
     public void setUp() {
