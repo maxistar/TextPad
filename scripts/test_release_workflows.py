@@ -22,11 +22,17 @@ class ReleaseWorkflowTest(unittest.TestCase):
 
     def test_orchestrator_only_accepts_merged_release_candidates(self):
         workflow = self.read("create-release.yml")
-        self.assertIn("pull_request:", workflow)
+        self.assertIn("pull_request_target:", workflow)
+        self.assertNotRegex(workflow, r"(?m)^  pull_request:$")
         self.assertIn("types: [closed]", workflow)
         self.assertIn("github.event.pull_request.merged == true", workflow)
         self.assertIn("startsWith(github.event.pull_request.head.ref, 'release/')", workflow)
         self.assertIn("startsWith(github.event.pull_request.head.ref, 'hotfix/')", workflow)
+        self.assertIn("if: github.event_name == 'pull_request_target'", workflow)
+        self.assertIn(
+            "ref: ${{ github.event.pull_request.merge_commit_sha || inputs.commit_sha }}",
+            workflow,
+        )
         self.assertIn("scripts/release_tool.py candidate", workflow)
         self.assertIn('gh pr checks "$PR_NUMBER" --required', workflow)
         self.assertIn("--check-play", workflow)
