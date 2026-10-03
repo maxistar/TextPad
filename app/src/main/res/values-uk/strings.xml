@@ -8,8 +8,6 @@
     <string name="Save">Зберегти</string>
     <string name="Save_As">Зберегти як</string>
     <string name="Go_To">Перейти</string>
-    <string name="Go_To_Title">Перейти до позиції</string>
-    <string name="Go_To_Description">Куди ви хочете перемістити курсор?</string>
     <string name="Go_To_Beginning">Початок</string>
     <string name="Go_To_End">Кінець</string>
     <string name="Location">Розташування: %s</string>

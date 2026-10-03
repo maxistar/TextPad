@@ -46,6 +46,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewParent;
 import android.view.WindowInsets;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebView;
@@ -190,6 +191,11 @@ public class EditorActivity extends AppCompatActivity {
 
     WebView mWebView;
 
+    private int cachedMaxHorizontalScroll = 0;
+    private int cachedHorizontalScrollEditorWidth = -1;
+    private boolean horizontalScrollBoundsDirty = true;
+    private int horizontalScrollBoundsCalculationCount = 0;
+
     /**
      * Called when the activity is first created.
      */
@@ -217,9 +223,13 @@ public class EditorActivity extends AppCompatActivity {
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
         mText.setOnTouchListener(new TwoFingerPanTouchListener());
-        if (!settingsService.isAutoWrapping()) {
-            disableEditorAutowrapping();
-        }
+        mText.addOnLayoutChangeListener((view, left, top, right, bottom,
+                                         oldLeft, oldTop, oldRight, oldBottom) -> {
+            if ((right - left) != (oldRight - oldLeft)
+                    || (bottom - top) != (oldBottom - oldTop)) {
+                invalidateHorizontalScrollBounds();
+            }
+        });
         editTextUndoRedo = new EditTextUndoRedo(mText, this);
         setTextWatcher();
 
@@ -229,6 +239,9 @@ public class EditorActivity extends AppCompatActivity {
             scrollView = findViewById(R.id.vscroll);
         }
         applyPreferences();
+        if (!settingsService.isAutoWrapping()) {
+            disableEditorAutowrapping();
+        }
 
         if (savedInstanceState != null) {
             restoreState(savedInstanceState);
@@ -338,6 +351,7 @@ public class EditorActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                invalidateHorizontalScrollBounds();
                 if (suppressRecoveryTracking) {
                     return;
                 }
@@ -759,12 +773,14 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     void applyPreferences() {
+        invalidateHorizontalScrollBounds();
         applyFontFace();
         applyFontSize();
         applyColors();
     }
 
     private void disableEditorAutowrapping() {
+        invalidateHorizontalScrollBounds();
         mText.setHorizontallyScrolling(true);
         mText.setHorizontalScrollBarEnabled(true);
         mText.setMaxLines(Integer.MAX_VALUE);
@@ -864,6 +880,9 @@ public class EditorActivity extends AppCompatActivity {
 
         MenuItem redoMenu = menu.findItem(R.id.menu_edit_redo);
         redoMenu.setEnabled(editTextUndoRedo.getCanRedo());
+
+        MenuItem goToMenu = menu.findItem(R.id.menu_document_go_to);
+        goToMenu.setEnabled(mText.length() > 0);
 
         updateRecentFiles(menu);
 
@@ -996,8 +1015,10 @@ public class EditorActivity extends AppCompatActivity {
             saveFile();
         } else if (itemId == R.id.menu_document_save_as) {
             saveAs();
-        } else if (itemId == R.id.menu_document_go_to) {
-            moveCaretPosition();
+        } else if (itemId == R.id.menu_document_go_to_beginning) {
+            moveCaretPosition(0);
+        } else if (itemId == R.id.menu_document_go_to_end) {
+            moveCaretPosition(mText.length());
         } else if (itemId == R.id.menu_edit_undo) {
             editUndo();
         } else if (itemId == R.id.menu_edit_redo) {
@@ -1969,49 +1990,90 @@ public class EditorActivity extends AppCompatActivity {
     private class TwoFingerPanTouchListener implements View.OnTouchListener {
 
         private boolean panningActive = false;
+        private boolean panGestureOwned = false;
         private float lastFocalX;
         private float lastFocalY;
+        private int maxScrollX;
+        private int maxScrollY;
 
         @Override
         public boolean onTouch(View view, MotionEvent event) {
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
-                    panningActive = false;
+                    endPanGesture(view);
                     return false;
                 case MotionEvent.ACTION_POINTER_DOWN:
                     if (event.getPointerCount() == 2) {
-                        panningActive = true;
-                        view.getParent().requestDisallowInterceptTouchEvent(true);
-                        lastFocalX = focalX(event);
-                        lastFocalY = focalY(event);
+                        startPanning(view, event);
+                    } else {
+                        stopActivePanning(view);
                     }
-                    return panningActive;
+                    return panGestureOwned;
                 case MotionEvent.ACTION_MOVE:
-                    if (!panningActive) {
+                    if (!panGestureOwned) {
                         return false;
+                    }
+                    if (!panningActive) {
+                        return true;
+                    }
+                    if (event.getPointerCount() != 2) {
+                        stopActivePanning(view);
+                        return true;
                     }
                     float focalX = focalX(event);
                     float focalY = focalY(event);
                     panContent(
                             Math.round(focalX - lastFocalX),
-                            Math.round(focalY - lastFocalY)
+                            Math.round(focalY - lastFocalY),
+                            maxScrollX,
+                            maxScrollY
                     );
                     lastFocalX = focalX;
                     lastFocalY = focalY;
                     return true;
                 case MotionEvent.ACTION_POINTER_UP:
-                    if (panningActive) {
-                        view.getParent().requestDisallowInterceptTouchEvent(false);
+                    if (panGestureOwned) {
+                        stopActivePanning(view);
+                        return true;
                     }
-                    return panningActive;
+                    return false;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    boolean wasPanning = panningActive;
-                    panningActive = false;
-                    view.getParent().requestDisallowInterceptTouchEvent(false);
-                    return wasPanning;
+                    return endPanGesture(view);
                 default:
-                    return panningActive;
+                    return panGestureOwned;
+            }
+        }
+
+        private void startPanning(View view, MotionEvent event) {
+            panningActive = true;
+            panGestureOwned = true;
+            requestParentInterception(view, true);
+            lastFocalX = focalX(event);
+            lastFocalY = focalY(event);
+            Layout layout = mText.getLayout();
+            maxScrollX = getMaxHorizontalScroll(layout);
+            maxScrollY = calculateMaxVerticalScroll(layout);
+        }
+
+        private void stopActivePanning(View view) {
+            if (panningActive) {
+                requestParentInterception(view, false);
+            }
+            panningActive = false;
+        }
+
+        private boolean endPanGesture(View view) {
+            boolean shouldConsume = panGestureOwned || panningActive;
+            stopActivePanning(view);
+            panGestureOwned = false;
+            return shouldConsume;
+        }
+
+        private void requestParentInterception(View view, boolean disallow) {
+            ViewParent parent = view.getParent();
+            if (parent != null) {
+                parent.requestDisallowInterceptTouchEvent(disallow);
             }
         }
 
@@ -2032,18 +2094,11 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    private void panContent(int deltaX, int deltaY) {
-        Layout layout = mText.getLayout();
-        int maxX = layout == null ? 0 :
-                layout.getWidth() + mText.getTotalPaddingLeft() + mText.getTotalPaddingRight()
-                        - mText.getWidth();
-        int newX = clampScroll(mText.getScrollX() - deltaX, maxX);
+    private void panContent(int deltaX, int deltaY, int maxScrollX, int maxScrollY) {
+        int newX = clampScroll(mText.getScrollX() - deltaX, maxScrollX);
 
         if (simpleScrolling()) {
-            int maxY = layout == null ? 0 :
-                    layout.getHeight() + mText.getTotalPaddingTop() + mText.getTotalPaddingBottom()
-                            - mText.getHeight();
-            int newY = clampScroll(mText.getScrollY() - deltaY, maxY);
+            int newY = clampScroll(mText.getScrollY() - deltaY, maxScrollY);
             mText.scrollTo(newX, newY);
             return;
         }
@@ -2054,14 +2109,50 @@ public class EditorActivity extends AppCompatActivity {
         mText.scrollTo(newX, mText.getScrollY());
     }
 
-    private int clampScroll(int value, int max) {
-        if (value < 0) {
+    private int getMaxHorizontalScroll(Layout layout) {
+        int editorWidth = mText.getWidth();
+        if (layout == null || editorWidth <= 0) {
             return 0;
         }
-        if (max > 0 && value > max) {
-            return max;
+        if (horizontalScrollBoundsDirty || cachedHorizontalScrollEditorWidth != editorWidth) {
+            cachedMaxHorizontalScroll = calculateMaxHorizontalScroll(layout, editorWidth);
+            cachedHorizontalScrollEditorWidth = editorWidth;
+            horizontalScrollBoundsDirty = false;
         }
-        return value;
+        return cachedMaxHorizontalScroll;
+    }
+
+    private void invalidateHorizontalScrollBounds() {
+        horizontalScrollBoundsDirty = true;
+    }
+
+    public int getHorizontalScrollBoundsCalculationCountForTests() {
+        return horizontalScrollBoundsCalculationCount;
+    }
+
+    private int calculateMaxHorizontalScroll(Layout layout, int editorWidth) {
+        horizontalScrollBoundsCalculationCount++;
+        float maxLineWidth = 0;
+        for (int line = 0; line < layout.getLineCount(); line++) {
+            maxLineWidth = Math.max(maxLineWidth, layout.getLineWidth(line));
+        }
+        int contentWidth = (int) Math.ceil(maxLineWidth)
+                + mText.getTotalPaddingLeft() + mText.getTotalPaddingRight();
+        return Math.max(0, contentWidth - editorWidth);
+    }
+
+    private int calculateMaxVerticalScroll(Layout layout) {
+        if (layout == null) {
+            return 0;
+        }
+        int contentHeight = layout.getHeight()
+                + mText.getTotalPaddingTop() + mText.getTotalPaddingBottom();
+        return Math.max(0, contentHeight - mText.getHeight());
+    }
+
+    private int clampScroll(int value, int max) {
+        int boundedMax = Math.max(0, max);
+        return Math.max(0, Math.min(value, boundedMax));
     }
 
     // QueryTextListener
@@ -2178,20 +2269,10 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    private void moveCaretPosition() {
-        if (mText.length() != 0) {
-            new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_menu_directions)
-                .setTitle(R.string.Go_To_Title)
-                .setMessage(R.string.Go_To_Description)
-                .setPositiveButton(R.string.Go_To_End,
-                        (dialog, which) -> {
-                            mText.setSelection(mText.length());
-                        })
-                .setNegativeButton(R.string.Go_To_Beginning,
-                        (dialog, which) -> {
-                            mText.setSelection(0);
-                        }).show();
-        }
+    private void moveCaretPosition(int position) {
+        mText.requestFocus();
+        mText.setSelection(position);
+        View editorRoot = findViewById(R.id.editor_root);
+        mText.post(() -> requestFocusedCaretOnScreen(editorRoot));
     }
 }

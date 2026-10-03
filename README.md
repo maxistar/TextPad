@@ -42,6 +42,10 @@ in pipeline an application uses [maxistar/android](https://github.com/maxistar/a
 
 You can use [this service](https://crowdin.com/project/simple-text-editor) to add a new translation or suggest better one
 
+### Maintainer documentation
+
+- [Android release process](docs/RELEASING.md)
+
 ### To Do
 
 many many things to do.

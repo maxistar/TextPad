@@ -144,6 +144,150 @@ class ReleaseToolTest(unittest.TestCase):
         self.assertIn("validate_play_version_code", command)
         self.assertIn("version_code:61", command)
 
+    @mock.patch.object(release_tool, "git_ref_exists", return_value=False)
+    @mock.patch.object(release_tool, "git_is_ancestor", return_value=True)
+    @mock.patch.object(release_tool, "run")
+    @mock.patch.object(release_tool, "read_version_from_ref")
+    def test_resolves_release_and_hotfix_merge_candidates(
+        self, read_version, run, is_ancestor, ref_exists
+    ):
+        read_version.return_value = release_tool.Version("1.31.2", 63)
+        run.side_effect = lambda command, check=True: (
+            "commit" if command[1:3] == ["cat-file", "-t"]
+            else "abc123 parent-one parent-two"
+        )
+        config = self.candidate_config()
+
+        for mode, branch in (
+            ("release", "release/1.31.2"),
+            ("hotfix", "hotfix/1.31.2"),
+        ):
+            with self.subTest(mode=mode):
+                candidate = release_tool.resolve_release_candidate(
+                    head_branch=branch,
+                    base_branch="master",
+                    merge_commit="abc123",
+                    merged=True,
+                    config=config,
+                    stable_ref="origin/master",
+                )
+                self.assertEqual(mode, candidate.mode)
+                self.assertEqual("v1.31.2", candidate.tag)
+                self.assertEqual(63, candidate.version.code)
+        is_ancestor.assert_called_with("abc123", "origin/master")
+
+    @mock.patch.object(release_tool, "read_version_from_ref")
+    def test_rejects_closed_but_unmerged_candidate(self, read_version):
+        with self.assertRaisesRegex(release_tool.ReleaseError, "without being merged"):
+            release_tool.resolve_release_candidate(
+                head_branch="release/1.31.2",
+                base_branch="master",
+                merge_commit="abc123",
+                merged=False,
+                config=self.candidate_config(),
+                stable_ref="origin/master",
+            )
+        read_version.assert_not_called()
+
+    @mock.patch.object(release_tool, "read_version_from_ref")
+    def test_rejects_candidate_branch_version_mismatch(self, read_version):
+        read_version.return_value = release_tool.Version("1.31.2", 63)
+        with self.assertRaisesRegex(release_tool.ReleaseError, "does not match"):
+            release_tool.resolve_release_candidate(
+                head_branch="release/1.31.3",
+                base_branch="master",
+                merge_commit="abc123",
+                merged=True,
+                config=self.candidate_config(),
+                stable_ref="origin/master",
+            )
+
+    @mock.patch.object(release_tool, "git_ref_exists", return_value=False)
+    @mock.patch.object(release_tool, "run")
+    @mock.patch.object(release_tool, "read_version_from_ref")
+    def test_rejects_non_merge_candidate(self, read_version, run, ref_exists):
+        read_version.return_value = release_tool.Version("1.31.2", 63)
+        run.side_effect = ["commit", "abc123 one-parent"]
+        with self.assertRaisesRegex(release_tool.ReleaseError, "not a merge commit"):
+            release_tool.resolve_release_candidate(
+                head_branch="release/1.31.2",
+                base_branch="master",
+                merge_commit="abc123",
+                merged=True,
+                config=self.candidate_config(),
+                stable_ref="origin/master",
+            )
+
+    @mock.patch.object(release_tool, "git_ref_exists", return_value=False)
+    @mock.patch.object(release_tool, "git_is_ancestor", return_value=True)
+    @mock.patch.object(release_tool, "run")
+    @mock.patch.object(release_tool, "read_version_from_ref")
+    def test_accepts_candidate_behind_advanced_master(
+        self, read_version, run, is_ancestor, ref_exists
+    ):
+        read_version.return_value = release_tool.Version("1.31.2", 63)
+        run.side_effect = ["commit", "abc123 parent-one parent-two"]
+        candidate = release_tool.resolve_release_candidate(
+            head_branch="release/1.31.2",
+            base_branch="master",
+            merge_commit="abc123",
+            merged=True,
+            config=self.candidate_config(),
+            stable_ref="origin/master",
+        )
+        self.assertEqual("abc123", candidate.merge_commit)
+        is_ancestor.assert_called_once_with("abc123", "origin/master")
+
+    @mock.patch.object(release_tool, "git_ref_exists", return_value=False)
+    @mock.patch.object(release_tool, "git_is_ancestor", return_value=False)
+    @mock.patch.object(release_tool, "run")
+    @mock.patch.object(release_tool, "read_version_from_ref")
+    def test_rejects_candidate_divergent_from_master(
+        self, read_version, run, is_ancestor, ref_exists
+    ):
+        read_version.return_value = release_tool.Version("1.31.2", 63)
+        run.side_effect = ["commit", "abc123 parent-one parent-two"]
+        with self.assertRaisesRegex(release_tool.ReleaseError, "not contained"):
+            release_tool.resolve_release_candidate(
+                head_branch="release/1.31.2",
+                base_branch="master",
+                merge_commit="abc123",
+                merged=True,
+                config=self.candidate_config(),
+                stable_ref="origin/master",
+            )
+
+    @mock.patch.object(release_tool, "git_ref_exists", return_value=True)
+    @mock.patch.object(release_tool, "git_is_ancestor", return_value=True)
+    @mock.patch.object(release_tool, "run")
+    @mock.patch.object(release_tool, "read_version_from_ref")
+    def test_rejects_candidate_with_existing_tag(
+        self, read_version, run, is_ancestor, ref_exists
+    ):
+        read_version.return_value = release_tool.Version("1.31.2", 63)
+        run.side_effect = ["commit", "abc123 parent-one parent-two"]
+        with self.assertRaisesRegex(release_tool.ReleaseError, "Tag already exists"):
+            release_tool.resolve_release_candidate(
+                head_branch="release/1.31.2",
+                base_branch="master",
+                merge_commit="abc123",
+                merged=True,
+                config=self.candidate_config(),
+                stable_ref="origin/master",
+            )
+
+    @staticmethod
+    def candidate_config():
+        return {
+            "tagPrefix": "v",
+            "branches": {
+                "development": "dev",
+                "stable": "master",
+                "releasePrefix": "release/",
+                "hotfixPrefix": "hotfix/",
+            },
+        }
+
 
 if __name__ == "__main__":
     unittest.main()

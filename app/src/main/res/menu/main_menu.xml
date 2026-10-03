@@ -89,7 +89,16 @@
         android:id="@+id/menu_document_go_to"
         android:title="@string/Go_To"
         android:icon="@drawable/ic_arrow_forward"
-        app:iconTint="@color/colorIcon" />
+        app:iconTint="@color/colorIcon">
+        <menu>
+            <item
+                android:id="@+id/menu_document_go_to_beginning"
+                android:title="@string/Go_To_Beginning" />
+            <item
+                android:id="@+id/menu_document_go_to_end"
+                android:title="@string/Go_To_End" />
+        </menu>
+    </item>
     <item
         android:id="@+id/menu_document_share"
         android:title="@string/Menu_Share"

@@ -1,0 +1,3 @@
+- przewijaj długie wiersze i dokumenty w dowolnym kierunku gestem dwóch palców
+- przechodź bezpośrednio do wiersza i kolumny z menu edytora
+- dodaje tłumaczenie na hindi i zwiększa niezawodność nawigacji
