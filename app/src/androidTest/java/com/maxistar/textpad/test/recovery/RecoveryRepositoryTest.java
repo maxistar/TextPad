@@ -59,6 +59,31 @@ public class RecoveryRepositoryTest {
         assertEquals(source.generation, restored.generation);
     }
 
+    @Test
+    public void metadataRoundTripsEncodingAndBom() throws Exception {
+        RecoveryMetadata source = new RecoveryMetadata(
+                RecoveryKeys.forDocumentUri("content://encoding-test/document/report.txt"),
+                "content://encoding-test/document/report.txt",
+                "report.txt",
+                false,
+                "UTF-16LE",
+                true,
+                12L,
+                null,
+                "fingerprint",
+                0,
+                0,
+                2,
+                4,
+                7
+        ).published(5, "0123456789abcdef", 123456L);
+
+        RecoveryMetadata restored = RecoveryMetadata.fromJson(source.toJson());
+
+        assertEquals("UTF-16LE", restored.encoding);
+        assertTrue(restored.hasBom);
+    }
+
     @Test(expected = Exception.class)
     public void futureMetadataVersionIsRejected() throws Exception {
         JSONObject json = metadata(RecoveryKeys.forUntitledDocument(), null, 1).toJson();

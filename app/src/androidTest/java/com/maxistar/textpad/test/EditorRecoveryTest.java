@@ -10,6 +10,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.ServiceLocator;
@@ -39,6 +41,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.Assume;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 
 import java.io.File;
@@ -50,6 +53,11 @@ import java.nio.charset.StandardCharsets;
 @RunWith(AndroidJUnit4.class)
 public class EditorRecoveryTest {
     private Context context;
+
+    @Rule
+    public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule.grant(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE);
 
     @Before
     public void setUp() {
@@ -215,6 +223,50 @@ public class EditorRecoveryTest {
         }
     }
 
+    @Test
+    public void utf16leWithBomRoundTripsThroughRecoveryRestoreAndSave() throws Exception {
+        Assume.assumeTrue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q);
+        String content = "Hello UTF-16LE";
+        byte[] utf16leBytes = content.getBytes(java.nio.charset.Charset.forName("UTF-16LE"));
+        byte[] withBom = new byte[2 + utf16leBytes.length];
+        withBom[0] = (byte) 0xFF;
+        withBom[1] = (byte) 0xFE;
+        java.lang.System.arraycopy(utf16leBytes, 0, withBom, 2, utf16leBytes.length);
+
+        Uri documentUri = createTestDocumentRaw(withBom);
+        String key = RecoveryKeys.forDocumentUri(documentUri.toString());
+        new RecoveryRepository(context).write(
+                metadataWithEncoding(key, documentUri.toString(), "UTF-16LE", true),
+                content
+        );
+
+        Intent intent = new Intent(context, EditorActivity.class)
+                .setAction(Intent.ACTION_VIEW)
+                .setData(documentUri);
+
+        try (ActivityScenario<EditorActivity> scenario = ActivityScenario.launch(intent)) {
+            onView(withText(R.string.Restore)).perform(click());
+            onView(withId(R.id.editText1)).check(matches(withText(content)));
+            scenario.onActivity(activity -> {
+                EditText editor = activity.findViewById(R.id.editText1);
+                editor.setSelection(content.length());
+                editor.getText().append(" modified");
+            });
+            android.os.SystemClock.sleep(800);
+            scenario.recreate();
+            onView(withText(R.string.Restore)).perform(click());
+            scenario.onActivity(activity -> invokeNoArgument(activity, "saveNamedFile"));
+            byte[] savedBytes = readDocumentRawBytes(documentUri);
+            assertEquals(0xFF, savedBytes[0] & 0xFF);
+            assertEquals(0xFE, savedBytes[1] & 0xFF);
+            String savedText = new String(savedBytes, 2, savedBytes.length - 2,
+                    java.nio.charset.Charset.forName("UTF-16LE"));
+            assertEquals("Hello UTF-16LE modified", savedText);
+        } finally {
+            context.getContentResolver().delete(documentUri, null, null);
+        }
+    }
+
     private void assertLargeDocumentStateIsBinderSafe(boolean simpleScrolling) {
         setSimpleScrolling(simpleScrolling);
         String content = generatedDocument(1_050_000);
@@ -261,6 +313,15 @@ public class EditorRecoveryTest {
         );
     }
 
+    private RecoveryMetadata metadataWithEncoding(String key, String documentUri,
+                                                  String encoding, boolean hasBom) {
+        return new RecoveryMetadata(
+                key, documentUri, documentUri == null ? "newfile.txt" : "notes.txt",
+                documentUri == null, encoding, hasBom,
+                null, null, null, 0, 0, 0, 0, 1
+        );
+    }
+
     private Uri createTestDocument(String content) throws Exception {
         ContentValues values = new ContentValues();
         values.put(MediaStore.MediaColumns.DISPLAY_NAME, "textpad-recovery-" + java.lang.System.nanoTime() + ".txt");
@@ -293,6 +354,39 @@ public class EditorRecoveryTest {
             return output.toString(StandardCharsets.UTF_8.name());
         } catch (Exception error) {
             throw new AssertionError(error);
+        }
+    }
+
+    private Uri createTestDocumentRaw(byte[] rawContent) throws Exception {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, "textpad-recovery-" + java.lang.System.nanoTime() + ".txt");
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
+        values.put(MediaStore.MediaColumns.RELATIVE_PATH, "Download/TextPadTests");
+        Uri uri = context.getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+        if (uri == null) {
+            throw new IllegalStateException("Unable to create test document");
+        }
+        try (java.io.OutputStream output = context.getContentResolver().openOutputStream(uri, "wt")) {
+            if (output == null) {
+                throw new IllegalStateException("Unable to write test document");
+            }
+            output.write(rawContent);
+        }
+        return uri;
+    }
+
+    private byte[] readDocumentRawBytes(Uri uri) throws Exception {
+        try (InputStream input = context.getContentResolver().openInputStream(uri);
+             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            if (input == null) {
+                throw new IllegalStateException("Unable to read test document");
+            }
+            byte[] buffer = new byte[1024];
+            int count;
+            while ((count = input.read(buffer)) != -1) {
+                output.write(buffer, 0, count);
+            }
+            return output.toByteArray();
         }
     }
 
