@@ -1,0 +1,34 @@
+{
+  "repository": "maxistar/TextPad",
+  "branches": {
+    "master": {
+      "requirePullRequest": true,
+      "requiredChecks": ["build", "validate"],
+      "requiredCheckAppId": 15368,
+      "allowForcePushes": false,
+      "allowDeletions": false
+    },
+    "dev": {
+      "requirePullRequest": false,
+      "requiredChecks": [],
+      "allowForcePushes": false,
+      "allowDeletions": false
+    }
+  },
+  "environments": {
+    "release": {
+      "allowedRefs": [
+        {"name": "master", "type": "branch"},
+        {"name": "v*", "type": "tag"}
+      ],
+      "requiredReviewers": []
+    },
+    "production": {
+      "allowedRefs": [
+        {"name": "master", "type": "branch"},
+        {"name": "v*", "type": "tag"}
+      ],
+      "requiredReviewers": ["maxistar"]
+    }
+  }
+}

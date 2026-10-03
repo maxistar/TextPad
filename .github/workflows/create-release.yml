@@ -1,22 +1,36 @@
 name: Create Android Release
 
 on:
+  pull_request:
+    branches: [master]
+    types: [closed]
   workflow_dispatch:
     inputs:
-      version:
-        description: Expected versionName without the v prefix
+      head_branch:
+        description: Merged release/* or hotfix/* branch for recovery
         required: true
         type: string
       commit_sha:
-        description: Exact merged master commit to tag
+        description: Exact merge commit contained in master
         required: true
         type: string
 
 permissions:
   contents: write
+  checks: read
+  pull-requests: read
+
+concurrency:
+  group: android-release-${{ github.event.pull_request.merge_commit_sha || inputs.commit_sha }}
+  cancel-in-progress: false
 
 jobs:
   create-tag:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true &&
+      (startsWith(github.event.pull_request.head.ref, 'release/') ||
+      startsWith(github.event.pull_request.head.ref, 'hotfix/')))
     runs-on: ubuntu-latest
     environment: release
     outputs:
@@ -24,29 +38,34 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: master
+          ref: ${{ github.event.pull_request.merge_commit_sha || inputs.commit_sha }}
           fetch-depth: 0
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - name: Verify exact master commit
+      - name: Fetch stable history and tags
+        run: git fetch origin master --tags
+      - name: Require successful protected pull-request checks
+        if: github.event_name == 'pull_request'
         env:
-          EXPECTED_SHA: ${{ inputs.commit_sha }}
-        run: |
-          git fetch origin master --tags
-          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
-          test "$(git rev-parse origin/master)" = "$EXPECTED_SHA"
-      - name: Resolve and verify identity
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: gh pr checks "$PR_NUMBER" --required
+      - name: Resolve merged release identity
         id: identity
         env:
-          EXPECTED_VERSION: ${{ inputs.version }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref || inputs.head_branch }}
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref || 'master' }}
+          MERGE_COMMIT: ${{ github.event.pull_request.merge_commit_sha || inputs.commit_sha }}
+          MERGED: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.merged }}
         run: |
-          python3 scripts/release_tool.py metadata > release-metadata.json
-          ACTUAL_VERSION=$(python3 -c 'import json; print(json.load(open("release-metadata.json"))["versionName"])')
-          TAG=$(python3 -c 'import json; print(json.load(open("release-metadata.json"))["tag"])')
-          test "$ACTUAL_VERSION" = "$EXPECTED_VERSION"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          python3 scripts/release_tool.py candidate \
+            --head-branch "$HEAD_BRANCH" \
+            --base-branch "$BASE_BRANCH" \
+            --merge-commit "$MERGE_COMMIT" \
+            --merged "$MERGED" > release-candidate.json
+          echo "tag=$(python3 -c 'import json; print(json.load(open("release-candidate.json"))["tag"])')" >> "$GITHUB_OUTPUT"
       - name: Decode Google Play service account
         env:
           SERVICE_ACCOUNT_BASE64: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
@@ -58,17 +77,31 @@ jobs:
       - name: Create immutable annotated tag
         env:
           TAG: ${{ steps.identity.outputs.tag }}
-          EXPECTED_SHA: ${{ inputs.commit_sha }}
+          MERGE_COMMIT: ${{ github.event.pull_request.merge_commit_sha || inputs.commit_sha }}
         run: |
           test -z "$(git tag --list "$TAG")"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a "$TAG" "$EXPECTED_SHA" -m "Release $TAG"
+          git tag -a "$TAG" "$MERGE_COMMIT" -m "Release $TAG"
           git push origin "refs/tags/$TAG"
 
   publish:
     needs: create-tag
     uses: ./.github/workflows/tagged-release.yml
+    with:
+      tag: ${{ needs.create-tag.outputs.tag }}
+    secrets: inherit
+
+  sync-development:
+    needs: [create-tag, publish]
+    uses: ./.github/workflows/sync-master-to-dev.yml
+    with:
+      tag: ${{ needs.create-tag.outputs.tag }}
+    secrets: inherit
+
+  promote-production:
+    needs: [create-tag, publish]
+    uses: ./.github/workflows/promote-production.yml
     with:
       tag: ${{ needs.create-tag.outputs.tag }}
     secrets: inherit

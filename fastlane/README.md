@@ -1,48 +1,66 @@
-fastlane documentation
-----
+# TextPad Fastlane lanes
 
-# Installation
-
-Make sure you have the latest version of the Xcode command line tools installed:
+Install the pinned Ruby dependencies from the repository root:
 
 ```sh
-xcode-select --install
+bundle install
 ```
 
-For _fastlane_ installation instructions, see [Installing _fastlane_](https://docs.fastlane.tools/#installing-fastlane)
+Release automation normally invokes these lanes from GitHub Actions. Each release lane requires explicit artifact, metadata, credential, track, or version inputs so a local invocation cannot silently publish using defaults.
 
-# Available Actions
+## Android lanes
 
-## Android
+### `android test`
 
-### android test
+Runs Gradle unit tests:
 
 ```sh
-[bundle exec] fastlane android test
+bundle exec fastlane android test
 ```
 
-Runs all the tests
+### `android beta`
 
-### android beta
+Legacy Crashlytics Beta lane retained for compatibility. It is not part of the GitHub/Google Play release process.
+
+### `android validate_play_version_code`
+
+Fails if the supplied `versionCode` already exists on Internal, Alpha, Beta, or Production:
 
 ```sh
-[bundle exec] fastlane android beta
+bundle exec fastlane android validate_play_version_code \
+  version_code:63 json_key:/absolute/path/service-account.json
 ```
 
-Submit a new Beta Build to Crashlytics Beta
+### `android assert_track_version_code`
 
-### android deploy
+Requires the supplied version code to exist on one explicit Play track:
 
 ```sh
-[bundle exec] fastlane android deploy
+bundle exec fastlane android assert_track_version_code \
+  version_code:63 track:internal json_key:/absolute/path/service-account.json
 ```
 
-Deploy a new version to the Google Play
+### `android upload_release`
 
-----
+Uploads one already-built signed APK and localized metadata to an explicit track. The AAB path is validated and retained by the GitHub release workflow, but `skip_upload_aab` remains enabled because this existing Play application is not enrolled in Play App Signing.
 
-This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
+```sh
+bundle exec fastlane android upload_release \
+  apk:/absolute/path/TextPad-v1.31.2.apk \
+  aab:/absolute/path/TextPad-v1.31.2.aab \
+  version_code:63 \
+  metadata_path:/absolute/path/fastlane/metadata/android \
+  json_key:/absolute/path/service-account.json \
+  track:internal
+```
 
-More information about _fastlane_ can be found on [fastlane.tools](https://fastlane.tools).
+### `android promote_release`
 
-The documentation of _fastlane_ can be found on [docs.fastlane.tools](https://docs.fastlane.tools).
+Promotes an existing Internal version to a completed Production release without rebuilding, resigning, or staged rollout. The workflow derives `versionCode` from the immutable release tag before calling this lane.
+
+```sh
+bundle exec fastlane android promote_release \
+  version_code:63 json_key:/absolute/path/service-account.json
+```
+
+The end-to-end maintainer process and recovery paths are documented in [the canonical release guide](../docs/RELEASING.md).
