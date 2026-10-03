@@ -1,1 +1,3 @@
-TODO: RELEASE NOTES (1.31.2)
+- desplázate por líneas largas y documentos en cualquier dirección con un gesto de dos dedos
+- salta directamente a una línea y columna desde el menú del editor
+- añade la traducción al hindi y mejora la fiabilidad de la navegación
