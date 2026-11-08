@@ -168,6 +168,29 @@ public class FileEncodingTest {
     }
 
     @Test
+    public void encodeUnknownCharsetDoesNotPrefixForeignBom() {
+        FileEncoding encoding = FileEncoding.fromCharset("NO_SUCH_CHARSET", true);
+        byte[] encoded = FileEncoding.encode("hi", encoding, FileEncoding.UTF_8);
+        assertArrayEquals("hi".getBytes(StandardCharsets.UTF_8), encoded);
+    }
+
+    @Test
+    public void decodeUnknownCharsetUsesFallbackWithoutStrippingBytes() {
+        FileEncoding encoding = FileEncoding.fromCharset("NO_SUCH_CHARSET", true);
+        byte[] bytes = "hello".getBytes(StandardCharsets.UTF_8);
+        assertEquals("hello", FileEncoding.decode(bytes, encoding, FileEncoding.UTF_8));
+    }
+
+    @Test
+    public void getBomReturnsDefensiveCopy() {
+        FileEncoding encoding = FileEncoding.detect(
+                new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF, 0x41});
+        byte[] leaked = encoding.getBom();
+        leaked[0] = 0;
+        assertArrayEquals(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF}, encoding.getBom());
+    }
+
+    @Test
     public void encodeRoundTripForAllSupportedEncodings() {
         String text = "\u041f\u0440\u0438\u0432\u0435\u0442 \u043c\u0438\u0440";
         assertRoundTrip(FileEncoding.UTF_8, text);
