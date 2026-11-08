@@ -1,0 +1,3 @@
+- scroll long lines and documents in any direction with a two-finger gesture
+- jump directly to a line and column from the editor menu
+- adds a Hindi translation and improves editor navigation reliability

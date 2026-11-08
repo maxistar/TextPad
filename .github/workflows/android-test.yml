@@ -24,6 +24,12 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+    - name: Test release tooling
+      run: >-
+        python3 -m unittest
+        scripts/test_release_tool.py
+        scripts/test_release_workflows.py
+        scripts/test_release_protection.py
     - name: Build with Gradle
       run: ./gradlew test
     - uses: actions/upload-artifact@v6

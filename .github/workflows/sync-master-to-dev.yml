@@ -7,6 +7,11 @@ on:
         description: Released v<versionName> tag on master
         required: true
         type: string
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
 
 permissions:
   contents: write

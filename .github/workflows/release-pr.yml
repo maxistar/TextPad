@@ -24,7 +24,11 @@ jobs:
       - name: Validate release identity and localized notes
         run: python3 scripts/release_tool.py validate
       - name: Test release tooling
-        run: python3 -m unittest scripts/test_release_tool.py
+        run: >-
+          python3 -m unittest
+          scripts/test_release_tool.py
+          scripts/test_release_workflows.py
+          scripts/test_release_protection.py
       - name: Test, lint, and assemble release outputs
         run: ./gradlew test lint assembleRelease bundleRelease --no-daemon
       - name: Verify assembled release identity

@@ -38,12 +38,15 @@ import android.print.PrintJob;
 import android.print.PrintManager;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.Layout;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewParent;
 import android.view.WindowInsets;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebView;
@@ -191,6 +194,11 @@ public class EditorActivity extends AppCompatActivity {
 
     WebView mWebView;
 
+    private int cachedMaxHorizontalScroll = 0;
+    private int cachedHorizontalScrollEditorWidth = -1;
+    private boolean horizontalScrollBoundsDirty = true;
+    private int horizontalScrollBoundsCalculationCount = 0;
+
     /**
      * Called when the activity is first created.
      */
@@ -217,9 +225,14 @@ public class EditorActivity extends AppCompatActivity {
         }
         mText = this.findViewById(R.id.editText1);
         mText.setBackgroundResource(android.R.color.transparent);
-        if (!settingsService.isAutoWrapping()) {
-            disableEditorAutowrapping();
-        }
+        mText.setOnTouchListener(new TwoFingerPanTouchListener());
+        mText.addOnLayoutChangeListener((view, left, top, right, bottom,
+                                         oldLeft, oldTop, oldRight, oldBottom) -> {
+            if ((right - left) != (oldRight - oldLeft)
+                    || (bottom - top) != (oldBottom - oldTop)) {
+                invalidateHorizontalScrollBounds();
+            }
+        });
         editTextUndoRedo = new EditTextUndoRedo(mText, this);
         setTextWatcher();
 
@@ -229,6 +242,9 @@ public class EditorActivity extends AppCompatActivity {
             scrollView = findViewById(R.id.vscroll);
         }
         applyPreferences();
+        if (!settingsService.isAutoWrapping()) {
+            disableEditorAutowrapping();
+        }
 
         if (savedInstanceState != null) {
             restoreState(savedInstanceState);
@@ -345,6 +361,7 @@ public class EditorActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                invalidateHorizontalScrollBounds();
                 if (suppressRecoveryTracking) {
                     return;
                 }
@@ -769,12 +786,14 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     void applyPreferences() {
+        invalidateHorizontalScrollBounds();
         applyFontFace();
         applyFontSize();
         applyColors();
     }
 
     private void disableEditorAutowrapping() {
+        invalidateHorizontalScrollBounds();
         mText.setHorizontallyScrolling(true);
         mText.setHorizontalScrollBarEnabled(true);
         mText.setMaxLines(Integer.MAX_VALUE);
@@ -874,6 +893,9 @@ public class EditorActivity extends AppCompatActivity {
 
         MenuItem redoMenu = menu.findItem(R.id.menu_edit_redo);
         redoMenu.setEnabled(editTextUndoRedo.getCanRedo());
+
+        MenuItem goToMenu = menu.findItem(R.id.menu_document_go_to);
+        goToMenu.setEnabled(mText.length() > 0);
 
         updateRecentFiles(menu);
 
@@ -1006,6 +1028,10 @@ public class EditorActivity extends AppCompatActivity {
             saveFile();
         } else if (itemId == R.id.menu_document_save_as) {
             saveAs();
+        } else if (itemId == R.id.menu_document_go_to_beginning) {
+            moveCaretPosition(0);
+        } else if (itemId == R.id.menu_document_go_to_end) {
+            moveCaretPosition(mText.length());
         } else if (itemId == R.id.menu_edit_undo) {
             editUndo();
         } else if (itemId == R.id.menu_edit_redo) {
@@ -1981,6 +2007,175 @@ public class EditorActivity extends AppCompatActivity {
         toast.show();
     }
 
+    // TwoFingerPanTouchListener
+    private class TwoFingerPanTouchListener implements View.OnTouchListener {
+
+        private boolean panningActive = false;
+        private boolean panGestureOwned = false;
+        private float lastFocalX;
+        private float lastFocalY;
+        private int maxScrollX;
+        private int maxScrollY;
+
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            switch (event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    endPanGesture(view);
+                    return false;
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    if (event.getPointerCount() == 2) {
+                        startPanning(view, event);
+                    } else {
+                        stopActivePanning(view);
+                    }
+                    return panGestureOwned;
+                case MotionEvent.ACTION_MOVE:
+                    if (!panGestureOwned) {
+                        return false;
+                    }
+                    if (!panningActive) {
+                        return true;
+                    }
+                    if (event.getPointerCount() != 2) {
+                        stopActivePanning(view);
+                        return true;
+                    }
+                    float focalX = focalX(event);
+                    float focalY = focalY(event);
+                    panContent(
+                            Math.round(focalX - lastFocalX),
+                            Math.round(focalY - lastFocalY),
+                            maxScrollX,
+                            maxScrollY
+                    );
+                    lastFocalX = focalX;
+                    lastFocalY = focalY;
+                    return true;
+                case MotionEvent.ACTION_POINTER_UP:
+                    if (panGestureOwned) {
+                        stopActivePanning(view);
+                        return true;
+                    }
+                    return false;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    return endPanGesture(view);
+                default:
+                    return panGestureOwned;
+            }
+        }
+
+        private void startPanning(View view, MotionEvent event) {
+            panningActive = true;
+            panGestureOwned = true;
+            requestParentInterception(view, true);
+            lastFocalX = focalX(event);
+            lastFocalY = focalY(event);
+            Layout layout = mText.getLayout();
+            maxScrollX = getMaxHorizontalScroll(layout);
+            maxScrollY = calculateMaxVerticalScroll(layout);
+        }
+
+        private void stopActivePanning(View view) {
+            if (panningActive) {
+                requestParentInterception(view, false);
+            }
+            panningActive = false;
+        }
+
+        private boolean endPanGesture(View view) {
+            boolean shouldConsume = panGestureOwned || panningActive;
+            stopActivePanning(view);
+            panGestureOwned = false;
+            return shouldConsume;
+        }
+
+        private void requestParentInterception(View view, boolean disallow) {
+            ViewParent parent = view.getParent();
+            if (parent != null) {
+                parent.requestDisallowInterceptTouchEvent(disallow);
+            }
+        }
+
+        private float focalX(MotionEvent event) {
+            float sum = 0;
+            for (int i = 0; i < event.getPointerCount(); i++) {
+                sum += event.getX(i);
+            }
+            return sum / event.getPointerCount();
+        }
+
+        private float focalY(MotionEvent event) {
+            float sum = 0;
+            for (int i = 0; i < event.getPointerCount(); i++) {
+                sum += event.getY(i);
+            }
+            return sum / event.getPointerCount();
+        }
+    }
+
+    private void panContent(int deltaX, int deltaY, int maxScrollX, int maxScrollY) {
+        int newX = clampScroll(mText.getScrollX() - deltaX, maxScrollX);
+
+        if (simpleScrolling()) {
+            int newY = clampScroll(mText.getScrollY() - deltaY, maxScrollY);
+            mText.scrollTo(newX, newY);
+            return;
+        }
+
+        if (scrollView != null) {
+            scrollView.scrollBy(0, -deltaY);
+        }
+        mText.scrollTo(newX, mText.getScrollY());
+    }
+
+    private int getMaxHorizontalScroll(Layout layout) {
+        int editorWidth = mText.getWidth();
+        if (layout == null || editorWidth <= 0) {
+            return 0;
+        }
+        if (horizontalScrollBoundsDirty || cachedHorizontalScrollEditorWidth != editorWidth) {
+            cachedMaxHorizontalScroll = calculateMaxHorizontalScroll(layout, editorWidth);
+            cachedHorizontalScrollEditorWidth = editorWidth;
+            horizontalScrollBoundsDirty = false;
+        }
+        return cachedMaxHorizontalScroll;
+    }
+
+    private void invalidateHorizontalScrollBounds() {
+        horizontalScrollBoundsDirty = true;
+    }
+
+    public int getHorizontalScrollBoundsCalculationCountForTests() {
+        return horizontalScrollBoundsCalculationCount;
+    }
+
+    private int calculateMaxHorizontalScroll(Layout layout, int editorWidth) {
+        horizontalScrollBoundsCalculationCount++;
+        float maxLineWidth = 0;
+        for (int line = 0; line < layout.getLineCount(); line++) {
+            maxLineWidth = Math.max(maxLineWidth, layout.getLineWidth(line));
+        }
+        int contentWidth = (int) Math.ceil(maxLineWidth)
+                + mText.getTotalPaddingLeft() + mText.getTotalPaddingRight();
+        return Math.max(0, contentWidth - editorWidth);
+    }
+
+    private int calculateMaxVerticalScroll(Layout layout) {
+        if (layout == null) {
+            return 0;
+        }
+        int contentHeight = layout.getHeight()
+                + mText.getTotalPaddingTop() + mText.getTotalPaddingBottom();
+        return Math.max(0, contentHeight - mText.getHeight());
+    }
+
+    private int clampScroll(int value, int max) {
+        int boundedMax = Math.max(0, max);
+        return Math.max(0, Math.min(value, boundedMax));
+    }
+
     // QueryTextListener
     private class QueryTextListener
             implements SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
@@ -2093,5 +2288,12 @@ public class EditorActivity extends AppCompatActivity {
             queryTextListener = null;
             return true;
         }
+    }
+
+    private void moveCaretPosition(int position) {
+        mText.requestFocus();
+        mText.setSelection(position);
+        View editorRoot = findViewById(R.id.editor_root);
+        mText.post(() -> requestFocusedCaretOnScreen(editorRoot));
     }
 }

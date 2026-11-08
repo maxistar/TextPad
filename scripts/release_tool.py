@@ -38,6 +38,16 @@ class Version:
         return parse_semver(self.name)
 
 
+@dataclass(frozen=True)
+class ReleaseCandidate:
+    mode: str
+    head_branch: str
+    base_branch: str
+    merge_commit: str
+    version: Version
+    tag: str
+
+
 def load_config(path: Path = CONFIG_PATH) -> dict:
     with path.open(encoding="utf-8") as stream:
         config = json.load(stream)
@@ -48,14 +58,24 @@ def load_config(path: Path = CONFIG_PATH) -> dict:
     return config
 
 
-def read_version(path: Path = GRADLE_PATH) -> Version:
-    text = path.read_text(encoding="utf-8")
+def parse_version_text(text: str) -> Version:
     codes = VERSION_CODE_RE.findall(text)
     names = VERSION_NAME_RE.findall(text)
     if len(codes) != 1 or len(names) != 1:
         raise ReleaseError("Gradle must contain exactly one versionCode and versionName")
     parse_semver(names[0])
     return Version(names[0], int(codes[0]))
+
+
+def read_version(path: Path = GRADLE_PATH) -> Version:
+    return parse_version_text(path.read_text(encoding="utf-8"))
+
+
+def read_version_from_ref(ref: str) -> Version:
+    gradle = run(["git", "show", f"{ref}:app/build.gradle"], check=False)
+    if not gradle:
+        raise ReleaseError(f"Candidate {ref} does not contain app/build.gradle")
+    return parse_version_text(gradle)
 
 
 def write_version(version: Version, path: Path = GRADLE_PATH) -> None:
@@ -103,6 +123,14 @@ def run(command: Sequence[str], *, check: bool = True) -> str:
 def git_ref_exists(ref: str) -> bool:
     return subprocess.run(
         ["git", "show-ref", "--verify", "--quiet", ref], cwd=ROOT, check=False
+    ).returncode == 0
+
+
+def git_is_ancestor(ancestor: str, descendant: str) -> bool:
+    return subprocess.run(
+        ["git", "merge-base", "--is-ancestor", ancestor, descendant],
+        cwd=ROOT,
+        check=False,
     ).returncode == 0
 
 
@@ -218,6 +246,71 @@ def validate_branch(version: Version, config: dict, *, mode: str | None = None) 
     return inferred
 
 
+def resolve_release_candidate(
+    *,
+    head_branch: str,
+    base_branch: str,
+    merge_commit: str,
+    merged: bool,
+    config: dict,
+    stable_ref: str | None = None,
+) -> ReleaseCandidate:
+    branches = config["branches"]
+    stable = branches["stable"]
+    if not merged:
+        raise ReleaseError("Release pull request was closed without being merged")
+    if base_branch != stable:
+        raise ReleaseError(f"Release pull request must target {stable}, found {base_branch}")
+
+    version = read_version_from_ref(merge_commit)
+    expected_release = f'{branches["releasePrefix"]}{version.name}'
+    expected_hotfix = f'{branches["hotfixPrefix"]}{version.name}'
+    if head_branch == expected_release:
+        mode = "release"
+    elif head_branch == expected_hotfix:
+        mode = "hotfix"
+    else:
+        raise ReleaseError(
+            f"Candidate branch {head_branch} does not match version {version.name}"
+        )
+
+    commit_type = run(
+        ["git", "cat-file", "-t", f"{merge_commit}^{{commit}}"], check=False
+    )
+    if commit_type != "commit":
+        raise ReleaseError(f"Candidate is not a commit: {merge_commit}")
+    parents = run(
+        ["git", "rev-list", "--parents", "-n", "1", merge_commit], check=False
+    ).split()
+    if len(parents) < 3 or parents[0] != merge_commit:
+        raise ReleaseError(f"Candidate is not a merge commit: {merge_commit}")
+
+    if stable_ref is None:
+        remote_ref = f"origin/{stable}"
+        stable_ref = (
+            remote_ref
+            if git_ref_exists(f"refs/remotes/{remote_ref}")
+            else stable
+        )
+    if not git_is_ancestor(merge_commit, stable_ref):
+        raise ReleaseError(
+            f"Candidate {merge_commit} is not contained in {stable_ref}"
+        )
+
+    tag = config["tagPrefix"] + version.name
+    if git_ref_exists(f"refs/tags/{tag}"):
+        raise ReleaseError(f"Tag already exists: {tag}")
+
+    return ReleaseCandidate(
+        mode=mode,
+        head_branch=head_branch,
+        base_branch=base_branch,
+        merge_commit=merge_commit,
+        version=version,
+        tag=tag,
+    )
+
+
 def candidate_conflicts(version: Version, config: dict, mode: str) -> list[str]:
     branches = config["branches"]
     branch = f'{branches[mode + "Prefix"]}{version.name}'
@@ -307,6 +400,25 @@ def metadata(args: argparse.Namespace) -> None:
     }, indent=2))
 
 
+def candidate(args: argparse.Namespace) -> None:
+    resolved = resolve_release_candidate(
+        head_branch=args.head_branch,
+        base_branch=args.base_branch,
+        merge_commit=args.merge_commit,
+        merged=args.merged == "true",
+        config=load_config(),
+    )
+    print(json.dumps({
+        "mode": resolved.mode,
+        "headBranch": resolved.head_branch,
+        "baseBranch": resolved.base_branch,
+        "mergeCommit": resolved.merge_commit,
+        "versionName": resolved.version.name,
+        "versionCode": resolved.version.code,
+        "tag": resolved.tag,
+    }, indent=2))
+
+
 def validate(args: argparse.Namespace) -> None:
     config = load_config()
     version = read_version()
@@ -338,6 +450,12 @@ def build_parser() -> argparse.ArgumentParser:
     commands = parser.add_subparsers(dest="command", required=True)
     metadata_parser = commands.add_parser("metadata")
     metadata_parser.set_defaults(handler=metadata)
+    candidate_parser = commands.add_parser("candidate")
+    candidate_parser.add_argument("--head-branch", required=True)
+    candidate_parser.add_argument("--base-branch", required=True)
+    candidate_parser.add_argument("--merge-commit", required=True)
+    candidate_parser.add_argument("--merged", required=True, choices=("true", "false"))
+    candidate_parser.set_defaults(handler=candidate)
     validate_parser = commands.add_parser("validate")
     validate_parser.add_argument("--mode", choices=("release", "hotfix"))
     validate_parser.add_argument("--skip-branch", action="store_true")

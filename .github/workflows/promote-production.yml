@@ -7,10 +7,11 @@ on:
         description: Immutable v<versionName> release tag
         required: true
         type: string
-      version_code:
-        description: Existing internal-track versionCode
+  workflow_call:
+    inputs:
+      tag:
         required: true
-        type: number
+        type: string
 
 permissions:
   contents: read
@@ -28,15 +29,17 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - name: Verify tag, commit, and versionCode
+      - name: Verify tag and derive versionCode
+        id: identity
         env:
           TAG: ${{ inputs.tag }}
-          EXPECTED_CODE: ${{ inputs.version_code }}
         run: |
           git fetch origin --tags
+          test "$(git cat-file -t "$TAG")" = "tag"
           test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$TAG")"
-          test "$(python3 scripts/release_tool.py metadata | python3 -c 'import json,sys; print(json.load(sys.stdin)["tag"])')" = "$TAG"
-          test "$(python3 scripts/release_tool.py metadata | python3 -c 'import json,sys; print(json.load(sys.stdin)["versionCode"])')" = "$EXPECTED_CODE"
+          python3 scripts/release_tool.py metadata > release-metadata.json
+          test "$(python3 -c 'import json; print(json.load(open("release-metadata.json"))["tag"])')" = "$TAG"
+          echo "version_code=$(python3 -c 'import json; print(json.load(open("release-metadata.json"))["versionCode"])')" >> "$GITHUB_OUTPUT"
       - name: Decode Google Play service account
         env:
           SERVICE_ACCOUNT_BASE64: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
@@ -44,10 +47,10 @@ jobs:
       - name: Require the exact version on internal
         run: >-
           bundle exec fastlane android assert_track_version_code
-          version_code:${{ inputs.version_code }} track:internal
+          version_code:${{ steps.identity.outputs.version_code }} track:internal
           json_key:${{ github.workspace }}/service-account.json
       - name: Promote existing internal artifact to completed production
         run: >-
           bundle exec fastlane android promote_release
-          version_code:${{ inputs.version_code }}
+          version_code:${{ steps.identity.outputs.version_code }}
           json_key:${{ github.workspace }}/service-account.json

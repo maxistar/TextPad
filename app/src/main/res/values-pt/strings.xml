@@ -6,6 +6,9 @@
     <string name="New">Novo</string>
     <string name="Save">Salvar</string>
     <string name="Save_As">Salvar como</string>
+    <string name="Go_To">Ir para</string>
+    <string name="Go_To_Beginning">Início</string>
+    <string name="Go_To_End">Fim</string>
     <string name="Location">Local: %s</string>
     <string name="Select">Selecionar</string>
     <string name="File_Name">Nome do arquivo:</string>
