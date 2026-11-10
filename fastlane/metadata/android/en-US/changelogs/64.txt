@@ -1,0 +1,1 @@
+- improves typing performance in large documents

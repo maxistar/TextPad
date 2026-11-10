@@ -1,0 +1,1 @@
+- mejora la velocidad de escritura en documentos grandes
