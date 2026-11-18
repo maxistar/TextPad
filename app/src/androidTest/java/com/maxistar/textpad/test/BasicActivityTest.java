@@ -5,6 +5,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import android.Manifest;
 import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import androidx.test.espresso.ViewAction;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.rule.GrantPermissionRule;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,7 +37,12 @@ import com.maxistar.textpad.activities.EditorActivity;
 public class BasicActivityTest {
 
 
-    @Rule
+    @Rule(order = 1)
+    public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule.grant(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE);
+
+    @Rule(order = 2)
     public IntentsTestRule<EditorActivity> intentsTestRule =
             new IntentsTestRule<>(EditorActivity.class);
 
