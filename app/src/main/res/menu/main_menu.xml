@@ -5,14 +5,14 @@
         android:id="@+id/menu_document_search"
         android:title="@string/Search"
         android:icon="@drawable/ic_search"
-        app:iconTint="@color/colorIcon"
+        app:iconTint="@color/menuIconColor"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/action_edit"
         android:title="@string/action_edit"
         android:icon="@drawable/ic_edit"
-        app:iconTint="@color/colorIcon"
+        app:iconTint="@color/menuIconColor"
         app:showAsAction="ifRoom">
         <menu>
             <item
