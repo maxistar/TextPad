@@ -204,6 +204,7 @@ public class EditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         settingsService = ServiceLocator.getInstance().getSettingsService(this.getApplicationContext());
+        settingsService.applyLocale(this.getBaseContext());
         recentFilesService = ServiceLocator.getInstance().getRecentFilesService();
         alternativeUrlsService = ServiceLocator.getInstance().getAlternativeUrlsService();
         recoveryRepository = new RecoveryRepository(getApplicationContext());
@@ -270,7 +271,6 @@ public class EditorActivity extends AppCompatActivity {
         updateTitle();
         mText.requestFocus();
 
-        settingsService.applyLocale(this.getBaseContext());
     }
 
     private boolean simpleScrolling() {
