@@ -1,0 +1,3 @@
+- fixed some errors in the German translation
+- added a Persian translation
+- optimized autosaving to reduce resource usage

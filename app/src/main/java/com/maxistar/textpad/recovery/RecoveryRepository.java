@@ -11,8 +11,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.Objects;
 import java.util.UUID;
 
 public class RecoveryRepository {
@@ -57,7 +59,7 @@ public class RecoveryRepository {
         try {
             writeFile(new File(temporary, DRAFT_NAME), content);
             writeFile(new File(temporary, METADATA_NAME), published.toJson().toString().getBytes(StandardCharsets.UTF_8));
-            if (loadPair(metadata.recoveryKey, null, temporary) == null) {
+            if (!validateGeneration(published, temporary)) {
                 throw new IOException("Recovery generation validation failed");
             }
             if (!temporary.renameTo(complete)) {
@@ -147,6 +149,41 @@ public class RecoveryRepository {
 
     public File getDirectoryForTests() {
         return directory;
+    }
+
+    /** Publication checks stored bytes; only the actual restore path decodes their text. */
+    protected boolean validateGeneration(RecoveryMetadata expected, File generation) throws Exception {
+        File draft = new File(generation, DRAFT_NAME);
+        File sidecar = new File(generation, METADATA_NAME);
+        if (!draft.isFile() || !sidecar.isFile()) {
+            return false;
+        }
+        RecoveryMetadata metadata = RecoveryMetadata.fromJson(
+                new JSONObject(new String(readFully(sidecar), StandardCharsets.UTF_8)));
+        if (!expected.recoveryKey.equals(metadata.recoveryKey)
+                || !Objects.equals(expected.documentUri, metadata.documentUri)
+                || expected.untitled != metadata.untitled
+                || !Objects.equals(expected.displayName == null ? "" : expected.displayName, metadata.displayName)
+                || !Objects.equals(expected.encoding == null ? "UTF-8" : expected.encoding, metadata.encoding)
+                || expected.hasBom != metadata.hasBom
+                || !Objects.equals(expected.originalSize, metadata.originalSize)
+                || !Objects.equals(expected.originalLastModified, metadata.originalLastModified)
+                || !Objects.equals(expected.originalContentSha256, metadata.originalContentSha256)
+                || expected.generation != metadata.generation
+                || expected.cursorStart != metadata.cursorStart
+                || expected.cursorEnd != metadata.cursorEnd
+                || expected.draftUpdatedAt != metadata.draftUpdatedAt
+                || expected.draftSize != metadata.draftSize
+                || !Objects.equals(expected.draftContentSha256, metadata.draftContentSha256)) {
+            return false;
+        }
+        try (InputStream input = openDraftForValidation(draft)) {
+            return RecoveryContentValidator.matches(input, expected.draftSize, expected.draftContentSha256);
+        }
+    }
+
+    protected InputStream openDraftForValidation(File draft) throws IOException {
+        return new FileInputStream(draft);
     }
 
     private RecoveryDraft loadLegacyPair(String recoveryKey, String expectedDocumentUri) throws Exception {

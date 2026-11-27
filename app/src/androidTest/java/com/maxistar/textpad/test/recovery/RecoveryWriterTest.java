@@ -42,7 +42,7 @@ public class RecoveryWriterTest {
     }
 
     @Test
-    public void newerGenerationSupersedesDebouncedSnapshot() {
+    public void newerGenerationSupersedesQueuedSnapshot() {
         String key = RecoveryKeys.forUntitledDocument();
         writer.schedule(snapshot(key, 1, "old"));
 
@@ -115,6 +115,26 @@ public class RecoveryWriterTest {
         assertNotNull(draft);
         assertEquals("second", draft.text);
         assertEquals(1, draft.metadata.generation);
+    }
+
+    @Test
+    public void capturedSnapshotIsSubmittedWithoutAnotherDebounce() {
+        String key = RecoveryKeys.forUntitledDocument();
+        writer.schedule(snapshot(key, 1, "captured"));
+        // A zero-delay barrier follows the submission; it must not overtake a second debounce.
+        org.junit.Assert.assertTrue(writer.cancelAndWait(null, 0, 2000));
+        assertEquals("captured", repository.load(key, null).text);
+    }
+
+    @Test
+    public void lightweightGenerationRequestRejectsStaleSnapshotBeforeNewCapture() {
+        String key = RecoveryKeys.forUntitledDocument();
+        writer.recordGeneration(key, 2);
+        writer.schedule(snapshot(key, 1, "stale"));
+        org.junit.Assert.assertTrue(writer.cancelAndWait(null, 0, 2000));
+        assertEquals(null, repository.load(key, null));
+        writer.flushAndWait(snapshot(key, 2, "latest"), 2000);
+        assertEquals("latest", repository.load(key, null).text);
     }
 
     private RecoveryWriter.Snapshot snapshot(String key, long generation, String text) {

@@ -1,0 +1,3 @@
+- poprawiono niektóre błędy w niemieckim tłumaczeniu
+- dodano tłumaczenie na język perski
+- zoptymalizowano automatyczne zapisywanie, aby zmniejszyć zużycie zasobów

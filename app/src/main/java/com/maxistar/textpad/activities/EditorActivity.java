@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +32,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
@@ -67,6 +69,7 @@ import com.maxistar.textpad.service.AlternativeUrlsService;
 import com.maxistar.textpad.service.RecentFilesService;
 import com.maxistar.textpad.service.ThemeService;
 import com.maxistar.textpad.recovery.RecoveryDraft;
+import com.maxistar.textpad.recovery.RecoveryCaptureScheduler;
 import com.maxistar.textpad.recovery.RecoveryKeys;
 import com.maxistar.textpad.recovery.RecoveryMetadata;
 import com.maxistar.textpad.recovery.RecoveryRepository;
@@ -151,6 +154,7 @@ public class EditorActivity extends AppCompatActivity {
 
     private RecoveryRepository recoveryRepository;
     private RecoveryWriter recoveryWriter;
+    private RecoveryCaptureScheduler recoveryCapture;
     private String recoveryKey;
     private long editorGeneration = 0;
     private boolean suppressRecoveryTracking = false;
@@ -164,6 +168,20 @@ public class EditorActivity extends AppCompatActivity {
     private SaveRequest pendingExternalConflict;
     private boolean nextSaveCreatesDocument;
     private boolean hasEnteredForeground;
+
+    private static final class MainThreadRecoveryScheduler implements RecoveryCaptureScheduler.Scheduler {
+        private final Handler handler = new Handler(Looper.getMainLooper());
+
+        @Override
+        public void postDelayed(Runnable callback, long delayMillis) {
+            handler.postDelayed(callback, delayMillis);
+        }
+
+        @Override
+        public void removeCallbacks(Runnable callback) {
+            handler.removeCallbacks(callback);
+        }
+    }
 
     private static final class SaveRequest {
         final long generation;
@@ -204,11 +222,14 @@ public class EditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         settingsService = ServiceLocator.getInstance().getSettingsService(this.getApplicationContext());
+        settingsService.applyLocale(this.getBaseContext());
         recentFilesService = ServiceLocator.getInstance().getRecentFilesService();
         alternativeUrlsService = ServiceLocator.getInstance().getAlternativeUrlsService();
         recoveryRepository = new RecoveryRepository(getApplicationContext());
         recoveryRepository.cleanupIncompleteArtifacts();
         recoveryWriter = new RecoveryWriter(recoveryRepository);
+        recoveryCapture = new RecoveryCaptureScheduler(
+                new MainThreadRecoveryScheduler(), this::captureScheduledRecoverySnapshot);
 
         if (simpleScrolling()) {
             setContentView(R.layout.main_simple_scrolling);
@@ -270,7 +291,6 @@ public class EditorActivity extends AppCompatActivity {
         updateTitle();
         mText.requestFocus();
 
-        settingsService.applyLocale(this.getBaseContext());
     }
 
     private boolean simpleScrolling() {
@@ -510,6 +530,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void showRecoveryDialog(RecoveryDraft draft, Runnable discardLoader) {
+        recoveryCapture.cancel();
         recoveryDecisionPending = true;
         pendingRecoveryDraft = draft;
         pendingRecoveryDiscardLoader = discardLoader;
@@ -572,6 +593,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void setEditorText(String text, boolean markChanged) {
+        recoveryCapture.cancel();
         suppressRecoveryTracking = true;
         mText.setText(text);
         editTextUndoRedo.clearHistory();
@@ -581,6 +603,15 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void scheduleRecoverySnapshot() {
+        if (!changed || recoveryDecisionPending || isDestroyed()) {
+            return;
+        }
+        ensureRecoveryKey();
+        recoveryWriter.recordGeneration(recoveryKey, editorGeneration);
+        recoveryCapture.schedule();
+    }
+
+    private void captureScheduledRecoverySnapshot() {
         RecoveryWriter.Snapshot snapshot = createRecoverySnapshot();
         if (snapshot != null) {
             recoveryWriter.schedule(snapshot);
@@ -588,6 +619,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void flushRecoverySnapshot() {
+        recoveryCapture.cancel();
         RecoveryWriter.Snapshot snapshot = createRecoverySnapshot();
         if (snapshot != null) {
             recoveryWriter.flushAndWait(snapshot, 2000);
@@ -595,15 +627,11 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private RecoveryWriter.Snapshot createRecoverySnapshot() {
-        if (!changed || recoveryDecisionPending) {
+        if (!changed || recoveryDecisionPending || isDestroyed()) {
             return null;
         }
+        ensureRecoveryKey();
         String identity = documentIdentityUri();
-        if (recoveryKey == null) {
-            recoveryKey = identity == null
-                    ? RecoveryKeys.forUntitledDocument()
-                    : RecoveryKeys.forDocumentUri(identity);
-        }
         int start = Math.max(0, mText.getSelectionStart());
         int end = Math.max(0, mText.getSelectionEnd());
         RecoveryMetadata metadata = new RecoveryMetadata(
@@ -623,6 +651,15 @@ public class EditorActivity extends AppCompatActivity {
                 editorGeneration
         );
         return new RecoveryWriter.Snapshot(metadata, mText.getText().toString());
+    }
+
+    private void ensureRecoveryKey() {
+        if (recoveryKey == null) {
+            String identity = documentIdentityUri();
+            recoveryKey = identity == null
+                    ? RecoveryKeys.forUntitledDocument()
+                    : RecoveryKeys.forDocumentUri(identity);
+        }
     }
 
     private String documentIdentityUri() {
@@ -685,6 +722,7 @@ public class EditorActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        recoveryCapture.close();
         recoveryWriter.shutdown();
         editTextUndoRedo.disconnect();
         super.onDestroy();
@@ -1194,12 +1232,16 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void discardCurrentRecovery() {
+        recoveryCapture.cancel();
         recoveryWriter.cancelAndWait(recoveryKey, editorGeneration, 2000);
         recoveryRepository.delete(recoveryKey);
         recoveryKey = null;
     }
 
     private void setFilename(String value) {
+        if (!Objects.equals(value, urlFilename)) {
+            recoveryCapture.cancel();
+        }
         this.urlFilename = value;
         storeLastFileName(value);
     }
@@ -1215,6 +1257,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     protected void initEditor() {
+        recoveryCapture.cancel();
         changed = false;
         editTextUndoRedo.clearHistory();
         queryTextListener = null;
@@ -1647,6 +1690,7 @@ public class EditorActivity extends AppCompatActivity {
         originalContentSha256 = DocumentSaveValidator.sha256(persistedBytes);
 
         if (editorGeneration == savedGeneration) {
+            recoveryCapture.cancel();
             recoveryWriter.cancelAndWait(previousRecoveryKey, savedGeneration, 2000);
             recoveryRepository.delete(previousRecoveryKey);
             if (targetKey != null && !targetKey.equals(previousRecoveryKey)) {
