@@ -25,6 +25,10 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 
 @RunWith(AndroidJUnit4.class)
@@ -184,6 +188,121 @@ public class RecoveryRepositoryTest {
         assertNotNull(draft);
         assertEquals("valid", draft.text);
         assertFalse(new File(directory, key + ".draft.bak").exists());
+    }
+
+    @Test
+    public void publicationStreamsLargeUnicodeDraftAndRestorationStillLoadsText() throws Exception {
+        final int[] largestRead = {0};
+        final long[] bytesRead = {0};
+        RecoveryRepository streaming = new RecoveryRepository(ApplicationProvider.getApplicationContext()) {
+            @Override
+            protected InputStream openDraftForValidation(File draft) throws IOException {
+                return new FilterInputStream(super.openDraftForValidation(draft)) {
+                    @Override
+                    public int read(byte[] bytes, int offset, int length) throws IOException {
+                        largestRead[0] = Math.max(largestRead[0], length);
+                        int count = super.read(bytes, offset, length);
+                        if (count > 0) {
+                            bytesRead[0] += count;
+                        }
+                        return count;
+                    }
+                };
+            }
+        };
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < 200000; i++) {
+            text.append("Привет 世界 🌍\n");
+        }
+        String content = text.toString();
+        String key = RecoveryKeys.forUntitledDocument();
+        RecoveryMetadata published = streaming.write(metadata(key, null, 1), content);
+        assertEquals(published.draftSize, bytesRead[0]);
+        assertTrue(largestRead[0] > 0 && largestRead[0] <= 8192);
+        assertEquals(content, streaming.load(key, null).text);
+        assertEquals("Restoration must keep using its compatible reader", published.draftSize, bytesRead[0]);
+    }
+
+    @Test
+    public void invalidTemporaryDraftOrMetadataCannotReplacePublishedGeneration() throws Exception {
+        String key = RecoveryKeys.forUntitledDocument();
+        repository.write(metadata(key, null, 1), "previous");
+        Mutation[] mutations = new Mutation[]{
+                directory -> new File(directory, "draft.draft").delete(),
+                directory -> write(new File(directory, "draft.draft"), "short"),
+                directory -> write(new File(directory, "draft.draft"), "replacemenX"),
+                directory -> new File(directory, "metadata.json").delete(),
+                directory -> write(new File(directory, "metadata.json"), "invalid json"),
+                directory -> changeMetadata(directory, "formatVersion", RecoveryMetadata.CURRENT_FORMAT_VERSION + 1),
+                directory -> changeMetadata(directory, "recoveryKey", RecoveryKeys.forUntitledDocument()),
+                directory -> changeMetadata(directory, "documentUri", "content://other/document"),
+                directory -> changeMetadata(directory, "draftSize", 1),
+                directory -> changeMetadata(directory, "draftContentSha256", "wrong"),
+                directory -> changeMetadata(directory, "generation", 999)
+        };
+        for (int i = 0; i < mutations.length; i++) {
+            Mutation mutation = mutations[i];
+            RecoveryRepository corrupting = new RecoveryRepository(ApplicationProvider.getApplicationContext()) {
+                @Override
+                protected boolean validateGeneration(RecoveryMetadata expected, File generation) throws Exception {
+                    mutation.apply(generation);
+                    return super.validateGeneration(expected, generation);
+                }
+            };
+            try {
+                corrupting.write(metadata(key, null, 2), "replacement");
+                org.junit.Assert.fail("Corruption must reject publication: " + i);
+            } catch (Exception expected) {
+                assertEquals("previous", repository.loadActive().text);
+                assertEquals(1, repository.load(key, null).metadata.generation);
+            }
+        }
+    }
+
+    @Test
+    public void publicationReadFailurePreservesPriorGenerationAndActivePointer() throws Exception {
+        String key = RecoveryKeys.forUntitledDocument();
+        repository.write(metadata(key, null, 1), "previous");
+        RecoveryRepository unreadable = new RecoveryRepository(ApplicationProvider.getApplicationContext()) {
+            @Override
+            protected InputStream openDraftForValidation(File draft) throws IOException {
+                throw new IOException("expected read failure");
+            }
+        };
+        try {
+            unreadable.write(metadata(key, null, 2), "replacement");
+            org.junit.Assert.fail("Unreadable draft must not be published");
+        } catch (IOException expected) {
+            assertEquals("previous", repository.loadActive().text);
+        }
+    }
+
+    @Test
+    public void optionalMetadataKeepsItsExistingRoundTripDefaults() throws Exception {
+        String key = RecoveryKeys.forUntitledDocument();
+        RecoveryMetadata source = new RecoveryMetadata(key, null, null, true, null, false,
+                null, null, null, 0, 0, 0, 0, 1);
+        repository.write(source, "draft");
+        RecoveryDraft restored = repository.load(key, null);
+        assertNotNull(restored);
+        assertEquals("", restored.metadata.displayName);
+        assertEquals("UTF-8", restored.metadata.encoding);
+        assertEquals("draft", restored.text);
+    }
+
+    private interface Mutation {
+        void apply(File directory) throws Exception;
+    }
+
+    private static void changeMetadata(File generation, String field, Object value) throws Exception {
+        File file = new File(generation, "metadata.json");
+        byte[] bytes = new byte[(int) file.length()];
+        try (java.io.DataInputStream input = new java.io.DataInputStream(new FileInputStream(file))) {
+            input.readFully(bytes);
+        }
+        JSONObject json = new JSONObject(new String(bytes, StandardCharsets.UTF_8));
+        json.put(field, value);
+        write(file, json.toString());
     }
 
     private RecoveryMetadata metadata(String key, String uri, long generation) {

@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 public final class RecoveryWriter {
     private static final String LOG_TAG = "EditorRecovery";
-    private static final long DEBOUNCE_MILLIS = 600;
 
     private final RecoveryRepository repository;
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(runnable -> {
@@ -34,7 +33,7 @@ public final class RecoveryWriter {
             pending.cancel(false);
         }
         pendingRecoveryKey = snapshot.metadata.recoveryKey;
-        pending = executor.schedule(() -> writeIfCurrent(snapshot), DEBOUNCE_MILLIS, TimeUnit.MILLISECONDS);
+        pending = executor.schedule(() -> writeIfCurrent(snapshot), 0, TimeUnit.MILLISECONDS);
     }
 
     public boolean flushAndWait(Snapshot snapshot, long timeoutMillis) {
@@ -101,7 +100,7 @@ public final class RecoveryWriter {
         }
     }
 
-    private void recordGeneration(String recoveryKey, long generation) {
+    public synchronized void recordGeneration(String recoveryKey, long generation) {
         if (recoveryKey == null) {
             return;
         }
